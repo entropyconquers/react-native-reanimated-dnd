@@ -1,30 +1,28 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
-    "lib": ["ES2018"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020"],
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": false,
-    "noEmit": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
     "declaration": true,
     "outDir": "./lib",
     "rootDir": "./",
-    "jsx": "react-native",
-    "module": "commonjs",
-    "types": ["node"]
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false,
+    "jsx": "react-native"
   },
   "include": [
+    "index.ts",
     "components/**/*",
     "context/**/*",
     "hooks/**/*",
     "types/**/*",
-    "index.ts"
+    "utils/**/*"
   ],
   "exclude": ["node_modules", "lib", "**/*.test.ts", "**/*.test.tsx"]
 }

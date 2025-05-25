@@ -1,55 +1,20 @@
-// Node Modules
-import React, { useRef, createContext, useContext, useState } from "react";
-import { ViewStyle, StyleProp } from "react-native";
+import React, { createContext, useContext } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
 import { useDraggable } from "../hooks/useDraggable";
 import {
-  UseDraggableOptions,
-  AnimationFunction,
-  CollisionAlgorithm,
   DraggableState,
+  DraggableContextValue,
+  DraggableProps,
+  HandleProps,
+  UseDraggableOptions,
 } from "../types/draggable";
 
 // Re-export types if they're meant to be part of the public API of Draggable component
-export {
-  UseDraggableOptions,
-  AnimationFunction,
-  CollisionAlgorithm,
-  DraggableState,
-};
-
-// Create a context to share gesture and state between Draggable and Handle
-interface DraggableContextValue {
-  gesture: any;
-  state: DraggableState;
-}
+export { DraggableState };
 
 const DraggableContext = createContext<DraggableContextValue | null>(null);
-
-/**
- * Props for the Draggable component.
- *
- * @template TData - The type of data associated with the draggable item
- */
-interface DraggableProps<TData = unknown> extends UseDraggableOptions<TData> {
-  /** Style to apply to the draggable container */
-  style?: StyleProp<ViewStyle>;
-  /** The content to render inside the draggable */
-  children: React.ReactNode;
-  /** Callback fired when the draggable state changes */
-  onStateChange?: (state: DraggableState) => void;
-}
-
-/**
- * Props for the Handle component.
- */
-interface HandleProps {
-  /** The content to render inside the handle */
-  children: React.ReactNode;
-  /** Optional style to apply to the handle */
-  style?: StyleProp<ViewStyle>;
-}
 
 /**
  * A handle component that can be used within Draggable to create a specific
@@ -116,169 +81,6 @@ const Handle = ({ children, style }: HandleProps) => {
  *
  * @template TData - The type of data associated with the draggable item
  * @param props - Configuration props for the draggable component
- *
- * @example
- * Basic draggable item:
- * ```typescript
- * import { Draggable } from './components/Draggable';
- *
- * function BasicDraggable() {
- *   return (
- *     <Draggable
- *       data={{ id: '1', name: 'Draggable Item', type: 'task' }}
- *       onDragStart={(data) => console.log('Started dragging:', data.name)}
- *       onDragEnd={(data) => console.log('Finished dragging:', data.name)}
- *     >
- *       <View style={styles.item}>
- *         <Text>Drag me anywhere!</Text>
- *       </View>
- *     </Draggable>
- *   );
- * }
- * ```
- *
- * @example
- * Draggable with custom animation and constraints:
- * ```typescript
- * function ConstrainedDraggable() {
- *   const boundsRef = useRef<View>(null);
- *
- *   return (
- *     <View ref={boundsRef} style={styles.container}>
- *       <Draggable
- *         data={{ id: '2', category: 'bounded' }}
- *         dragBoundsRef={boundsRef}
- *         dragAxis="x" // Only horizontal movement
- *         animationFunction={(toValue) => {
- *           'worklet';
- *           return withTiming(toValue, { duration: 300 });
- *         }}
- *         collisionAlgorithm="center"
- *         style={styles.draggableItem}
- *       >
- *         <View style={styles.slider}>
- *           <Text>Horizontal Slider</Text>
- *         </View>
- *       </Draggable>
- *     </View>
- *   );
- * }
- * ```
- *
- * @example
- * Draggable with handle and state tracking:
- * ```typescript
- * function HandleDraggable() {
- *   const [dragState, setDragState] = useState(DraggableState.IDLE);
- *
- *   return (
- *     <Draggable
- *       data={{ id: '3', title: 'Card with Handle' }}
- *       onStateChange={setDragState}
- *       onDragging={({ x, y, tx, ty }) => {
- *         console.log(`Position: (${x + tx}, ${y + ty})`);
- *       }}
- *       style={[
- *         styles.card,
- *         dragState === DraggableState.DRAGGING && styles.dragging
- *       ]}
- *     >
- *       <View style={styles.cardContent}>
- *         <Text style={styles.cardTitle}>Card Title</Text>
- *         <Text style={styles.cardBody}>
- *           This card can only be dragged by its handle.
- *         </Text>
- *
- *         <Draggable.Handle style={styles.dragHandle}>
- *           <View style={styles.handleIcon}>
- *             <Text>⋮⋮</Text>
- *           </View>
- *         </Draggable.Handle>
- *       </View>
- *     </Draggable>
- *   );
- * }
- * ```
- *
- * @example
- * Draggable with collision detection and drop zones:
- * ```typescript
- * function DragDropExample() {
- *   return (
- *     <DropProvider>
- *       <View style={styles.container}>
- *         <Draggable
- *           data={{ id: '4', type: 'file', name: 'document.pdf' }}
- *           collisionAlgorithm="intersect"
- *           onDragStart={(data) => {
- *             hapticFeedback();
- *             setDraggedItem(data);
- *           }}
- *           onDragEnd={(data) => {
- *             setDraggedItem(null);
- *           }}
- *         >
- *           <View style={styles.fileItem}>
- *             <Icon name="file-pdf" size={24} />
- *             <Text>{data.name}</Text>
- *           </View>
- *         </Draggable>
- *
- *         <Droppable
- *           onDrop={(data) => {
- *             console.log('File dropped:', data.name);
- *             moveToTrash(data.id);
- *           }}
- *         >
- *           <View style={styles.trashZone}>
- *             <Icon name="trash" size={32} />
- *             <Text>Drop files here to delete</Text>
- *           </View>
- *         </Droppable>
- *       </View>
- *     </DropProvider>
- *   );
- * }
- * ```
- *
- * @example
- * Draggable with disabled state and conditional behavior:
- * ```typescript
- * function ConditionalDraggable({ item, canDrag }) {
- *   return (
- *     <Draggable
- *       data={item}
- *       dragDisabled={!canDrag}
- *       onDragStart={(data) => {
- *         if (data.locked) {
- *           showError('This item is locked');
- *           return;
- *         }
- *         analytics.track('drag_start', { itemId: data.id });
- *       }}
- *       style={[
- *         styles.item,
- *         !canDrag && styles.disabled
- *       ]}
- *     >
- *       <View style={styles.itemContent}>
- *         <Text style={styles.itemTitle}>{item.title}</Text>
- *         {item.locked && <Icon name="lock" size={16} />}
- *         {!canDrag && <Text style={styles.disabledText}>Drag disabled</Text>}
- *       </View>
- *     </Draggable>
- *   );
- * }
- * ```
- *
- * @see {@link Draggable.Handle} for creating drag handles
- * @see {@link useDraggable} for the underlying hook
- * @see {@link Droppable} for drop zone components
- * @see {@link DraggableState} for state management
- * @see {@link CollisionAlgorithm} for collision detection options
- * @see {@link UseDraggableOptions} for configuration options
- * @see {@link UseDraggableReturn} for hook return details
- * @see {@link DropProvider} for drag-and-drop context setup
  */
 const DraggableComponent = <TData = unknown,>({
   // Destructure component-specific props first
@@ -287,14 +89,12 @@ const DraggableComponent = <TData = unknown,>({
   // Collect all other props (which are now the modified UseDraggableOptions)
   ...useDraggableHookOptions
 }: DraggableProps<TData>) => {
-  // Pass the collected useDraggableHookOptions object directly to the hook
-  // Also pass children and Handle component reference for handle detection
-  const { animatedViewProps, gesture, state, hasHandle, animatedViewRef } =
-    useDraggable<TData>({
+  const { animatedViewProps, gesture, state, animatedViewRef, hasHandle } =
+    useDraggable({
       ...useDraggableHookOptions,
       children,
       handleComponent: Handle,
-    });
+    } as UseDraggableOptions<TData>);
 
   // Create the context value
   const contextValue: DraggableContextValue = {
@@ -302,28 +102,37 @@ const DraggableComponent = <TData = unknown,>({
     state,
   };
 
-  // Render the component
-  const content = (
-    <Animated.View
-      ref={animatedViewRef}
-      {...animatedViewProps}
-      style={[componentStyle, animatedViewProps.style]}
-      collapsable={false}
-    >
-      <DraggableContext.Provider value={contextValue}>
-        {children}
-      </DraggableContext.Provider>
-    </Animated.View>
+  return (
+    <DraggableContext.Provider value={contextValue}>
+      {hasHandle ? (
+        // When there's a handle, wrap in a regular Animated.View
+        <Animated.View
+          ref={animatedViewRef}
+          style={[componentStyle, animatedViewProps.style]}
+          onLayout={animatedViewProps.onLayout}
+        >
+          {children}
+        </Animated.View>
+      ) : (
+        // When there's no handle, the entire component is draggable
+        <GestureDetector gesture={gesture}>
+          <Animated.View
+            ref={animatedViewRef}
+            style={[componentStyle, animatedViewProps.style]}
+            onLayout={animatedViewProps.onLayout}
+          >
+            {children}
+          </Animated.View>
+        </GestureDetector>
+      )}
+    </DraggableContext.Provider>
   );
-
-  // If a handle is found, let the handle control the dragging
-  // Otherwise, the entire component is draggable
-  if (hasHandle) {
-    return content;
-  } else {
-    return <GestureDetector gesture={gesture}>{content}</GestureDetector>;
-  }
 };
 
-// Attach the Handle as a static property
-export const Draggable = Object.assign(DraggableComponent, { Handle });
+// Attach the Handle component as a static property
+DraggableComponent.Handle = Handle;
+
+// Export the component with proper typing
+export const Draggable = DraggableComponent as typeof DraggableComponent & {
+  Handle: typeof Handle;
+};

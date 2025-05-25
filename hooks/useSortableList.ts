@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import Animated, {
   scrollTo,
@@ -6,37 +6,14 @@ import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
+  runOnJS,
 } from "react-native-reanimated";
 import { ScrollDirection, listToObject } from "../components/sortableUtils";
-import { DropProviderRef } from "../context/DropContext";
-
-export interface UseSortableListOptions<TData> {
-  data: TData[];
-  itemHeight: number;
-  itemKeyExtractor?: (item: TData, index: number) => string;
-}
-
-export interface UseSortableListReturn<TData> {
-  positions: any;
-  scrollY: any;
-  autoScroll: any;
-  scrollViewRef: any;
-  dropProviderRef: React.RefObject<DropProviderRef>;
-  handleScroll: any;
-  handleScrollEnd: () => void;
-  contentHeight: number;
-  getItemProps: (
-    item: TData,
-    index: number
-  ) => {
-    id: string;
-    positions: any;
-    lowerBound: any;
-    autoScrollDirection: any;
-    itemsCount: number;
-    itemHeight: number;
-  };
-}
+import { DropProviderRef } from "../types/context";
+import {
+  UseSortableListOptions,
+  UseSortableListReturn,
+} from "../types/sortable";
 
 /**
  * A hook for managing sortable lists with drag-and-drop reordering capabilities.

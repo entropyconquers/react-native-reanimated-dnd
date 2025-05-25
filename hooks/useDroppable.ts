@@ -17,12 +17,8 @@ import Animated, {
   runOnUI,
   runOnJS,
 } from "react-native-reanimated";
-import {
-  SlotsContext,
-  SlotsContextValue,
-  DropAlignment,
-  DropOffset,
-} from "../context/DropContext";
+import { SlotsContext } from "../context/DropContext";
+import { SlotsContextValue, DropAlignment, DropOffset } from "../types/context";
 import { _getUniqueDroppableId } from "../components/Droppable";
 import { UseDroppableOptions, UseDroppableReturn } from "../types/droppable";
 

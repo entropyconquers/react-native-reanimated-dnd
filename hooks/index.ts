@@ -1,20 +1,23 @@
-// Export hooks
+// Re-export hooks
 export { useSortable } from "./useSortable";
 export { useSortableList } from "./useSortableList";
 export { useDraggable } from "./useDraggable";
 export { useDroppable } from "./useDroppable";
 
-// Export types from types directory
-export { UseSortableOptions, UseSortableReturn } from "../types/sortable";
-export {
+// Re-export types
+export type { UseSortableOptions, UseSortableReturn } from "../types/sortable";
+export type {
   UseSortableListOptions,
   UseSortableListReturn,
 } from "../types/sortable";
-export {
+export type {
   UseDraggableOptions,
   UseDraggableReturn,
   DraggableState,
   CollisionAlgorithm,
   AnimationFunction,
 } from "../types/draggable";
-export { UseDroppableOptions, UseDroppableReturn } from "../types/droppable";
+export type {
+  UseDroppableOptions,
+  UseDroppableReturn,
+} from "../types/droppable";

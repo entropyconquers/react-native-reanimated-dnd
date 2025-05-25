@@ -4,7 +4,7 @@ import Animated, {
   useAnimatedRef,
 } from "react-native-reanimated";
 import { GestureType } from "react-native-gesture-handler";
-import { LayoutChangeEvent } from "react-native";
+import { LayoutChangeEvent, StyleProp } from "react-native";
 
 /**
  * Enum representing the different states a draggable item can be in.
@@ -308,4 +308,40 @@ export interface UseDraggableReturn {
    * can initiate dragging. When false, the entire component is draggable.
    */
   hasHandle: boolean;
+}
+
+/**
+ * Context value for sharing gesture and state between Draggable and Handle components.
+ * @internal
+ */
+export interface DraggableContextValue {
+  /** The gesture object for drag interactions */
+  gesture: any;
+  /** Current state of the draggable item */
+  state: DraggableState;
+}
+
+/**
+ * Props for the Draggable component.
+ *
+ * @template TData - The type of data associated with the draggable item
+ */
+export interface DraggableProps<TData = unknown>
+  extends UseDraggableOptions<TData> {
+  /** Style to apply to the draggable container */
+  style?: StyleProp<ViewStyle>;
+  /** The content to render inside the draggable */
+  children: React.ReactNode;
+  /** Callback fired when the draggable state changes */
+  onStateChange?: (state: DraggableState) => void;
+}
+
+/**
+ * Props for the Handle component.
+ */
+export interface HandleProps {
+  /** The content to render inside the handle */
+  children: React.ReactNode;
+  /** Optional style to apply to the handle */
+  style?: StyleProp<ViewStyle>;
 }

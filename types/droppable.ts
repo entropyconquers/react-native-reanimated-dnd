@@ -1,6 +1,6 @@
 import { LayoutChangeEvent, StyleProp, ViewStyle } from "react-native";
 import Animated, { useAnimatedRef } from "react-native-reanimated";
-import { DropAlignment, DropOffset } from "../context/DropContext";
+import { DropAlignment, DropOffset } from "./context";
 
 /**
  * Configuration options for the useDroppable hook.
@@ -195,4 +195,17 @@ export interface UseDroppableReturn {
    * Animated ref for the droppable view. Used internally for measurements.
    */
   animatedViewRef: ReturnType<typeof useAnimatedRef<Animated.View>>;
+}
+
+/**
+ * Props for the Droppable component.
+ *
+ * @template TData - The type of data that can be dropped on this droppable
+ */
+export interface DroppableProps<TData = unknown>
+  extends UseDroppableOptions<TData> {
+  /** Style to apply to the droppable container */
+  style?: StyleProp<ViewStyle>;
+  /** The content to render inside the droppable */
+  children: React.ReactNode;
 }

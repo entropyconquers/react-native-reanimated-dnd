@@ -8,13 +8,15 @@ import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
+import { SortableItem } from "./SortableItem";
 import { DropProvider } from "../context/DropContext";
-import { SortableProps, SortableRenderItemProps } from "./sortableTypes";
+import { useSortableList } from "../hooks/useSortableList";
 import {
-  useSortableList,
+  SortableProps,
+  SortableRenderItemProps,
   UseSortableListOptions,
   UseSortableListReturn,
-} from "../hooks/useSortableList";
+} from "../types/sortable";
 
 // Create an animated version of the ScrollView
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);

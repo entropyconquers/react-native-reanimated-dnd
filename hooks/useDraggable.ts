@@ -23,13 +23,13 @@ import {
   PanGestureHandlerEventPayload,
   GestureType,
 } from "react-native-gesture-handler";
+import { SlotsContext } from "../context/DropContext";
 import {
-  SlotsContext,
   SlotsContextValue,
   DropAlignment,
   DropOffset,
   DropSlot,
-} from "../context/DropContext";
+} from "../types/context";
 import {
   DraggableState,
   AnimationFunction,

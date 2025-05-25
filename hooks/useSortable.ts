@@ -1,24 +1,26 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StyleProp, ViewStyle } from "react-native";
-import React from "react";
-import Animated, {
-  runOnJS,
-  runOnUI,
-  SharedValue,
-  useAnimatedGestureHandler,
-  useAnimatedReaction,
-  useAnimatedStyle,
-  useDerivedValue,
+import {
   useSharedValue,
+  useDerivedValue,
+  useAnimatedStyle,
   withSpring,
   withTiming,
+  runOnJS,
+  runOnUI,
+  useAnimatedReaction,
+  useAnimatedGestureHandler,
 } from "react-native-reanimated";
-import { PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
 import {
+  Gesture,
+  PanGestureHandlerGestureEvent,
+} from "react-native-gesture-handler";
+import {
+  ScrollDirection,
   setPosition,
   setAutoScroll,
-  ScrollDirection,
 } from "../components/sortableUtils";
+import { UseSortableOptions, UseSortableReturn } from "../types/sortable";
 
 /**
  * @see {@link UseSortableOptions} for configuration options
@@ -27,33 +29,6 @@ import {
  * @see {@link SortableItem} for component implementation
  * @see {@link Sortable} for high-level sortable list component
  */
-
-export interface UseSortableOptions<T> {
-  id: string;
-  positions: SharedValue<{ [id: string]: number }>;
-  lowerBound: SharedValue<number>;
-  autoScrollDirection: SharedValue<ScrollDirection>;
-  itemsCount: number;
-  itemHeight: number;
-  containerHeight?: number;
-  onMove?: (id: string, from: number, to: number) => void;
-  onDragStart?: (id: string, position: number) => void;
-  onDrop?: (id: string, position: number) => void;
-  onDragging?: (
-    id: string,
-    overItemId: string | null,
-    yPosition: number
-  ) => void;
-  children?: React.ReactNode;
-  handleComponent?: React.ComponentType<any>;
-}
-
-export interface UseSortableReturn {
-  animatedStyle: StyleProp<ViewStyle>;
-  panGestureHandler: any;
-  isMoving: boolean;
-  hasHandle: boolean;
-}
 
 /**
  * A hook for creating sortable list items with drag-and-drop reordering capabilities.
