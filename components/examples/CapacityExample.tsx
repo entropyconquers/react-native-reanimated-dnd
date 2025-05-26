@@ -12,9 +12,9 @@ import {
   DropProvider,
   DropProviderRef,
   DroppedItemsMap,
-} from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { CustomDraggable } from "@/components/CustomDraggable";
+} from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
 
@@ -148,7 +148,7 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
               <View style={[styles.draggableItemsArea, { minHeight: 200 }]}>
                 {/* Create 5 draggable items to test capacity */}
                 {Array.from({ length: 5 }).map((_, index) => (
-                  <CustomDraggable<DraggableItemData>
+                  <Draggable<DraggableItemData>
                     key={`capacity-demo-item-${index}`}
                     draggableId={`capacity-demo-item-${index}`}
                     data={{
@@ -156,7 +156,7 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
                       label: `Item ${index + 1}`,
                       backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
                     }}
-                    initialStyle={[
+                    style={[
                       styles.draggable,
                       {
                         backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
@@ -172,7 +172,7 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
                         index + 1
                       }`}</Text>
                     </View>
-                  </CustomDraggable>
+                  </Draggable>
                 ))}
               </View>
 

@@ -8,9 +8,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { CustomDraggable } from "@/components/CustomDraggable";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
 
@@ -63,7 +63,7 @@ export function BoundedDraggingExample({
                   <Text style={styles.dZoneSubText}>Inside bounds</Text>
                 </Droppable>
 
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="bounded-item"
                   data={{
                     id: "bounded-item",
@@ -71,7 +71,7 @@ export function BoundedDraggingExample({
                     backgroundColor: "#ffafcc",
                   }}
                   dragBoundsRef={boundsViewRef}
-                  initialStyle={[
+                  style={[
                     styles.cardCentered,
                     {
                       backgroundColor: "#ffafcc",
@@ -83,7 +83,7 @@ export function BoundedDraggingExample({
                     <Text style={styles.cardLabel}>Bounded</Text>
                     <Text style={styles.cardHint}>Can't escape!</Text>
                   </View>
-                </CustomDraggable>
+                </Draggable>
               </View>
 
               <View style={styles.infoContainer}>

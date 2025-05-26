@@ -7,15 +7,17 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
-  Modal,
+  Platform,
 } from "react-native";
 import Slider from "@react-native-community/slider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { CustomDraggable } from "@/components/CustomDraggable";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
+import { BottomSheet } from "@/components/BottomSheet";
+import { BottomSheetOption } from "@/components/BottomSheetOption";
 
 interface DraggableItemData {
   id: string;
@@ -104,7 +106,6 @@ export function AlignmentOffsetExample({
                     style={styles.slider}
                     minimumValue={-30}
                     maximumValue={30}
-                    value={offsetX}
                     onValueChange={setOffsetX}
                     step={1}
                     minimumTrackTintColor="#FF3B30"
@@ -124,7 +125,6 @@ export function AlignmentOffsetExample({
                     style={styles.slider}
                     minimumValue={-30}
                     maximumValue={30}
-                    value={offsetY}
                     onValueChange={setOffsetY}
                     step={1}
                     minimumTrackTintColor="#FF3B30"
@@ -159,14 +159,13 @@ export function AlignmentOffsetExample({
               </View>
 
               <View style={styles.draggableItemsArea}>
-                <CustomDraggable<DraggableItemData>
-                  key={`alignment-item-1-${selectedAlignment}-${offsetX}-${offsetY}`}
+                <Draggable<DraggableItemData>
                   data={{
                     id: "alignment-item-1",
                     label: "Test Item 1",
                     backgroundColor: "#ff6b6b",
                   }}
-                  initialStyle={[
+                  style={[
                     {
                       backgroundColor: "#ff6b6b",
                       borderRadius: 12,
@@ -179,7 +178,7 @@ export function AlignmentOffsetExample({
                       Try alignment and offset
                     </Text>
                   </View>
-                </CustomDraggable>
+                </Draggable>
               </View>
 
               <View style={styles.infoContainer}>
@@ -212,46 +211,20 @@ export function AlignmentOffsetExample({
           </ScrollView>
 
           {/* Alignment Dropdown Modal */}
-          <Modal
-            visible={showAlignmentDropdown}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setShowAlignmentDropdown(false)}
+          <BottomSheet
+            isVisible={showAlignmentDropdown}
+            onClose={() => setShowAlignmentDropdown(false)}
+            title="Select Alignment"
           >
-            <TouchableOpacity
-              style={styles.modalOverlay}
-              activeOpacity={1}
-              onPress={() => setShowAlignmentDropdown(false)}
-            >
-              <View style={styles.dropdownModal}>
-                <Text style={styles.modalTitle}>Select Alignment</Text>
-                {alignmentOptions.map((option) => (
-                  <TouchableOpacity
-                    key={option.value}
-                    style={[
-                      styles.modalOption,
-                      selectedAlignment === option.value &&
-                        styles.selectedModalOption,
-                    ]}
-                    onPress={() => {
-                      setSelectedAlignment(option.value);
-                      setShowAlignmentDropdown(false);
-                    }}
-                  >
-                    <Text
-                      style={[
-                        styles.modalOptionText,
-                        selectedAlignment === option.value &&
-                          styles.selectedModalOptionText,
-                      ]}
-                    >
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </TouchableOpacity>
-          </Modal>
+            <BottomSheetOption
+              options={alignmentOptions}
+              selectedOption={selectedAlignment}
+              onSelect={(option) => {
+                setSelectedAlignment(option.value);
+                setShowAlignmentDropdown(false);
+              }}
+            />
+          </BottomSheet>
         </DropProvider>
 
         <Footer />
@@ -406,43 +379,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     flex: 1,
     lineHeight: 20,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dropdownModal: {
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    marginBottom: 20,
-  },
-  modalOption: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#2C2C2E",
-    borderRadius: 8,
-    backgroundColor: "#1C1C1E",
-    marginBottom: 8,
-  },
-  selectedModalOption: {
-    borderColor: "#FF3B30",
-    backgroundColor: "rgba(255, 59, 48, 0.1)",
-  },
-  modalOptionText: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    fontWeight: "500",
-  },
-  selectedModalOptionText: {
-    color: "#FF3B30",
   },
   sliderContainer: {
     flexDirection: "row",

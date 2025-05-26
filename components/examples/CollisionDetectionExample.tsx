@@ -8,9 +8,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { CustomDraggable } from "@/components/CustomDraggable";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
 
@@ -96,7 +96,7 @@ export function CollisionDetectionExample({
 
               <View style={[styles.draggableItemsArea, { minHeight: 240 }]}>
                 {/* Draggable with 'center' collision */}
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="D-Collision-Center"
                   data={{
                     id: "D-Col-Center",
@@ -105,7 +105,7 @@ export function CollisionDetectionExample({
                     collisionText: "'center' collision",
                   }}
                   collisionAlgorithm="center"
-                  initialStyle={[
+                  style={[
                     styles.draggable,
                     {
                       top: 0,
@@ -121,10 +121,10 @@ export function CollisionDetectionExample({
                     <Text style={styles.cardLabel}>Center</Text>
                     <Text style={styles.cardHint}>(Wide)</Text>
                   </View>
-                </CustomDraggable>
+                </Draggable>
 
                 {/* Draggable with default 'intersect' collision */}
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="D-Collision-Intersect"
                   data={{
                     id: "D-Col-Intersect",
@@ -132,7 +132,7 @@ export function CollisionDetectionExample({
                     backgroundColor: "#8ac926",
                     collisionText: "'intersect' collision (default)",
                   }}
-                  initialStyle={[
+                  style={[
                     styles.draggable,
                     {
                       top: 80,
@@ -148,10 +148,10 @@ export function CollisionDetectionExample({
                     <Text style={styles.cardLabel}>Intersect</Text>
                     <Text style={styles.cardHint}>(Default, Wide)</Text>
                   </View>
-                </CustomDraggable>
+                </Draggable>
 
                 {/* Draggable with 'contain' collision */}
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="D-Collision-Contain"
                   data={{
                     id: "D-Col-Contain",
@@ -160,7 +160,7 @@ export function CollisionDetectionExample({
                     collisionText: "'contain' collision",
                   }}
                   collisionAlgorithm="contain"
-                  initialStyle={[
+                  style={[
                     styles.draggable,
                     {
                       top: 160,
@@ -175,7 +175,7 @@ export function CollisionDetectionExample({
                     <Text style={styles.cardLabel}>Contain</Text>
                     <Text style={styles.cardHint}>(Smaller)</Text>
                   </View>
-                </CustomDraggable>
+                </Draggable>
               </View>
 
               <View style={styles.algorithmInfo}>

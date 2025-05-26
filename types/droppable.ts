@@ -1,6 +1,6 @@
 import { LayoutChangeEvent, StyleProp, ViewStyle } from "react-native";
 import Animated, { useAnimatedRef } from "react-native-reanimated";
-import { DropAlignment, DropOffset } from "@/context/DropContext";
+import { DropAlignment, DropOffset } from "react-native-reanimated-dnd";
 
 /**
  * Configuration options for the useDroppable hook.

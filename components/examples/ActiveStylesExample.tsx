@@ -10,9 +10,12 @@ import {
   ViewStyle,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { CustomDraggable } from "@/components/CustomDraggable";
+import {
+  Draggable,
+  DropProvider,
+  DropProviderRef,
+} from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
 
@@ -38,7 +41,6 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 10,
-    elevation: 8,
   };
 
   const glowActiveStyle: StyleProp<ViewStyle> = {
@@ -48,7 +50,6 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.7,
     shadowRadius: 12,
-    elevation: 10,
   };
 
   return (
@@ -106,15 +107,14 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
               </View>
 
               <View style={styles.draggableItemsArea}>
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="active-styles-item"
                   data={{
                     id: "active-styles-item",
                     label: "Drop me on the custom zones",
                     backgroundColor: "#c1a1d3",
                   }}
-                  initialStyle={[
-                    styles.draggable,
+                  style={[
                     {
                       top: 0,
                       left: "25%",
@@ -127,7 +127,7 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
                     <Text style={styles.cardLabel}>Try Me</Text>
                     <Text style={styles.cardHint}>Drag over zones</Text>
                   </View>
-                </CustomDraggable>
+                </Draggable>
               </View>
 
               <View style={styles.infoContainer}>
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 8,
   },
   cardLabel: {
     fontSize: 15,

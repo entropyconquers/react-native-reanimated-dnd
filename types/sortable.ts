@@ -1,7 +1,7 @@
 import { StyleProp, ViewStyle } from "react-native";
 import { SharedValue } from "react-native-reanimated";
-import { ScrollDirection } from "@/components/sortableUtils";
-import { DropProviderRef } from "@/context/DropContext";
+import { ScrollDirection } from "react-native-reanimated-dnd";
+import { DropProviderRef } from "react-native-reanimated-dnd";
 
 /**
  * Configuration options for the useSortable hook.

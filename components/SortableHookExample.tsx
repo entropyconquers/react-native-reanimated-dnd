@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, Dimensions } from "react-native";
 import Animated from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider } from "@/context/DropContext";
-import { useSortable, useSortableList } from "@/hooks";
-import { SortableItem } from "./SortableItem";
+import { DropProvider } from "react-native-reanimated-dnd";
+import { useSortable, useSortableList } from "react-native-reanimated-dnd";
+import { SortableItem } from "react-native-reanimated-dnd";
 
 interface Item {
   id: string;

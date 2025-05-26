@@ -163,7 +163,7 @@ export function ExamplesNavigationPage({
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>React reanimated DND</Text>
+        <Text style={styles.header}>React native reanimated DND</Text>
         <View style={styles.redAccent} />
       </View>
 
@@ -212,15 +212,15 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   header: {
-    fontSize: 28,
+    fontSize: 20,
     fontFamily: "MajorMonoDisplay_400Regular",
     textAlign: "left",
     color: "#FFFFFF",
     marginBottom: 4,
-    lineHeight: 32,
+    lineHeight: 30,
   },
   redAccent: {
-    width: 60,
+    width: 46,
     height: 3,
     backgroundColor: "#FF3B30",
     borderRadius: 1.5,

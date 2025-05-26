@@ -8,9 +8,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { CustomDraggable } from "@/components/CustomDraggable";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
 
@@ -61,14 +61,14 @@ export function BasicDragDropExample({ onBack }: BasicDragDropExampleProps) {
               </View>
 
               <View style={styles.draggableItemsArea}>
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="basic-item-1"
                   data={{
                     id: "basic-item-1",
                     label: "Draggable Item 1",
                     backgroundColor: "#a2d2ff",
                   }}
-                  initialStyle={[
+                  style={[
                     styles.draggable,
                     {
                       top: 0,
@@ -82,16 +82,16 @@ export function BasicDragDropExample({ onBack }: BasicDragDropExampleProps) {
                     <Text style={styles.cardLabel}>Item 1</Text>
                     <Text style={styles.cardHint}>Drag me!</Text>
                   </View>
-                </CustomDraggable>
+                </Draggable>
 
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="basic-item-2"
                   data={{
                     id: "basic-item-2",
                     label: "Draggable Item 2",
                     backgroundColor: "#bde0fe",
                   }}
-                  initialStyle={[
+                  style={[
                     styles.draggable,
                     {
                       top: 0,
@@ -105,7 +105,7 @@ export function BasicDragDropExample({ onBack }: BasicDragDropExampleProps) {
                     <Text style={styles.cardLabel}>Item 2</Text>
                     <Text style={styles.cardHint}>Drag me too!</Text>
                   </View>
-                </CustomDraggable>
+                </Draggable>
               </View>
 
               <View style={styles.infoContainer}>

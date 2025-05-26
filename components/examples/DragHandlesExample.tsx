@@ -8,9 +8,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { CustomDraggable } from "@/components/CustomDraggable";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
 
@@ -71,7 +71,7 @@ export function DragHandlesExample({ onBack }: DragHandlesExampleProps) {
                 ]}
               >
                 {/* Example 1: Entire item is a drag handle */}
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="handle-demo-item-1"
                   draggableId="handle-demo-item-1"
                   data={{
@@ -79,7 +79,7 @@ export function DragHandlesExample({ onBack }: DragHandlesExampleProps) {
                     label: "Full Handle Item",
                     backgroundColor: "#2a9d8f",
                   }}
-                  initialStyle={[
+                  style={[
                     styles.draggable,
                     {
                       top: 0,
@@ -89,16 +89,16 @@ export function DragHandlesExample({ onBack }: DragHandlesExampleProps) {
                     },
                   ]}
                 >
-                  <CustomDraggable.Handle>
+                  <Draggable.Handle>
                     <View style={styles.cardContent}>
                       <Text style={styles.cardLabel}>Fully Draggable</Text>
                       <Text style={styles.cardHint}>Drag from anywhere</Text>
                     </View>
-                  </CustomDraggable.Handle>
-                </CustomDraggable>
+                  </Draggable.Handle>
+                </Draggable>
 
                 {/* Example 2: Drag handle as part of the UI */}
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="handle-demo-item-2"
                   draggableId="handle-demo-item-2"
                   data={{
@@ -106,7 +106,7 @@ export function DragHandlesExample({ onBack }: DragHandlesExampleProps) {
                     label: "Handle-Only Item",
                     backgroundColor: "#e9c46a",
                   }}
-                  initialStyle={[
+                  style={[
                     styles.draggable,
                     {
                       top: 0,
@@ -125,16 +125,16 @@ export function DragHandlesExample({ onBack }: DragHandlesExampleProps) {
                     <Text style={styles.cardHint}>Drag from handle below</Text>
 
                     {/* The handle is only part of the draggable */}
-                    <CustomDraggable.Handle>
+                    <Draggable.Handle>
                       <View style={styles.dragHandle}>
                         <Text style={styles.handleText}>⬌ DRAG HERE ⬌</Text>
                       </View>
-                    </CustomDraggable.Handle>
+                    </Draggable.Handle>
                   </View>
-                </CustomDraggable>
+                </Draggable>
 
                 {/* Example 3: Real-world Card with Header as Handle */}
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="handle-demo-item-3"
                   draggableId="handle-demo-item-3"
                   data={{
@@ -142,7 +142,7 @@ export function DragHandlesExample({ onBack }: DragHandlesExampleProps) {
                     label: "Card with Header Handle",
                     backgroundColor: "#606c38",
                   }}
-                  initialStyle={[
+                  style={[
                     styles.draggable,
                     {
                       top: 140,
@@ -162,12 +162,12 @@ export function DragHandlesExample({ onBack }: DragHandlesExampleProps) {
                 >
                   {/* Card with header as drag handle */}
                   <View style={styles.cardWithHeader}>
-                    <CustomDraggable.Handle>
+                    <Draggable.Handle>
                       <View style={styles.cardHeader}>
                         <Text style={styles.cardHeaderText}>Drag Card</Text>
                         <Text style={styles.cardHeaderIcon}>⬌</Text>
                       </View>
-                    </CustomDraggable.Handle>
+                    </Draggable.Handle>
 
                     <View style={styles.cardBody}>
                       <Text style={styles.cardBodyTitle}>Card Content</Text>
@@ -177,7 +177,7 @@ export function DragHandlesExample({ onBack }: DragHandlesExampleProps) {
                       </Text>
                     </View>
                   </View>
-                </CustomDraggable>
+                </Draggable>
               </View>
 
               <View style={styles.infoContainer}>

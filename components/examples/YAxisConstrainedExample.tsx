@@ -8,9 +8,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { CustomDraggable } from "@/components/CustomDraggable";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
 
@@ -78,7 +78,7 @@ export function YAxisConstrainedExample({
                   <Text style={styles.dropZoneText}>Bottom</Text>
                 </Droppable>
 
-                <CustomDraggable<DraggableItemData>
+                <Draggable<DraggableItemData>
                   key="y-axis-item"
                   data={{
                     id: "y-axis-item",
@@ -86,7 +86,7 @@ export function YAxisConstrainedExample({
                     backgroundColor: "#f7d9c4",
                   }}
                   dragAxis="y"
-                  initialStyle={[
+                  style={[
                     styles.cardCentered,
                     {
                       backgroundColor: "#f7d9c4",
@@ -99,7 +99,7 @@ export function YAxisConstrainedExample({
                     <Text style={styles.cardLabel}>Y-Axis Only</Text>
                     <Text style={styles.cardHint}>↑↓</Text>
                   </View>
-                </CustomDraggable>
+                </Draggable>
               </View>
 
               <View style={styles.infoContainer}>

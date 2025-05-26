@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,10 +7,13 @@ import {
   Image,
   SafeAreaView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import { Sortable } from "./Sortable";
-import { SortableItem } from "./SortableItem";
-import { SortableRenderItemProps } from "./sortableTypes";
+import {
+  Sortable,
+  SortableItem,
+  SortableRenderItemProps,
+} from "react-native-reanimated-dnd";
 import { Footer } from "./Footer";
 
 interface Item {
@@ -250,6 +253,16 @@ interface SortableExampleProps {
 export function SortableExample({ onBack }: SortableExampleProps = {}) {
   const [isDragHandleMode, setIsDragHandleMode] = useState(true);
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  // this is just to defer loading a large list during navigation
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsDragHandleMode(false);
+    }, 500);
+  }, []);
+
   // Render each sortable item
   const renderItem = useCallback(
     (props: SortableRenderItemProps<Item>) => {
@@ -342,34 +355,51 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
 
           <View style={styles.titleContainer}>
             <Text style={styles.header}>Playing Now</Text>
+            <Text style={styles.tipText}>
+              {isDragHandleMode
+                ? "Drag the handle to reorder"
+                : "Hold and drag items to reorder"}
+            </Text>
           </View>
 
           <View style={styles.toggleButtonContainer}>
-            <TouchableOpacity
-              style={styles.toggleButton}
-              onPress={() => setIsDragHandleMode(!isDragHandleMode)}
-            >
-              <Text style={styles.toggleText}>
-                {isDragHandleMode ? "Handle" : "Full"}
-              </Text>
-              <View
-                style={[
-                  styles.toggleIndicator,
-                  { backgroundColor: isDragHandleMode ? "#FF3B30" : "#8E8E93" },
-                ]}
-              />
-            </TouchableOpacity>
+            {!isLoading && (
+              <TouchableOpacity
+                style={styles.toggleButton}
+                onPress={() => setIsDragHandleMode(!isDragHandleMode)}
+              >
+                <Text style={styles.toggleText}>
+                  {isDragHandleMode ? "Handle" : "Full"}
+                </Text>
+                <View
+                  style={[
+                    styles.toggleIndicator,
+                    {
+                      backgroundColor: isDragHandleMode ? "#FF3B30" : "#8E8E93",
+                    },
+                  ]}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
-      <View style={styles.listContainer}>
-        <Sortable
-          data={MOCK_DATA}
-          renderItem={renderItem}
-          itemHeight={ITEM_HEIGHT}
-          style={styles.list}
-        />
-      </View>
+      {isLoading ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" color="#FF3B30" />
+        </View>
+      ) : (
+        <View style={styles.listContainer}>
+          <Sortable
+            data={MOCK_DATA}
+            renderItem={renderItem}
+            itemHeight={ITEM_HEIGHT}
+            style={styles.list}
+          />
+        </View>
+      )}
       <Footer />
     </SafeAreaView>
   );
@@ -378,33 +408,36 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 10,
     backgroundColor: "#000000",
   },
   headerContainer: {
     backgroundColor: "#000000",
     borderBottomWidth: 0.5,
     borderBottomColor: "#2C2C2E",
-    paddingHorizontal: 16,
-    paddingTop: 6,
-    paddingBottom: 6,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 16,
   },
   headerContent: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
+    minHeight: 50,
   },
   backButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
-    paddingRight: 16,
-    flex: 1,
+    paddingVertical: 4,
+    paddingRight: 12,
+    width: 80,
   },
   backIcon: {
-    fontSize: 28,
+    fontSize: 24,
     color: "#FF3B30",
     fontWeight: "300",
-    marginRight: 4,
+    marginRight: 6,
+    lineHeight: 28,
   },
   backText: {
     fontSize: 17,
@@ -413,17 +446,27 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     alignItems: "center",
-    flex: 2,
+    flex: 1,
+    paddingHorizontal: 16,
   },
   header: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
     textAlign: "center",
     color: "#FFFFFF",
+    marginBottom: 6,
+  },
+  tipText: {
+    fontSize: 13,
+    color: "#8E8E93",
+    fontWeight: "400",
+    textAlign: "center",
+    lineHeight: 16,
   },
   toggleButtonContainer: {
-    flex: 1,
+    width: 80,
     alignItems: "flex-end",
+    justifyContent: "center",
   },
   listContainer: {
     flex: 1,
@@ -443,88 +486,94 @@ const styles = StyleSheet.create({
   itemContent: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     backgroundColor: "#000000",
-    borderRadius: 8,
+    height: "100%",
   },
   coverImage: {
-    width: 52,
-    height: 52,
-    borderRadius: 8,
+    width: 48,
+    height: 48,
+    borderRadius: 6,
     marginRight: 16,
     shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
   },
   textContainer: {
     flex: 1,
     justifyContent: "center",
+    paddingRight: 12,
   },
   songName: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
-    marginBottom: 3,
+    marginBottom: 2,
+    lineHeight: 20,
   },
   artistName: {
-    fontSize: 15,
+    fontSize: 14,
     color: "#8E8E93",
     fontWeight: "400",
+    lineHeight: 18,
   },
   durationText: {
-    fontSize: 15,
-    color: "#FF3B30",
+    fontSize: 14,
+    color: "#8E8E93",
     fontWeight: "500",
     fontVariant: ["tabular-nums"],
-    marginRight: 8,
+    marginRight: 12,
+    minWidth: 40,
+    textAlign: "right",
   },
   dragHandle: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: "#1C1C1E",
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 8,
   },
   dragIconContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    gap: 3,
   },
   dragColumn: {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: 3,
+    gap: 2,
   },
   dragDot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: "#8E8E93",
+    width: 2.5,
+    height: 2.5,
+    borderRadius: 1.25,
+    backgroundColor: "#6D6D70",
   },
   toggleButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 6,
     borderWidth: 1,
     borderColor: "#3A3A3C",
-    borderRadius: 6,
+    borderRadius: 8,
     backgroundColor: "#1C1C1E",
+    minWidth: 70,
+    justifyContent: "center",
   },
   toggleText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "600",
     color: "#FFFFFF",
-    marginRight: 8,
+    marginRight: 6,
   },
   toggleIndicator: {
-    width: 16,
-    height: 3,
-    borderRadius: 1.5,
+    width: 12,
+    height: 2.5,
+    borderRadius: 1.25,
   },
 });

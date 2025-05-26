@@ -7,17 +7,18 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
-  Modal,
 } from "react-native";
 import { withTiming, withSpring, Easing } from "react-native-reanimated";
+import { useSharedValue } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { CustomDraggable } from "@/components/CustomDraggable";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
 import { UseDraggableOptions } from "@/types/draggable";
 import { ExampleHeader } from "@/components/ExampleHeader";
-import { Draggable } from "@/components/Draggable";
+import { Draggable } from "react-native-reanimated-dnd";
 import { Footer } from "@/components/Footer";
+import { BottomSheet } from "@/components/BottomSheet";
+import { BottomSheetOption } from "@/components/BottomSheetOption";
 
 interface DraggableItemData {
   id: string;
@@ -275,130 +276,52 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
           </ScrollView>
 
           {/* Animation Type Dropdown Modal */}
-          <Modal
-            visible={showAnimationDropdown}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setShowAnimationDropdown(false)}
+          <BottomSheet
+            isVisible={showAnimationDropdown}
+            onClose={() => setShowAnimationDropdown(false)}
+            title="Select Animation Type"
           >
-            <TouchableOpacity
-              style={styles.modalOverlay}
-              activeOpacity={1}
-              onPress={() => setShowAnimationDropdown(false)}
-            >
-              <View style={styles.dropdownModal}>
-                <Text style={styles.modalTitle}>Select Animation Type</Text>
-                {animationTypes.map((option) => (
-                  <TouchableOpacity
-                    key={option.value}
-                    style={[
-                      styles.modalOption,
-                      selectedAnimation === option.value &&
-                        styles.selectedModalOption,
-                    ]}
-                    onPress={() => {
-                      setSelectedAnimation(option.value);
-                      setShowAnimationDropdown(false);
-                    }}
-                  >
-                    <Text
-                      style={[
-                        styles.modalOptionText,
-                        selectedAnimation === option.value &&
-                          styles.selectedModalOptionText,
-                      ]}
-                    >
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </TouchableOpacity>
-          </Modal>
+            <BottomSheetOption
+              options={animationTypes}
+              selectedOption={selectedAnimation}
+              onSelect={(option) => {
+                setSelectedAnimation(option.value);
+                setShowAnimationDropdown(false);
+              }}
+            />
+          </BottomSheet>
 
           {/* Duration Dropdown Modal */}
-          <Modal
-            visible={showDurationDropdown}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setShowDurationDropdown(false)}
+          <BottomSheet
+            isVisible={showDurationDropdown}
+            onClose={() => setShowDurationDropdown(false)}
+            title="Select Duration"
           >
-            <TouchableOpacity
-              style={styles.modalOverlay}
-              activeOpacity={1}
-              onPress={() => setShowDurationDropdown(false)}
-            >
-              <View style={styles.dropdownModal}>
-                <Text style={styles.modalTitle}>Select Duration</Text>
-                {durationOptions.map((option) => (
-                  <TouchableOpacity
-                    key={option.value}
-                    style={[
-                      styles.modalOption,
-                      selectedDuration === option.value &&
-                        styles.selectedModalOption,
-                    ]}
-                    onPress={() => {
-                      setSelectedDuration(option.value);
-                      setShowDurationDropdown(false);
-                    }}
-                  >
-                    <Text
-                      style={[
-                        styles.modalOptionText,
-                        selectedDuration === option.value &&
-                          styles.selectedModalOptionText,
-                      ]}
-                    >
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </TouchableOpacity>
-          </Modal>
+            <BottomSheetOption
+              options={durationOptions}
+              selectedOption={selectedDuration}
+              onSelect={(option) => {
+                setSelectedDuration(option.value);
+                setShowDurationDropdown(false);
+              }}
+            />
+          </BottomSheet>
 
           {/* Easing Dropdown Modal */}
-          <Modal
-            visible={showEasingDropdown}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setShowEasingDropdown(false)}
+          <BottomSheet
+            isVisible={showEasingDropdown}
+            onClose={() => setShowEasingDropdown(false)}
+            title="Select Easing Function"
           >
-            <TouchableOpacity
-              style={styles.modalOverlay}
-              activeOpacity={1}
-              onPress={() => setShowEasingDropdown(false)}
-            >
-              <View style={styles.dropdownModal}>
-                <Text style={styles.modalTitle}>Select Easing Function</Text>
-                {easingOptions.map((option, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={[
-                      styles.modalOption,
-                      selectedEasingKey === option.key &&
-                        styles.selectedModalOption,
-                    ]}
-                    onPress={() => {
-                      setSelectedEasingKey(option.key);
-                      setShowEasingDropdown(false);
-                    }}
-                  >
-                    <Text
-                      style={[
-                        styles.modalOptionText,
-                        selectedEasingKey === option.key &&
-                          styles.selectedModalOptionText,
-                      ]}
-                    >
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </TouchableOpacity>
-          </Modal>
+            <BottomSheetOption
+              options={easingOptions}
+              selectedOption={selectedEasingKey}
+              onSelect={(option) => {
+                setSelectedEasingKey(option.key || "ease-out");
+                setShowEasingDropdown(false);
+              }}
+            />
+          </BottomSheet>
         </DropProvider>
       </SafeAreaView>
       <Footer />
@@ -553,43 +476,5 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     flex: 1,
     lineHeight: 20,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dropdownModal: {
-    backgroundColor: "#1C1C1E",
-    padding: 20,
-    borderRadius: 12,
-    width: "80%",
-    maxHeight: "80%",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    marginBottom: 20,
-  },
-  modalOption: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#2C2C2E",
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  selectedModalOption: {
-    borderColor: "#FF3B30",
-    backgroundColor: "rgba(255, 59, 48, 0.1)",
-  },
-  modalOptionText: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    fontWeight: "500",
-  },
-  selectedModalOptionText: {
-    color: "#FF3B30",
   },
 });

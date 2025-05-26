@@ -12,11 +12,10 @@ import {
   DropProvider,
   DropProviderRef,
   DroppedItemsMap,
-} from "@/context/DropContext";
-import { Droppable } from "@/components/Droppable";
-import { Draggable } from "@/components/Draggable";
+} from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
-import { CustomDraggable } from "@/components/CustomDraggable";
+import { Draggable } from "react-native-reanimated-dnd";
 import { Footer } from "@/components/Footer";
 
 interface DraggableItemData {
