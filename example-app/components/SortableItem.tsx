@@ -3,11 +3,14 @@ import { StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { useSortable } from "../hooks/useSortable";
+import { useHorizontalSortable } from "../hooks/useHorizontalSortable";
 import {
   SortableItemProps,
   SortableHandleProps,
   SortableContextValue,
   UseSortableOptions,
+  UseHorizontalSortableOptions,
+  SortableDirection,
 } from "../types/sortable";
 
 // Create a context to share gesture between SortableItem and SortableHandle
@@ -75,11 +78,14 @@ const SortableHandle = ({ children, style }: SortableHandleProps) => {
  * handling gesture recognition, position animations, and reordering logic.
  * It can be used with or without drag handles for different interaction patterns.
  *
+ * Supports both vertical (default) and horizontal directions automatically based
+ * on the direction prop passed from the parent Sortable component.
+ *
  * @template T - The type of data associated with this sortable item
  * @param props - Configuration props for the sortable item
  *
  * @example
- * Basic sortable item (entire item is draggable):
+ * Basic vertical sortable item (entire item is draggable):
  * ```typescript
  * import { SortableItem } from './components/SortableItem';
  *
@@ -89,6 +95,8 @@ const SortableHandle = ({ children, style }: SortableHandleProps) => {
  *       id={task.id}
  *       data={task}
  *       positions={positions}
+ *       direction="vertical"
+ *       itemHeight={60}
  *       {...sortableProps}
  *       onMove={(id, from, to) => {
  *         console.log(`Task ${id} moved from ${from} to ${to}`);
@@ -105,130 +113,44 @@ const SortableHandle = ({ children, style }: SortableHandleProps) => {
  * ```
  *
  * @example
- * Sortable item with drag handle:
+ * Horizontal sortable item:
  * ```typescript
- * function TaskItemWithHandle({ task, positions, ...sortableProps }) {
+ * function TagItem({ tag, positions, ...sortableProps }) {
  *   return (
  *     <SortableItem
- *       id={task.id}
- *       data={task}
+ *       id={tag.id}
+ *       data={tag}
  *       positions={positions}
+ *       direction="horizontal"
+ *       itemWidth={120}
+ *       gap={12}
+ *       paddingHorizontal={16}
  *       {...sortableProps}
  *     >
- *       <View style={styles.taskContainer}>
- *         <View style={styles.taskContent}>
- *           <Text style={styles.taskTitle}>{task.title}</Text>
- *           <Text style={styles.taskDescription}>{task.description}</Text>
- *         </View>
- *
- *         {/* Only this handle can initiate dragging *\/}
- *         <SortableItem.Handle style={styles.dragHandle}>
- *           <View style={styles.handleIcon}>
- *             <View style={styles.handleLine} />
- *             <View style={styles.handleLine} />
- *             <View style={styles.handleLine} />
- *           </View>
- *         </SortableItem.Handle>
+ *       <View style={[styles.tagContainer, { backgroundColor: tag.color }]}>
+ *         <Text style={styles.tagText}>{tag.label}</Text>
  *       </View>
  *     </SortableItem>
  *   );
  * }
  * ```
- *
- * @example
- * Sortable item with callbacks and state tracking:
- * ```typescript
- * function AdvancedTaskItem({ task, positions, ...sortableProps }) {
- *   const [isDragging, setIsDragging] = useState(false);
- *
- *   return (
- *     <SortableItem
- *       id={task.id}
- *       data={task}
- *       positions={positions}
- *       {...sortableProps}
- *       onDragStart={(id, position) => {
- *         setIsDragging(true);
- *         hapticFeedback();
- *         analytics.track('drag_start', { taskId: id, position });
- *       }}
- *       onDrop={(id, position) => {
- *         setIsDragging(false);
- *         analytics.track('drag_end', { taskId: id, position });
- *       }}
- *       onDragging={(id, overItemId, yPosition) => {
- *         if (overItemId) {
- *           // Show visual feedback for item being hovered over
- *           highlightItem(overItemId);
- *         }
- *       }}
- *       style={[
- *         styles.taskItem,
- *         isDragging && styles.draggingItem
- *       ]}
- *     >
- *       <View style={styles.taskContent}>
- *         <Text style={styles.taskTitle}>{task.title}</Text>
- *         <Text style={styles.taskPriority}>Priority: {task.priority}</Text>
- *         {isDragging && (
- *           <Text style={styles.dragIndicator}>Dragging...</Text>
- *         )}
- *       </View>
- *     </SortableItem>
- *   );
- * }
- * ```
- *
- * @example
- * Sortable item with custom animations:
- * ```typescript
- * function AnimatedTaskItem({ task, positions, ...sortableProps }) {
- *   return (
- *     <SortableItem
- *       id={task.id}
- *       data={task}
- *       positions={positions}
- *       {...sortableProps}
- *       animatedStyle={{
- *         // Custom animated styles can be applied here
- *         shadowOpacity: 0.3,
- *         shadowRadius: 10,
- *         shadowColor: '#000',
- *         shadowOffset: { width: 0, height: 5 }
- *       }}
- *     >
- *       <Animated.View style={[
- *         styles.taskContainer,
- *         {
- *           backgroundColor: task.priority === 'high' ? '#ffebee' : '#f5f5f5'
- *         }
- *       ]}>
- *         <Text style={styles.taskTitle}>{task.title}</Text>
- *         <View style={styles.taskMeta}>
- *           <Text style={styles.taskDue}>{task.dueDate}</Text>
- *           <Text style={styles.taskAssignee}>{task.assignee}</Text>
- *         </View>
- *       </Animated.View>
- *     </SortableItem>
- *   );
- * }
- * ```
- *
- * @see {@link SortableItem.Handle} for creating drag handles
- * @see {@link useSortable} for the underlying hook
- * @see {@link Sortable} for the parent sortable list component
- * @see {@link UseSortableOptions} for configuration options
- * @see {@link UseSortableReturn} for hook return details
  */
 export function SortableItem<T>({
   id,
   data,
   positions,
+  direction = SortableDirection.Vertical,
   lowerBound,
+  leftBound,
   autoScrollDirection,
+  autoScrollHorizontalDirection,
   itemsCount,
   itemHeight,
+  itemWidth,
+  gap = 0,
+  paddingHorizontal = 0,
   containerHeight,
+  containerWidth,
   children,
   style,
   animatedStyle: customAnimatedStyle,
@@ -236,15 +158,98 @@ export function SortableItem<T>({
   onDragStart,
   onDrop,
   onDragging,
+  onDraggingHorizontal,
 }: SortableItemProps<T>) {
-  // Use our custom hook for all the sortable logic
-  const sortableOptions: UseSortableOptions<T> = {
+  // Validate required props based on direction
+  if (
+    direction === SortableDirection.Vertical &&
+    (!itemHeight || !lowerBound || !autoScrollDirection)
+  ) {
+    throw new Error(
+      "itemHeight, lowerBound, and autoScrollDirection are required for vertical direction"
+    );
+  }
+  if (
+    direction === SortableDirection.Horizontal &&
+    (!itemWidth || !leftBound || !autoScrollHorizontalDirection)
+  ) {
+    throw new Error(
+      "itemWidth, leftBound, and autoScrollHorizontalDirection are required for horizontal direction"
+    );
+  }
+
+  if (direction === SortableDirection.Horizontal) {
+    // Use horizontal sortable implementation
+    const horizontalOptions: UseHorizontalSortableOptions<T> = {
+      id,
+      positions,
+      leftBound: leftBound!,
+      autoScrollDirection: autoScrollHorizontalDirection!,
+      itemsCount,
+      itemWidth: itemWidth!,
+      gap,
+      paddingHorizontal,
+      containerWidth,
+      onMove,
+      onDragStart,
+      onDrop,
+      onDragging: onDraggingHorizontal,
+      children,
+      handleComponent: SortableHandle,
+    };
+
+    const {
+      animatedStyle: horizontalAnimatedStyle,
+      panGestureHandler: horizontalPanGestureHandler,
+      isMoving: horizontalIsMoving,
+      hasHandle: horizontalHasHandle,
+    } = useHorizontalSortable<T>(horizontalOptions);
+
+    // Combine the default animated style with any custom styles
+    const combinedAnimatedStyle = [
+      horizontalAnimatedStyle,
+      customAnimatedStyle,
+    ];
+
+    // Create the context value
+    const contextValue: SortableContextValue = {
+      panGestureHandler: horizontalPanGestureHandler,
+    };
+
+    // Always provide the context to avoid issues when toggling handle modes
+    const content = (
+      <Animated.View style={combinedAnimatedStyle}>
+        <SortableContext.Provider value={contextValue}>
+          <Animated.View style={style}>{children}</Animated.View>
+        </SortableContext.Provider>
+      </Animated.View>
+    );
+
+    // If a handle is found, let the handle control the dragging
+    // Otherwise, the entire component is draggable with PanGestureHandler
+    if (horizontalHasHandle) {
+      return content;
+    } else {
+      return (
+        <PanGestureHandler
+          onGestureEvent={horizontalPanGestureHandler}
+          activateAfterLongPress={200}
+          shouldCancelWhenOutside={false}
+        >
+          {content}
+        </PanGestureHandler>
+      );
+    }
+  }
+
+  // Use vertical sortable implementation (default)
+  const verticalOptions: UseSortableOptions<T> = {
     id,
     positions,
-    lowerBound,
-    autoScrollDirection,
+    lowerBound: lowerBound!,
+    autoScrollDirection: autoScrollDirection!,
     itemsCount,
-    itemHeight,
+    itemHeight: itemHeight!,
     containerHeight,
     onMove,
     onDragStart,
@@ -254,15 +259,19 @@ export function SortableItem<T>({
     handleComponent: SortableHandle,
   };
 
-  const { animatedStyle, panGestureHandler, isMoving, hasHandle } =
-    useSortable<T>(sortableOptions);
+  const {
+    animatedStyle: verticalAnimatedStyle,
+    panGestureHandler: verticalPanGestureHandler,
+    isMoving: verticalIsMoving,
+    hasHandle: verticalHasHandle,
+  } = useSortable<T>(verticalOptions);
 
   // Combine the default animated style with any custom styles
-  const combinedAnimatedStyle = [animatedStyle, customAnimatedStyle];
+  const combinedAnimatedStyle = [verticalAnimatedStyle, customAnimatedStyle];
 
   // Create the context value
   const contextValue: SortableContextValue = {
-    panGestureHandler,
+    panGestureHandler: verticalPanGestureHandler,
   };
 
   // Always provide the context to avoid issues when toggling handle modes
@@ -276,12 +285,12 @@ export function SortableItem<T>({
 
   // If a handle is found, let the handle control the dragging
   // Otherwise, the entire component is draggable with PanGestureHandler
-  if (hasHandle) {
+  if (verticalHasHandle) {
     return content;
   } else {
     return (
       <PanGestureHandler
-        onGestureEvent={panGestureHandler}
+        onGestureEvent={verticalPanGestureHandler}
         activateAfterLongPress={200}
         shouldCancelWhenOutside={false}
       >

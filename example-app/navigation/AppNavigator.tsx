@@ -22,6 +22,7 @@ import {
   CapacityExample,
   CustomDraggableExample,
 } from "@/components/examples";
+import { HorizontalSortableExample } from "@/components/HorizontalSortableExample";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -40,6 +41,7 @@ export type RootStackParamList = {
   BoundedYAxisExample: undefined;
   CapacityExample: undefined;
   CustomDraggableExample: undefined;
+  HorizontalSortableExample: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -147,6 +149,12 @@ function CustomDraggableExampleScreen({
   return <CustomDraggableExample onBack={() => navigation.goBack()} />;
 }
 
+function HorizontalSortableExampleScreen({
+  navigation,
+}: StackScreenProps<RootStackParamList, "HorizontalSortableExample">) {
+  return <HorizontalSortableExample onBack={() => navigation.goBack()} />;
+}
+
 export function AppNavigator() {
   return (
     <NavigationContainer>
@@ -219,6 +227,10 @@ export function AppNavigator() {
         <Stack.Screen
           name="CustomDraggableExample"
           component={CustomDraggableExampleScreen}
+        />
+        <Stack.Screen
+          name="HorizontalSortableExample"
+          component={HorizontalSortableExampleScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

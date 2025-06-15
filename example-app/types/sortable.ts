@@ -9,6 +9,19 @@ export enum ScrollDirection {
   Down = "down",
 }
 
+// Add horizontal scroll directions
+export enum HorizontalScrollDirection {
+  None = "none",
+  Left = "left",
+  Right = "right",
+}
+
+// Add Direction enum for unified sortable components
+export enum SortableDirection {
+  Vertical = "vertical",
+  Horizontal = "horizontal",
+}
+
 /**
  * Configuration options for the useSortable hook.
  *
@@ -377,20 +390,41 @@ export interface SortableItemProps<T> {
   /** Shared value containing positions of all items in the list */
   positions: SharedValue<{ [id: string]: number }>;
 
-  /** Shared value representing the current scroll position */
-  lowerBound: SharedValue<number>;
+  /** Shared value representing the current scroll position (for vertical) */
+  lowerBound?: SharedValue<number>;
 
-  /** Shared value indicating the current auto-scroll direction */
-  autoScrollDirection: SharedValue<ScrollDirection>;
+  /** Shared value representing the current scroll position (for horizontal) */
+  leftBound?: SharedValue<number>;
+
+  /** Shared value indicating the current auto-scroll direction (for vertical) */
+  autoScrollDirection?: SharedValue<ScrollDirection>;
+
+  /** Shared value indicating the current auto-scroll direction (for horizontal) */
+  autoScrollHorizontalDirection?: SharedValue<HorizontalScrollDirection>;
 
   /** Total number of items in the sortable list */
   itemsCount: number;
 
-  /** Height of each item in pixels */
-  itemHeight: number;
+  /** Direction of the sortable list */
+  direction?: SortableDirection;
 
-  /** Height of the scrollable container (optional) */
+  /** Height of each item in pixels (for vertical) */
+  itemHeight?: number;
+
+  /** Width of each item in pixels (for horizontal) */
+  itemWidth?: number;
+
+  /** Gap between items in pixels (for horizontal) */
+  gap?: number;
+
+  /** Horizontal padding of the container (for horizontal) */
+  paddingHorizontal?: number;
+
+  /** Height of the scrollable container (optional, for vertical) */
   containerHeight?: number;
+
+  /** Width of the scrollable container (optional, for horizontal) */
+  containerWidth?: number;
 
   /** Child components to render inside the sortable item */
   children: ReactNode;
@@ -410,11 +444,18 @@ export interface SortableItemProps<T> {
   /** Callback fired when dragging ends */
   onDrop?: (id: string, position: number) => void;
 
-  /** Callback fired during dragging with position updates */
+  /** Callback fired during dragging with position updates (for vertical) */
   onDragging?: (
     id: string,
     overItemId: string | null,
     yPosition: number
+  ) => void;
+
+  /** Callback fired during dragging with position updates (for horizontal) */
+  onDraggingHorizontal?: (
+    id: string,
+    overItemId: string | null,
+    xPosition: number
   ) => void;
 }
 
@@ -435,8 +476,20 @@ export interface SortableProps<TData> {
   /** Function to render each sortable item */
   renderItem: (props: SortableRenderItemProps<TData>) => ReactNode;
 
-  /** Height of each item in pixels */
-  itemHeight: number;
+  /** Direction of the sortable list */
+  direction?: SortableDirection;
+
+  /** Height of each item in pixels (required for vertical direction) */
+  itemHeight?: number;
+
+  /** Width of each item in pixels (required for horizontal direction) */
+  itemWidth?: number;
+
+  /** Gap between items in pixels (only for horizontal direction) */
+  gap?: number;
+
+  /** Horizontal padding of the container (only for horizontal direction) */
+  paddingHorizontal?: number;
 
   /** Style to apply to the scroll view */
   style?: StyleProp<ViewStyle>;
@@ -446,6 +499,14 @@ export interface SortableProps<TData> {
 
   /** Function to extract unique key from each item */
   itemKeyExtractor?: (item: TData, index: number) => string;
+
+  /**
+   * Whether to use FlatList for rendering instead of ScrollView.
+   * FlatList provides better performance for large lists with virtualization,
+   * while ScrollView renders all items at once.
+   * @default true
+   */
+  useFlatList?: boolean;
 }
 
 /**
@@ -470,17 +531,35 @@ export interface SortableRenderItemProps<TData> {
   /** Shared value containing positions of all items */
   positions: SharedValue<{ [id: string]: number }>;
 
-  /** Shared value representing the current scroll position */
-  lowerBound: SharedValue<number>;
+  /** Direction of the sortable list */
+  direction?: SortableDirection;
 
-  /** Shared value indicating the current auto-scroll direction */
-  autoScrollDirection: SharedValue<ScrollDirection>;
+  /** Shared value representing the current scroll position (for vertical) */
+  lowerBound?: SharedValue<number>;
+
+  /** Shared value representing the current scroll position (for horizontal) */
+  leftBound?: SharedValue<number>;
+
+  /** Shared value indicating the current auto-scroll direction (for vertical) */
+  autoScrollDirection?: SharedValue<ScrollDirection>;
+
+  /** Shared value indicating the current auto-scroll direction (for horizontal) */
+  autoScrollHorizontalDirection?: SharedValue<HorizontalScrollDirection>;
 
   /** Total number of items in the list */
   itemsCount: number;
 
-  /** Height of each item in pixels */
-  itemHeight: number;
+  /** Height of each item in pixels (for vertical) */
+  itemHeight?: number;
+
+  /** Width of each item in pixels (for horizontal) */
+  itemWidth?: number;
+
+  /** Gap between items in pixels (for horizontal) */
+  gap?: number;
+
+  /** Horizontal padding of the container (for horizontal) */
+  paddingHorizontal?: number;
 }
 
 export interface SortableContextValue {
@@ -495,4 +574,364 @@ export interface SortableHandleProps {
   children: React.ReactNode;
   /** Optional style to apply to the handle */
   style?: StyleProp<ViewStyle>;
+}
+
+/**
+ * Configuration options for the useHorizontalSortable hook.
+ *
+ * @template T - The type of data associated with the sortable item
+ */
+export interface UseHorizontalSortableOptions<T> {
+  /**
+   * Unique identifier for this sortable item. Must be unique within the sortable list.
+   * Used for tracking position changes and managing reordering logic.
+   */
+  id: string;
+
+  /**
+   * Shared value containing the current positions of all items in the sortable list.
+   * This is typically managed by the parent sortable list component.
+   */
+  positions: SharedValue<{ [id: string]: number }>;
+
+  /**
+   * Shared value representing the current scroll position (left bound) of the container.
+   * Used for auto-scrolling during drag operations.
+   */
+  leftBound: SharedValue<number>;
+
+  /**
+   * Shared value indicating the current auto-scroll direction.
+   * Used to trigger automatic scrolling when dragging near container edges.
+   */
+  autoScrollDirection: SharedValue<HorizontalScrollDirection>;
+
+  /**
+   * Total number of items in the sortable list.
+   * Used for boundary calculations and position validation.
+   */
+  itemsCount: number;
+
+  /**
+   * Width of each item in pixels. All items must have the same width.
+   * Used for position calculations and auto-scrolling.
+   */
+  itemWidth: number;
+
+  /**
+   * Gap between items in pixels.
+   * @default 0
+   */
+  gap?: number;
+
+  /**
+   * Horizontal padding of the container in pixels.
+   * @default 0
+   */
+  paddingHorizontal?: number;
+
+  /**
+   * Width of the scrollable container in pixels.
+   * Used for auto-scroll calculations and determining scroll boundaries.
+   * @default 500
+   */
+  containerWidth?: number;
+
+  /**
+   * Callback fired when an item's position changes within the list.
+   */
+  onMove?: (id: string, from: number, to: number) => void;
+
+  /**
+   * Callback fired when dragging starts for this item.
+   */
+  onDragStart?: (id: string, position: number) => void;
+
+  /**
+   * Callback fired when dragging ends for this item.
+   */
+  onDrop?: (id: string, position: number) => void;
+
+  /**
+   * Callback fired continuously while dragging, providing real-time position updates.
+   */
+  onDragging?: (
+    id: string,
+    overItemId: string | null,
+    xPosition: number
+  ) => void;
+
+  /**
+   * Children elements - used internally for handle detection.
+   * @internal
+   */
+  children?: React.ReactNode;
+
+  /**
+   * Handle component type - used internally for handle detection.
+   * @internal
+   */
+  handleComponent?: React.ComponentType<any>;
+}
+
+/**
+ * Return value from the useHorizontalSortable hook.
+ */
+export interface UseHorizontalSortableReturn {
+  /**
+   * Animated style to apply to the sortable item.
+   * Contains position transforms and visual effects for dragging state.
+   */
+  animatedStyle: StyleProp<ViewStyle>;
+
+  /**
+   * Pan gesture handler for drag interactions.
+   * Attach this to a PanGestureHandler to enable dragging.
+   */
+  panGestureHandler: any;
+
+  /**
+   * Whether this item is currently being moved/dragged.
+   * Useful for conditional styling or behavior.
+   */
+  isMoving: boolean;
+
+  /**
+   * Whether this sortable item has a handle component.
+   */
+  hasHandle: boolean;
+}
+
+/**
+ * Configuration options for the useHorizontalSortableList hook.
+ *
+ * @template TData - The type of data items in the sortable list
+ */
+export interface UseHorizontalSortableListOptions<TData> {
+  /**
+   * Array of data items to be rendered as sortable list items.
+   */
+  data: TData[];
+
+  /**
+   * Width of each item in pixels. All items must have the same width
+   * for proper position calculations and smooth animations.
+   */
+  itemWidth: number;
+
+  /**
+   * Gap between items in pixels.
+   * @default 0
+   */
+  gap?: number;
+
+  /**
+   * Horizontal padding of the container in pixels.
+   * @default 0
+   */
+  paddingHorizontal?: number;
+
+  /**
+   * Function to extract a unique key from each data item.
+   * If not provided, defaults to using the `id` property.
+   */
+  itemKeyExtractor?: (item: TData, index: number) => string;
+}
+
+/**
+ * Return value from the useHorizontalSortableList hook.
+ *
+ * @template TData - The type of data items in the sortable list
+ */
+export interface UseHorizontalSortableListReturn<TData> {
+  /**
+   * Shared value containing the current positions of all items.
+   */
+  positions: any;
+
+  /**
+   * Shared value tracking the current horizontal scroll position.
+   */
+  scrollX: any;
+
+  /**
+   * Shared value indicating the current auto-scroll direction.
+   */
+  autoScroll: any;
+
+  /**
+   * Animated ref for the scroll view component.
+   */
+  scrollViewRef: any;
+
+  /**
+   * Ref for the drop provider context.
+   */
+  dropProviderRef: React.RefObject<DropProviderRef>;
+
+  /**
+   * Animated scroll handler to attach to the ScrollView.
+   */
+  handleScroll: any;
+
+  /**
+   * Callback to call when scrolling ends.
+   */
+  handleScrollEnd: () => void;
+
+  /**
+   * Total width of the scrollable content.
+   */
+  contentWidth: number;
+
+  /**
+   * Helper function to get props for individual sortable items.
+   */
+  getItemProps: (
+    item: TData,
+    index: number
+  ) => {
+    id: string;
+    positions: any;
+    leftBound: any;
+    autoScrollDirection: any;
+    itemsCount: number;
+    itemWidth: number;
+    gap: number;
+    paddingHorizontal: number;
+  };
+}
+
+/**
+ * Props interface for the HorizontalSortableItem component.
+ *
+ * @template T - The type of data associated with the sortable item
+ */
+export interface HorizontalSortableItemProps<T> {
+  /** Unique identifier for this sortable item */
+  id: string;
+
+  /** Data associated with this sortable item */
+  data: T;
+
+  /** Shared value containing positions of all items in the list */
+  positions: SharedValue<{ [id: string]: number }>;
+
+  /** Shared value representing the current scroll position */
+  leftBound: SharedValue<number>;
+
+  /** Shared value indicating the current auto-scroll direction */
+  autoScrollDirection: SharedValue<HorizontalScrollDirection>;
+
+  /** Total number of items in the sortable list */
+  itemsCount: number;
+
+  /** Width of each item in pixels */
+  itemWidth: number;
+
+  /** Gap between items in pixels */
+  gap?: number;
+
+  /** Horizontal padding of the container */
+  paddingHorizontal?: number;
+
+  /** Width of the scrollable container (optional) */
+  containerWidth?: number;
+
+  /** Child components to render inside the sortable item */
+  children: ReactNode;
+
+  /** Style to apply to the item container */
+  style?: StyleProp<ViewStyle>;
+
+  /** Additional animated style to apply */
+  animatedStyle?: StyleProp<ViewStyle>;
+
+  /** Callback fired when item position changes */
+  onMove?: (id: string, from: number, to: number) => void;
+
+  /** Callback fired when dragging starts */
+  onDragStart?: (id: string, position: number) => void;
+
+  /** Callback fired when dragging ends */
+  onDrop?: (id: string, position: number) => void;
+
+  /** Callback fired during dragging with position updates */
+  onDragging?: (
+    id: string,
+    overItemId: string | null,
+    xPosition: number
+  ) => void;
+}
+
+/**
+ * Props interface for the HorizontalSortable component.
+ *
+ * @template TData - The type of data items in the sortable list
+ */
+export interface HorizontalSortableProps<TData> {
+  /** Array of data items to render as sortable list */
+  data: TData[];
+
+  /** Function to render each sortable item */
+  renderItem: (props: HorizontalSortableRenderItemProps<TData>) => ReactNode;
+
+  /** Width of each item in pixels */
+  itemWidth: number;
+
+  /** Gap between items in pixels */
+  gap?: number;
+
+  /** Horizontal padding of the container */
+  paddingHorizontal?: number;
+
+  /** Style to apply to the scroll view */
+  style?: StyleProp<ViewStyle>;
+
+  /** Style to apply to the scroll view content container */
+  contentContainerStyle?: StyleProp<ViewStyle>;
+
+  /** Function to extract unique key from each item */
+  itemKeyExtractor?: (item: TData, index: number) => string;
+}
+
+/**
+ * Props passed to the renderItem function in HorizontalSortable component.
+ *
+ * @template TData - The type of data item being rendered
+ *
+ * @see {@link SortableProps} for usage
+ * @see {@link Sortable} for component usage
+ * @see {@link SortableItem} for individual item component
+ */
+export interface HorizontalSortableRenderItemProps<TData> {
+  /** The data item being rendered */
+  item: TData;
+
+  /** Index of the item in the original data array */
+  index: number;
+
+  /** Unique identifier for this item */
+  id: string;
+
+  /** Shared value containing positions of all items */
+  positions: SharedValue<{ [id: string]: number }>;
+
+  /** Shared value representing the current scroll position */
+  leftBound: SharedValue<number>;
+
+  /** Shared value indicating the current auto-scroll direction */
+  autoScrollDirection: SharedValue<HorizontalScrollDirection>;
+
+  /** Total number of items in the list */
+  itemsCount: number;
+
+  /** Width of each item in pixels */
+  itemWidth: number;
+
+  /** Gap between items in pixels */
+  gap: number;
+
+  /** Horizontal padding of the container */
+  paddingHorizontal: number;
 }

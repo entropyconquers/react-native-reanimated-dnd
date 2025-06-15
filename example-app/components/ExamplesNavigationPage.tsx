@@ -37,6 +37,13 @@ const examples: Example[] = [
     icon: "♫",
   },
   {
+    id: "horizontalSortable",
+    title: "Horizontal Sortable",
+    description: "Reorderable Horizontal list with drag handles.",
+    component: "HorizontalSortableExample",
+    icon: "↔️",
+  },
+  {
     id: "basicDragDrop",
     title: "Basic Drag & Drop",
     description: "Simple drag and drop with multiple zones",

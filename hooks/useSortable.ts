@@ -33,14 +33,21 @@ export function objectMove(
 ) {
   "worklet";
   const newObject = Object.assign({}, object);
+  const movedUp = to < from;
 
   for (const id in object) {
     if (object[id] === from) {
       newObject[id] = to;
+      continue;
     }
 
-    if (object[id] === to) {
-      newObject[id] = from;
+    // Items in-between from and to should shift by 1 position;
+    // clamping isn't necessary as long as to and from are valid
+    const currentPosition = object[id];
+    if (movedUp && currentPosition >= to && currentPosition < from) {
+      newObject[id]++;
+    } else if (currentPosition <= to && currentPosition > from) {
+      newObject[id]--;
     }
   }
 

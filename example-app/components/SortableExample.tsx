@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -11,12 +11,11 @@ import {
   Platform,
   Modal,
 } from "react-native";
-import {
-  Sortable,
-  SortableItem,
-  SortableRenderItemProps,
-} from "react-native-reanimated-dnd";
+import { Sortable } from "../components/Sortable";
+import { SortableItem } from "../components/SortableItem";
+import { SortableRenderItemProps } from "@/types";
 import { Footer } from "./Footer";
+import { BottomSheet } from "./BottomSheet";
 
 interface Item {
   id: string;
@@ -239,7 +238,54 @@ const MUSIC_DATA_RAW = [
   },
 ];
 
-const MOCK_DATA: Item[] = MUSIC_DATA_RAW.map((item) => ({
+// Creative song names and artists for new items
+const CREATIVE_SONGS = [
+  "Midnight Dreams",
+  "Electric Pulse",
+  "Neon Nights",
+  "Digital Love",
+  "Cosmic Journey",
+  "Urban Symphony",
+  "Velvet Thunder",
+  "Crystal Waves",
+  "Phoenix Rising",
+  "Stellar Drift",
+  "Quantum Leap",
+  "Mystic Echoes",
+  "Infinite Loop",
+  "Solar Flare",
+  "Ocean Depths",
+  "Mountain High",
+  "Desert Wind",
+  "Forest Whispers",
+  "City Lights",
+  "Starlight Serenade",
+];
+
+const CREATIVE_ARTISTS = [
+  "Luna Eclipse",
+  "Neon Pulse",
+  "Digital Dreams",
+  "Cosmic Riders",
+  "Urban Legends",
+  "Velvet Storm",
+  "Crystal Vision",
+  "Phoenix Fire",
+  "Stellar Winds",
+  "Quantum Beat",
+  "Mystic Souls",
+  "Infinite Sound",
+  "Solar System",
+  "Ocean Waves",
+  "Mountain Echo",
+  "Desert Storm",
+  "Forest Moon",
+  "City Nights",
+  "Star Gazers",
+  "Midnight Express",
+];
+
+const INITIAL_MOCK_DATA: Item[] = MUSIC_DATA_RAW.map((item) => ({
   ...item,
   id: String(item.id),
 }));
@@ -247,6 +293,19 @@ const MOCK_DATA: Item[] = MUSIC_DATA_RAW.map((item) => ({
 // Item height for sortable list
 const ITEM_HEIGHT = 70;
 const windowHeight = Dimensions.get("window").height;
+
+// Generate random duration
+const generateRandomDuration = (): string => {
+  const minutes = Math.floor(Math.random() * 4) + 2; // 2-5 minutes
+  const seconds = Math.floor(Math.random() * 60);
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+};
+
+// Generate random image URL
+const generateRandomImageUrl = (): string => {
+  const randomId = Math.floor(Math.random() * 100) + 100;
+  return `https://picsum.photos/id/${randomId}/200/200`;
+};
 
 interface SortableExampleProps {
   onBack?: () => void;
@@ -256,6 +315,8 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
   const [isDragHandleMode, setIsDragHandleMode] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [showWebModal, setShowWebModal] = useState(Platform.OS === "web");
+  const [showControls, setShowControls] = useState(false);
+  const [data, setData] = useState<Item[]>(INITIAL_MOCK_DATA);
 
   // this is just to defer loading a large list during navigation
   useEffect(() => {
@@ -264,6 +325,181 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
       setIsDragHandleMode(false);
     }, 500);
   }, []);
+
+  // Memoized callbacks for controls
+  const handleToggleDragMode = useCallback(() => {
+    setIsDragHandleMode((prev) => !prev);
+  }, []);
+
+  const handleAddNewItem = useCallback(() => {
+    const randomSong =
+      CREATIVE_SONGS[Math.floor(Math.random() * CREATIVE_SONGS.length)];
+    const randomArtist =
+      CREATIVE_ARTISTS[Math.floor(Math.random() * CREATIVE_ARTISTS.length)];
+    const newId = `new-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    const newItem: Item = {
+      id: newId,
+      name: randomSong,
+      artist: randomArtist,
+      cover_image_url: generateRandomImageUrl(),
+      duration: generateRandomDuration(),
+    };
+
+    setData((prevData) => [newItem, ...prevData]);
+  }, []);
+
+  const handleAddMultipleItems = useCallback((count: number) => {
+    const newItems: Item[] = [];
+    const usedSongs = new Set<string>();
+    const usedArtists = new Set<string>();
+
+    for (let i = 0; i < count; i++) {
+      let randomSong: string;
+      let randomArtist: string;
+
+      // Ensure unique combinations
+      do {
+        randomSong =
+          CREATIVE_SONGS[Math.floor(Math.random() * CREATIVE_SONGS.length)];
+        randomArtist =
+          CREATIVE_ARTISTS[Math.floor(Math.random() * CREATIVE_ARTISTS.length)];
+      } while (usedSongs.has(randomSong) && usedArtists.has(randomArtist));
+
+      usedSongs.add(randomSong);
+      usedArtists.add(randomArtist);
+
+      const newId = `new-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 9)}`;
+
+      newItems.push({
+        id: newId,
+        name: randomSong,
+        artist: randomArtist,
+        cover_image_url: generateRandomImageUrl(),
+        duration: generateRandomDuration(),
+      });
+    }
+
+    setData((prevData) => [...newItems, ...prevData]);
+  }, []);
+
+  const handleCloseControls = useCallback(() => {
+    setShowControls(false);
+  }, []);
+
+  const handleOpenControls = useCallback(() => {
+    setShowControls(true);
+  }, []);
+
+  // Memoized controls content
+  const controlsContent = useMemo(
+    () => (
+      <View style={styles.controlsContainer}>
+        {/* Drag Mode Section */}
+        <View style={styles.controlSection}>
+          <Text style={styles.controlSectionTitle}>Drag Mode</Text>
+          <View style={styles.controlRow}>
+            <TouchableOpacity
+              style={[
+                styles.modeButton,
+                !isDragHandleMode && styles.modeButtonActive,
+              ]}
+              onPress={handleToggleDragMode}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  styles.modeButtonText,
+                  !isDragHandleMode && styles.modeButtonTextActive,
+                ]}
+              >
+                Full Item
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.modeButton,
+                isDragHandleMode && styles.modeButtonActive,
+              ]}
+              onPress={handleToggleDragMode}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  styles.modeButtonText,
+                  isDragHandleMode && styles.modeButtonTextActive,
+                ]}
+              >
+                Handle Only
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.controlDescription}>
+            {isDragHandleMode
+              ? "Drag items using the handle on the right"
+              : "Hold and drag anywhere on the item"}
+          </Text>
+        </View>
+
+        {/* Add Items Section */}
+        <View style={styles.controlSection}>
+          <Text style={styles.controlSectionTitle}>Add New Items</Text>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={handleAddNewItem}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.addButtonText}>+ Add Single Item</Text>
+          </TouchableOpacity>
+
+          <View style={styles.multiAddContainer}>
+            <Text style={styles.multiAddLabel}>Add Multiple:</Text>
+            <View style={styles.multiAddButtons}>
+              {[3, 5, 10].map((count) => (
+                <TouchableOpacity
+                  key={count}
+                  style={styles.multiAddButton}
+                  onPress={() => handleAddMultipleItems(count)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.multiAddButtonText}>{count}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <Text style={styles.controlDescription}>
+            New items will be added to the top of the list with creative names
+            and artists
+          </Text>
+        </View>
+
+        {/* Stats Section */}
+        <View style={styles.controlSection}>
+          <Text style={styles.controlSectionTitle}>Playlist Stats</Text>
+          <View style={styles.statsContainer}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{data.length}</Text>
+              <Text style={styles.statLabel}>Total Songs</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>
+                {data.filter((item) => item.id.startsWith("new-")).length}
+              </Text>
+              <Text style={styles.statLabel}>Added Songs</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    ),
+    [
+      isDragHandleMode,
+      data.length,
+      handleToggleDragMode,
+      handleAddNewItem,
+      handleAddMultipleItems,
+    ]
+  );
 
   // Render each sortable item
   const renderItem = useCallback(
@@ -361,28 +597,24 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
             <Text style={styles.header}>Playing Now</Text>
             <Text style={styles.tipText}>
               {isDragHandleMode
-                ? "Drag the handle to reorder"
+                ? "Drag the handle to reorder items"
                 : "Hold and drag items to reorder"}
             </Text>
           </View>
 
-          <View style={styles.toggleButtonContainer}>
+          <View style={styles.controlsButtonContainer}>
             {!isLoading && (
               <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={() => setIsDragHandleMode(!isDragHandleMode)}
+                style={styles.controlsButton}
+                onPress={handleOpenControls}
+                activeOpacity={0.7}
               >
-                <Text style={styles.toggleText}>
-                  {isDragHandleMode ? "Handle" : "Full"}
-                </Text>
-                <View
-                  style={[
-                    styles.toggleIndicator,
-                    {
-                      backgroundColor: isDragHandleMode ? "#FF3B30" : "#8E8E93",
-                    },
-                  ]}
-                />
+                <View style={styles.controlsIcon}>
+                  <View style={styles.controlsDot} />
+                  <View style={styles.controlsDot} />
+                  <View style={styles.controlsDot} />
+                </View>
+                <Text style={styles.controlsText}>Controls</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -397,7 +629,7 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
       ) : (
         <View style={styles.listContainer}>
           <Sortable
-            data={MOCK_DATA}
+            data={data}
             renderItem={renderItem}
             itemHeight={ITEM_HEIGHT}
             style={styles.list}
@@ -405,6 +637,15 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
         </View>
       )}
       <Footer />
+
+      {/* Controls Bottom Sheet */}
+      <BottomSheet
+        isVisible={showControls}
+        onClose={handleCloseControls}
+        title="Playlist Controls"
+      >
+        {controlsContent}
+      </BottomSheet>
 
       {/* Web Platform Modal */}
       <Modal
@@ -511,10 +752,39 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 16,
   },
-  toggleButtonContainer: {
+  controlsButtonContainer: {
     width: 80,
     alignItems: "flex-end",
     justifyContent: "center",
+  },
+  controlsButton: {
+    flexDirection: "column",
+    alignItems: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: "#3A3A3C",
+    borderRadius: 8,
+    backgroundColor: "#1C1C1E",
+    minWidth: 70,
+  },
+  controlsIcon: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 2,
+    marginBottom: 4,
+  },
+  controlsDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: "#8E8E93",
+  },
+  controlsText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#FFFFFF",
   },
   listContainer: {
     flex: 1,
@@ -601,28 +871,109 @@ const styles = StyleSheet.create({
     borderRadius: 1.25,
     backgroundColor: "#6D6D70",
   },
-  toggleButton: {
+  // Controls styles
+  controlsContainer: {
+    paddingBottom: 20,
+  },
+  controlSection: {
+    marginBottom: 32,
+  },
+  controlSectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    marginBottom: 16,
+  },
+  controlRow: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    gap: 12,
+    marginBottom: 12,
+  },
+  modeButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: "#3A3A3C",
     borderRadius: 8,
-    backgroundColor: "#1C1C1E",
-    minWidth: 70,
-    justifyContent: "center",
+    backgroundColor: "#2C2C2E",
+    alignItems: "center",
   },
-  toggleText: {
+  modeButtonActive: {
+    backgroundColor: "#FF3B30",
+    borderColor: "#FF3B30",
+  },
+  modeButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#8E8E93",
+  },
+  modeButtonTextActive: {
+    color: "#FFFFFF",
+  },
+  controlDescription: {
     fontSize: 13,
+    color: "#8E8E93",
+    lineHeight: 18,
+  },
+  addButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    backgroundColor: "#FF3B30",
+    borderRadius: 8,
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  addButtonText: {
+    fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
-    marginRight: 6,
   },
-  toggleIndicator: {
-    width: 12,
-    height: 2.5,
-    borderRadius: 1.25,
+  multiAddContainer: {
+    marginBottom: 12,
+  },
+  multiAddLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    marginBottom: 8,
+  },
+  multiAddButtons: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  multiAddButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#2C2C2E",
+    borderWidth: 1,
+    borderColor: "#3A3A3C",
+    borderRadius: 6,
+    alignItems: "center",
+    minWidth: 50,
+  },
+  multiAddButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    gap: 20,
+  },
+  statItem: {
+    alignItems: "center",
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#FF3B30",
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: "#8E8E93",
+    fontWeight: "500",
   },
   modalOverlay: {
     flex: 1,
