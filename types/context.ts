@@ -115,6 +115,8 @@ export interface SlotsContextValue<TData = unknown> {
   // Add new method to check if a droppable has available capacity
   hasAvailableCapacity: (droppableId: string) => boolean;
 
+  isDragging: boolean;
+
   // Add onDragging callback
   onDragging?: (payload: {
     x: number;
@@ -218,6 +220,7 @@ const defaultSlotsContextValue: SlotsContextValue<any> = {
     }
     return false;
   },
+  isDragging: false,
   onDragging: (payload: {
     x: number;
     y: number;
