@@ -272,6 +272,7 @@ export const Droppable = <TData = unknown,>({
   dropAlignment,
   dropOffset,
   activeStyle,
+  draggingStyle,
   droppableId,
   capacity,
   style,
@@ -284,6 +285,7 @@ export const Droppable = <TData = unknown,>({
     dropAlignment,
     dropOffset,
     activeStyle,
+    draggingStyle,
     droppableId,
     capacity,
   });

@@ -152,6 +152,7 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
     const [activeHoverSlotId, setActiveHoverSlotIdState] = useState<
       number | null
     >(null);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
 
     // New state for tracking dropped items
     const [droppedItems, setDroppedItems] = useState<DroppedItemsMap>({});
@@ -257,12 +258,24 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
     // Create a wrapper for onDragStart that also triggers position update
     const handleDragStart = useCallback(
       (data: any) => {
+        setIsDragging(true);
         if (onDragStart) {
           onDragStart(data);
         }
         internalRequestPositionUpdate();
       },
-      [onDragStart, internalRequestPositionUpdate]
+      [onDragStart, internalRequestPositionUpdate, setIsDragging]
+    );
+
+    const handleDragEnd = useCallback(
+      (data: any) => {
+        setIsDragging(false);
+        if (onDragEnd) {
+          onDragEnd(data);
+        }
+        internalRequestPositionUpdate();
+      },
+      [onDragEnd, internalRequestPositionUpdate, setIsDragging]
     );
 
     // Update the context value with the new method
@@ -288,9 +301,10 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
         unregisterDroppedItem,
         getDroppedItems,
         hasAvailableCapacity,
+        isDragging,
         onDragging,
         onDragStart: handleDragStart,
-        onDragEnd,
+        onDragEnd: handleDragEnd,
       }),
       [
         activeHoverSlotId,
@@ -301,9 +315,11 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
         unregisterDroppedItem,
         getDroppedItems,
         hasAvailableCapacity,
+        isDragging,
         onDragging,
         handleDragStart,
         onDragEnd,
+        handleDragEnd,
       ]
     );
 
