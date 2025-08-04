@@ -22,7 +22,8 @@
     "minify": "node scripts/build.js",
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\" --ignore-path .prettierignore",
-    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\" --ignore-path .prettierignore"
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\" --ignore-path .prettierignore",
+    "prepare": "npm run build"
   },
   "keywords": [
     "react-native",
