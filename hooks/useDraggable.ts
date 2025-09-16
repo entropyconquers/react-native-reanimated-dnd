@@ -13,10 +13,8 @@ import Animated, {
   withSpring,
   runOnJS,
   runOnUI,
-  AnimatedStyle,
   useAnimatedReaction,
   useAnimatedRef,
-  measure,
 } from "react-native-reanimated";
 import {
   Gesture,
@@ -37,6 +35,7 @@ import {
   UseDraggableOptions,
   UseDraggableReturn,
 } from "../types/draggable";
+import { safeMeasure } from "./safeMeasure";
 
 /**
  * A powerful hook for creating draggable components with advanced features like
@@ -205,6 +204,7 @@ export const useDraggable = <TData = unknown>(
   const dragDisabledShared = useSharedValue(dragDisabled);
   const dragAxisShared = useSharedValue(dragAxis);
 
+  const nodeReady = useSharedValue(false);
   const originX = useSharedValue(0);
   const originY = useSharedValue(0);
   const itemW = useSharedValue(0);
@@ -245,7 +245,8 @@ export const useDraggable = <TData = unknown>(
   const updateDraggablePosition = useCallback(() => {
     runOnUI(() => {
       "worklet";
-      const measurement = measure(animatedViewRef);
+      if (!nodeReady.value) return;
+      const measurement = safeMeasure(animatedViewRef);
       if (measurement === null) {
         return;
       }
@@ -272,7 +273,8 @@ export const useDraggable = <TData = unknown>(
   // Worklet version for use within UI thread contexts
   const updateDraggablePositionWorklet = useCallback(() => {
     "worklet";
-    const measurement = measure(animatedViewRef);
+    if (!nodeReady.value) return;
+    const measurement = safeMeasure(animatedViewRef);
     if (measurement === null) {
       return;
     }
@@ -361,9 +363,14 @@ export const useDraggable = <TData = unknown>(
 
   const handleLayoutHandler = useCallback(
     (event: LayoutChangeEvent) => {
+      // Mark native node ready on UI thread, then measure.
+      runOnUI(() => {
+        'worklet';
+        nodeReady.value = true;
+      })();
       updateDraggablePosition();
     },
-    [updateDraggablePosition]
+    [updateDraggablePosition, nodeReady]
   );
 
   const animateDragEndPosition = useCallback(
@@ -601,6 +608,8 @@ export const useDraggable = <TData = unknown>(
       Gesture.Pan()
         .onBegin(() => {
           "worklet";
+          // Only measure/drag when node is ready.
+          if (!nodeReady.value) return;
           //first update the position
           updateDraggablePositionWorklet();
           if (dragDisabledShared.value) return;
@@ -708,6 +717,7 @@ export const useDraggable = <TData = unknown>(
       contextOnDragging,
       contextOnDragStart,
       contextOnDragEnd,
+      nodeReady,
     ]
   );
 
