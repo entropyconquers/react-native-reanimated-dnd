@@ -115,6 +115,13 @@ export interface UseDraggableOptions<TData = unknown> {
   dragDisabled?: boolean;
 
   /**
+   * Delay in milliseconds before dragging starts.
+   *
+   * @default 0
+   */
+  preDragDelay?: number;
+
+  /**
    * Callback fired when dragging starts.
    *
    * @param data - The data associated with the draggable item

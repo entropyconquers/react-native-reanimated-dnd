@@ -145,6 +145,7 @@ export const useDraggable = <TData = unknown>(
     data,
     draggableId,
     dragDisabled = false,
+    preDragDelay = 0,
     onDragStart,
     onDragEnd,
     onDragging,
@@ -204,6 +205,7 @@ export const useDraggable = <TData = unknown>(
   const offsetY = useSharedValue(0);
   const dragDisabledShared = useSharedValue(dragDisabled);
   const dragAxisShared = useSharedValue(dragAxis);
+  const preDragDelayShared = useSharedValue(preDragDelay);
 
   const originX = useSharedValue(0);
   const originY = useSharedValue(0);
@@ -233,6 +235,10 @@ export const useDraggable = <TData = unknown>(
     onDragStart: contextOnDragStart,
     onDragEnd: contextOnDragEnd,
   } = useContext(SlotsContext) as SlotsContextValue<TData>;
+
+  useEffect(() => {
+    preDragDelayShared.value = preDragDelay;
+  }, [preDragDelay, preDragDelayShared]);
 
   useEffect(() => {
     dragDisabledShared.value = dragDisabled;
@@ -599,7 +605,9 @@ export const useDraggable = <TData = unknown>(
   const gesture = React.useMemo<GestureType>(
     () =>
       Gesture.Pan()
-        .onBegin(() => {
+        .activateAfterLongPress(preDragDelay)
+        // We use onStart to detect the initial drag start after the preDragDelay
+        .onStart(() => {
           "worklet";
           //first update the position
           updateDraggablePositionWorklet();

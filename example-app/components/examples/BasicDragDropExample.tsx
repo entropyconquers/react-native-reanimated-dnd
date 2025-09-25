@@ -107,7 +107,31 @@ export function BasicDragDropExample({ onBack }: BasicDragDropExampleProps) {
                   </View>
                 </Draggable>
               </View>
-
+              <View style={styles.draggableItemsArea}>
+                <Draggable<DraggableItemData>
+                  key="basic-item-3"
+                  preDragDelay={200}
+                  data={{
+                    id: "basic-item-3",
+                    label: "Draggable Item 3",
+                    backgroundColor: "#bde0fe",
+                  }}
+                  style={[
+                    styles.draggable,
+                    {
+                      top: 0,
+                      left: "27%",
+                      backgroundColor: "#bde0fe",
+                      borderRadius: 12,
+                    },
+                  ]}
+                >
+                  <View style={[styles.cardContent, { width: "100%" }]}>
+                    <Text style={styles.cardLabel}>Item 3</Text>
+                    <Text style={styles.cardHint}>With delay of 200ms</Text>
+                  </View>
+                </Draggable>
+              </View>
               <View style={styles.infoContainer}>
                 <View style={styles.infoItem}>
                   <View
