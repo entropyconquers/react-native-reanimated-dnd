@@ -1,22 +1,12 @@
-import React, {
-  useRef,
-  useEffect,
-  useContext,
-  useCallback,
-  useMemo,
-} from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { LayoutChangeEvent, StyleSheet } from "react-native";
-import Animated, {
-  useAnimatedRef,
-  measure,
-  runOnUI,
-  runOnJS,
-} from "react-native-reanimated";
+import Animated, { measure, useAnimatedRef } from "react-native-reanimated";
+import { scheduleOnRN, scheduleOnUI } from "react-native-worklets";
 import {
-  SlotsContext,
-  SlotsContextValue,
   DropAlignment,
   DropOffset,
+  SlotsContext,
+  SlotsContextValue,
 } from "../types/context";
 import { UseDroppableOptions, UseDroppableReturn } from "../types/droppable";
 
@@ -234,8 +224,27 @@ export const useDroppable = <TData = unknown>(
     onActiveChange?.(isActive);
   }, [isActive, onActiveChange]);
 
+  // Keep the JS callback on the RN thread and only pass serializable measurements
+  // across the worklet boundary.
+  const registerWithMeasurement = useCallback(
+    (pageX: number, pageY: number, width: number, height: number) => {
+      register(id, {
+        id: droppableId || `droppable-${id}`,
+        x: pageX,
+        y: pageY,
+        width,
+        height,
+        onDrop,
+        dropAlignment: dropAlignment || "center",
+        dropOffset: dropOffset || { x: 0, y: 0 },
+        capacity,
+      });
+    },
+    [id, droppableId, onDrop, register, dropAlignment, dropOffset, capacity]
+  );
+
   const updateDroppablePosition = useCallback(() => {
-    runOnUI(() => {
+    scheduleOnUI(() => {
       "worklet";
       const measurement = measure(animatedViewRef);
       if (measurement === null) {
@@ -243,30 +252,16 @@ export const useDroppable = <TData = unknown>(
       }
 
       if (measurement.width > 0 && measurement.height > 0) {
-        // Ensure valid dimensions before registering
-        runOnJS(register)(id, {
-          id: droppableId || `droppable-${id}`,
-          x: measurement.pageX,
-          y: measurement.pageY,
-          width: measurement.width,
-          height: measurement.height,
-          onDrop,
-          dropAlignment: dropAlignment || "center",
-          dropOffset: dropOffset || { x: 0, y: 0 },
-          capacity,
-        });
+        scheduleOnRN(
+          registerWithMeasurement,
+          measurement.pageX,
+          measurement.pageY,
+          measurement.width,
+          measurement.height
+        );
       }
-    })();
-  }, [
-    id,
-    droppableId,
-    onDrop,
-    register,
-    animatedViewRef,
-    dropAlignment,
-    dropOffset,
-    capacity,
-  ]);
+    });
+  }, [animatedViewRef, registerWithMeasurement]);
 
   const handleLayoutHandler = useCallback(
     (_event: LayoutChangeEvent) => {

@@ -5,9 +5,9 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { withTiming, withSpring, Easing } from "react-native-reanimated";
 import { useSharedValue } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -73,7 +73,7 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
   // Create animation function based on selected options
   const createAnimationFunction =
     useCallback((): UseDraggableOptions<any>["animationFunction"] => {
-      return (toValue) => {
+      return (toValue: number) => {
         "worklet";
 
         const selectedEasing =

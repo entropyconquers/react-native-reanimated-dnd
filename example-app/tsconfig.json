@@ -7,8 +7,8 @@
       "@/*": ["./*"],
       "@/components/*": ["./components/*"],
       "@/hooks/*": ["./hooks/*"],
-      "@/types/*": ["./types/*"],
-      "@/context/*": ["./context/*"],
+      "@/types/*": ["./external-lib/types/*"],
+      "@/context/*": ["./external-lib/context/*"],
       "@/navigation/*": ["./navigation/*"]
     }
   }

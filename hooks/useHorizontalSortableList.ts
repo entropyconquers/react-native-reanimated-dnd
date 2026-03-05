@@ -158,7 +158,7 @@ export function useHorizontalSortableList<TData extends { id: string }>(
   const scrollX = useSharedValue(0);
   const autoScroll = useSharedValue(HorizontalScrollDirection.None);
   const scrollViewRef = useAnimatedRef();
-  const dropProviderRef = useRef<DropProviderRef>(null!);
+  const dropProviderRef = useRef<DropProviderRef | null>(null);
 
   // Scrolling synchronization
   useAnimatedReaction(

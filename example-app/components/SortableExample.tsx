@@ -5,12 +5,12 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-  SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
   Platform,
   Modal,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Sortable,
   SortableItem,

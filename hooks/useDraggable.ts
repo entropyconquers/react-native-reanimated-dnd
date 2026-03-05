@@ -1,39 +1,38 @@
 // hooks/useDraggable.ts
 import React, {
-  useRef,
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { LayoutChangeEvent } from "react-native";
 import Animated, {
+  AnimatedStyle,
+  measure,
+  useAnimatedReaction,
+  useAnimatedRef,
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-  runOnJS,
-  runOnUI,
-  AnimatedStyle,
-  useAnimatedReaction,
-  useAnimatedRef,
-  measure,
 } from "react-native-reanimated";
 import {
   Gesture,
-  PanGestureHandlerEventPayload,
   GestureType,
+  PanGestureHandlerEventPayload,
 } from "react-native-gesture-handler";
+import { scheduleOnRN, scheduleOnUI } from "react-native-worklets";
 import {
-  SlotsContext,
-  SlotsContextValue,
   DropAlignment,
   DropOffset,
   DropSlot,
+  SlotsContext,
+  SlotsContextValue,
 } from "../types/context";
 import {
-  DraggableState,
   AnimationFunction,
   CollisionAlgorithm,
+  DraggableState,
   UseDraggableOptions,
   UseDraggableReturn,
 } from "../types/draggable";
@@ -181,10 +180,9 @@ export const useDraggable = <TData = unknown>(
         }
 
         // Check children recursively
-        if (child.props && child.props.children) {
-          if (
-            React.Children.toArray(child.props.children).some(checkForHandle)
-          ) {
+        const props = child.props as { children?: React.ReactNode };
+        if (child.props && props.children) {
+          if (React.Children.toArray(props.children).some(checkForHandle)) {
             return true;
           }
         }
@@ -249,7 +247,7 @@ export const useDraggable = <TData = unknown>(
   }, [dragAxis, dragAxisShared]);
 
   const updateDraggablePosition = useCallback(() => {
-    runOnUI(() => {
+    scheduleOnUI(() => {
       "worklet";
       const measurement = measure(animatedViewRef);
       if (measurement === null) {
@@ -272,7 +270,7 @@ export const useDraggable = <TData = unknown>(
       if (!isOriginSet.current) {
         isOriginSet.current = true;
       }
-    })();
+    });
   }, [animatedViewRef, originX, originY, itemW, itemH, tx, ty]);
 
   // Worklet version for use within UI thread contexts
@@ -311,7 +309,7 @@ export const useDraggable = <TData = unknown>(
           width > 0 &&
           height > 0
         ) {
-          runOnUI(() => {
+          scheduleOnUI(() => {
             "worklet";
             boundsX.value = pageX;
             boundsY.value = pageY;
@@ -320,7 +318,7 @@ export const useDraggable = <TData = unknown>(
             if (!boundsAreSet.value) {
               boundsAreSet.value = true;
             }
-          })();
+          });
         } else {
           console.warn(
             "useDraggable: dragBoundsRef measurement failed or returned invalid dimensions. Bounds may be stale or item unbounded."
@@ -328,12 +326,12 @@ export const useDraggable = <TData = unknown>(
         }
       });
     } else {
-      runOnUI(() => {
+      scheduleOnUI(() => {
         "worklet";
         if (boundsAreSet.value) {
           boundsAreSet.value = false;
         }
-      })();
+      });
     }
   }, [
     dragBoundsRef,
@@ -469,16 +467,17 @@ export const useDraggable = <TData = unknown>(
 
       if (hitSlotData && hitSlotId !== null) {
         if (hitSlotData.onDrop) {
-          runOnJS(hitSlotData.onDrop)(draggableData);
+          hitSlotData.onDrop(draggableData);
         }
 
-        runOnJS(registerDroppedItem)(
+        scheduleOnRN(
+          registerDroppedItem,
           internalDraggableId,
           hitSlotData.id,
           draggableData
         );
 
-        runOnJS(setState)(DraggableState.DROPPED);
+        scheduleOnRN(setState, DraggableState.DROPPED);
 
         const alignment: DropAlignment = hitSlotData.dropAlignment || "center";
         const offset: DropOffset = hitSlotData.dropOffset || { x: 0, y: 0 };
@@ -538,11 +537,11 @@ export const useDraggable = <TData = unknown>(
         finalTxValue = 0;
         finalTyValue = 0;
 
-        runOnJS(setState)(DraggableState.IDLE);
-        runOnJS(unregisterDroppedItem)(internalDraggableId);
+        scheduleOnRN(setState, DraggableState.IDLE);
+        scheduleOnRN(unregisterDroppedItem, internalDraggableId);
       }
 
-      runOnUI(animateDragEndPosition)(finalTxValue, finalTyValue);
+      scheduleOnUI(animateDragEndPosition, finalTxValue, finalTyValue);
     },
     [
       getSlots,
@@ -615,9 +614,9 @@ export const useDraggable = <TData = unknown>(
           offsetX.value = tx.value;
           offsetY.value = ty.value;
           // Update state to DRAGGING when drag begins
-          runOnJS(setState)(DraggableState.DRAGGING);
-          if (onDragStart) runOnJS(onDragStart)(data);
-          if (contextOnDragStart) runOnJS(contextOnDragStart)(data);
+          scheduleOnRN(setState, DraggableState.DRAGGING);
+          if (onDragStart) scheduleOnRN(onDragStart, data);
+          if (contextOnDragStart) scheduleOnRN(contextOnDragStart, data);
         })
         .onUpdate((event: PanGestureHandlerEventPayload) => {
           "worklet";
@@ -645,7 +644,7 @@ export const useDraggable = <TData = unknown>(
             ty.value = newTy;
           }
           if (onDragging) {
-            runOnJS(onDragging)({
+            scheduleOnRN(onDragging, {
               x: originX.value,
               y: originY.value,
               tx: tx.value,
@@ -654,7 +653,7 @@ export const useDraggable = <TData = unknown>(
             });
           }
           if (contextOnDragging) {
-            runOnJS(contextOnDragging)({
+            scheduleOnRN(contextOnDragging, {
               x: originX.value,
               y: originY.value,
               tx: tx.value,
@@ -662,7 +661,8 @@ export const useDraggable = <TData = unknown>(
               itemData: data,
             });
           }
-          runOnJS(updateHoverState)(
+          scheduleOnRN(
+            updateHoverState,
             tx.value,
             ty.value,
             originX.value,
@@ -674,9 +674,10 @@ export const useDraggable = <TData = unknown>(
         .onEnd(() => {
           "worklet";
           if (dragDisabledShared.value) return;
-          if (onDragEnd) runOnJS(onDragEnd)(data);
-          if (contextOnDragEnd) runOnJS(contextOnDragEnd)(data);
-          runOnJS(processDropAndAnimate)(
+          if (onDragEnd) scheduleOnRN(onDragEnd, data);
+          if (contextOnDragEnd) scheduleOnRN(contextOnDragEnd, data);
+          scheduleOnRN(
+            processDropAndAnimate,
             tx.value,
             ty.value,
             data,
@@ -685,7 +686,7 @@ export const useDraggable = <TData = unknown>(
             itemW.value,
             itemH.value
           );
-          runOnJS(setActiveHoverSlot)(null);
+          scheduleOnRN(setActiveHoverSlot, null);
         }),
     [
       dragDisabledShared,
@@ -716,6 +717,7 @@ export const useDraggable = <TData = unknown>(
       contextOnDragging,
       contextOnDragStart,
       contextOnDragEnd,
+      preDragDelay,
     ]
   );
 
@@ -740,10 +742,10 @@ export const useDraggable = <TData = unknown>(
     (result, previous) => {
       // Only trigger when values change to zero (returned to original position)
       if (result.isZero && previous && !previous.isZero) {
-        // Use runOnJS to call setState from the UI thread
-        runOnJS(setState)(DraggableState.IDLE);
+        // Use scheduleOnRN to call setState from the UI thread.
+        scheduleOnRN(setState, DraggableState.IDLE);
         // When returning to origin position, we know we're no longer dropped
-        runOnJS(unregisterDroppedItem)(internalDraggableId);
+        scheduleOnRN(unregisterDroppedItem, internalDraggableId);
       }
     },
     [setState, unregisterDroppedItem, internalDraggableId]

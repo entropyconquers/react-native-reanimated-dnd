@@ -2,8 +2,7 @@ import React, { useRef, createContext, useContext } from "react";
 import { ViewStyle, StyleProp } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
-import { useDraggable } from "@/external-lib";
-import { UseDraggableOptions, DraggableState } from "@/types/draggable";
+import { useDraggable, type UseDraggableOptions } from "@/external-lib";
 
 export interface CustomDraggableProps<TData = unknown>
   extends UseDraggableOptions<TData> {
@@ -53,9 +52,10 @@ const CustomDraggableComponent = <TData = unknown,>({
   initialStyle,
   ...draggableOptions
 }: CustomDraggableProps<TData>) => {
+  const dragOptions = draggableOptions as UseDraggableOptions<TData>;
   const { animatedViewProps, gesture, hasHandle, animatedViewRef } =
     useDraggable<TData>({
-      ...draggableOptions,
+      ...dragOptions,
       children,
       handleComponent: CustomDraggableHandle,
     });

@@ -7,8 +7,8 @@ import {
   ScrollView,
   StyleProp,
   TextStyle,
-  SafeAreaView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DropProvider, DropProviderRef } from "@/external-lib";
 import { Droppable } from "@/external-lib";

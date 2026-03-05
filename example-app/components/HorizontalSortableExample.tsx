@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
   Platform,
@@ -12,6 +11,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   Sortable,

@@ -1,4 +1,5 @@
 import { StyleProp, ViewStyle } from "react-native";
+import { GestureType } from "react-native-gesture-handler";
 import { SharedValue } from "react-native-reanimated";
 import { DropProviderRef } from "../types/context";
 import { ReactNode } from "react";
@@ -224,10 +225,10 @@ export interface UseSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
 
   /**
-   * Pan gesture handler for drag interactions.
-   * Attach this to a PanGestureHandler to enable dragging.
+   * Pan gesture definition for drag interactions.
+   * Attach this to a GestureDetector to enable dragging.
    */
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
 
   /**
    * Whether this item is currently being moved/dragged.
@@ -341,7 +342,7 @@ export interface UseSortableListReturn<TData extends SortableData> {
    * Ref for the drop provider context.
    * Used for triggering position updates after scroll events.
    */
-  dropProviderRef: React.RefObject<DropProviderRef>;
+  dropProviderRef: React.RefObject<DropProviderRef | null>;
 
   /**
    * Animated scroll handler to attach to the ScrollView.
@@ -596,7 +597,7 @@ export interface SortableRenderItemProps<TData extends SortableData> {
 }
 
 export interface SortableContextValue {
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
 }
 
 /**
@@ -726,10 +727,10 @@ export interface UseHorizontalSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
 
   /**
-   * Pan gesture handler for drag interactions.
-   * Attach this to a PanGestureHandler to enable dragging.
+   * Pan gesture definition for drag interactions.
+   * Attach this to a GestureDetector to enable dragging.
    */
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
 
   /**
    * Whether this item is currently being moved/dragged.
@@ -808,7 +809,7 @@ export interface UseHorizontalSortableListReturn<TData extends SortableData> {
   /**
    * Ref for the drop provider context.
    */
-  dropProviderRef: React.RefObject<DropProviderRef>;
+  dropProviderRef: React.RefObject<DropProviderRef | null>;
 
   /**
    * Animated scroll handler to attach to the ScrollView.

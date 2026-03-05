@@ -1,8 +1,10 @@
 import React, { useCallback, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import Animated from "react-native-reanimated";
-import { PanGestureHandler } from "react-native-gesture-handler";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
 import { DropProvider } from "@/external-lib";
 import { useSortable, useSortableList } from "@/external-lib";
 import { SortableItem } from "@/external-lib";
@@ -85,14 +87,14 @@ function CustomSortableItem({
 
   return (
     <Animated.View style={animatedStyle}>
-      <PanGestureHandler onGestureEvent={panGestureHandler}>
+      <GestureDetector gesture={panGestureHandler}>
         <Animated.View style={styles.itemContainer}>
           <View style={[styles.item, { backgroundColor: item.color }]}>
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.description}>{item.description}</Text>
           </View>
         </Animated.View>
-      </PanGestureHandler>
+      </GestureDetector>
     </Animated.View>
   );
 }
