@@ -9,7 +9,7 @@ const rootDir = path.resolve(__dirname, "..");
 const destDir = path.resolve(__dirname, "../example-app/external-lib");
 
 // Directories to sync from root to external-lib
-const dirsToSync = ["components", "context", "hooks", "types"];
+const dirsToSync = ["components", "context", "hooks", "types", "lib"];
 const filesToSync = ["index.ts"];
 
 console.log("🔄 Starting external-lib sync watcher...");

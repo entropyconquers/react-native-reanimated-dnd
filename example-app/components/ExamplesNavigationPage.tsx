@@ -44,6 +44,13 @@ const examples: Example[] = [
     icon: "↔️",
   },
   {
+    id: "gridSortable",
+    title: "Grid Sortable",
+    description: "Reorderable 2D grid with insert/swap strategies.",
+    component: "GridSortableExample",
+    icon: "⊞",
+  },
+  {
     id: "basicDragDrop",
     title: "Basic Drag & Drop",
     description: "Simple drag and drop with multiple zones",

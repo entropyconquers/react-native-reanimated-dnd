@@ -23,10 +23,12 @@ import {
   CustomDraggableExample,
 } from "@/components/examples";
 import { HorizontalSortableExample } from "@/components/HorizontalSortableExample";
+import { GridSortableExample } from "@/components/GridSortableExample";
 
 export type RootStackParamList = {
   Home: undefined;
   SortableExample: undefined;
+  GridSortableExample: undefined;
   DroppedItemsMapExample: undefined;
   DragStateExample: undefined;
   CollisionDetectionExample: undefined;
@@ -155,6 +157,12 @@ function HorizontalSortableExampleScreen({
   return <HorizontalSortableExample onBack={() => navigation.goBack()} />;
 }
 
+function GridSortableExampleScreen({
+  navigation,
+}: StackScreenProps<RootStackParamList, "GridSortableExample">) {
+  return <GridSortableExample onBack={() => navigation.goBack()} />;
+}
+
 export function AppNavigator() {
   return (
     <NavigationContainer>
@@ -231,6 +239,10 @@ export function AppNavigator() {
         <Stack.Screen
           name="HorizontalSortableExample"
           component={HorizontalSortableExampleScreen}
+        />
+        <Stack.Screen
+          name="GridSortableExample"
+          component={GridSortableExampleScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

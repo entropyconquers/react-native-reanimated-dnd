@@ -6,14 +6,24 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
+import { BlurView } from "expo-blur";
 
-export function Footer() {
+interface FooterProps {
+  blur?: boolean;
+}
+
+export function Footer({ blur = false }: FooterProps) {
   const handlePress = () => {
     Linking.openURL("https://github.com/entropyconquers");
   };
 
+  const Container = blur ? BlurView : View;
+  const containerProps = blur
+    ? { intensity: 80, tint: "dark" as const }
+    : {};
+
   return (
-    <View style={styles.container}>
+    <Container style={styles.container} {...containerProps}>
       <View style={styles.textContainer}>
         <Text style={styles.text}>Made with </Text>
         <Text style={styles.heart}>❤️</Text>
@@ -22,7 +32,7 @@ export function Footer() {
           <Text style={styles.link}>Vishesh Raheja</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Container>
   );
 }
 
@@ -32,9 +42,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#000000",
     borderTopWidth: 0.5,
     borderTopColor: "#2C2C2E",
+    overflow: "hidden",
   },
   textContainer: {
     flexDirection: "row",
