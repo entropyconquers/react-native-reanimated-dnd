@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   TouchableOpacity,
   StyleSheet,
@@ -11,10 +11,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   useDerivedValue,
-  withDelay,
-  withTiming,
   withSpring,
-  runOnJS,
 } from "react-native-reanimated";
 
 interface BottomSheetProps {
@@ -32,21 +29,8 @@ export function BottomSheet({
   children,
   duration = 300,
 }: BottomSheetProps) {
-  const [shouldRender, setShouldRender] = useState(isVisible);
   const height = useSharedValue(0);
-
-  useEffect(() => {
-    if (isVisible) {
-      setShouldRender(true);
-    } else {
-      // Hide component after animation completes
-      const timer = setTimeout(() => {
-        setShouldRender(false);
-      }, 400); // Slightly longer than animation duration
-
-      return () => clearTimeout(timer);
-    }
-  }, [isVisible]);
+  const hiddenOffset = useDerivedValue(() => height.value || 420);
 
   const progress = useDerivedValue(() =>
     withSpring(isVisible ? 0 : 1, {
@@ -56,24 +40,24 @@ export function BottomSheet({
   );
 
   const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: progress.value * height.value }],
+    transform: [{ translateY: progress.value * hiddenOffset.value }],
   }));
 
   const backdropStyle = useAnimatedStyle(() => ({
     opacity: 1 - progress.value,
-    zIndex: isVisible
-      ? 9999
-      : withDelay(duration, withTiming(-1, { duration: 0 })),
+    zIndex: isVisible ? 9999 : 0,
   }));
-
-  if (!shouldRender) return null;
 
   return (
     <>
-      <Animated.View style={[styles.backdrop, backdropStyle]}>
+      <Animated.View
+        pointerEvents={isVisible ? "auto" : "none"}
+        style={[styles.backdrop, backdropStyle]}
+      >
         <TouchableOpacity style={styles.backdropTouchable} onPress={onClose} />
       </Animated.View>
       <Animated.View
+        pointerEvents={isVisible ? "auto" : "none"}
         onLayout={(e) => {
           height.value = e.nativeEvent.layout.height;
         }}
@@ -102,7 +86,7 @@ const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    elevation: 15,
+    boxShadow: "0px 0px 24px rgba(0, 0, 0, 0.35)",
   },
   backdropTouchable: {
     flex: 1,
@@ -119,7 +103,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
     zIndex: 10000,
-    elevation: 20,
+    boxShadow: "0px -4px 16px rgba(0, 0, 0, 0.35)",
   },
   handle: {
     width: 40,

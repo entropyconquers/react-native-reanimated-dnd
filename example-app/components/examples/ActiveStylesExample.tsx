@@ -10,8 +10,12 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Draggable, DropProvider, DropProviderRef } from "@/external-lib";
-import { Droppable } from "@/external-lib";
+import {
+  Draggable,
+  DropProvider,
+  DropProviderRef,
+} from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
 
@@ -33,19 +37,13 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
     borderColor: "#ff6b6b",
     borderWidth: 3,
     transform: [{ scale: 1.05 }],
-    shadowColor: "#ff6b6b",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
+    boxShadow: "0px 0px 10px rgba(255, 107, 107, 0.5)",
   };
 
   const glowActiveStyle: StyleProp<ViewStyle> = {
     borderColor: "#4cc9f0",
     backgroundColor: "rgba(76, 201, 240, 0.2)",
-    shadowColor: "#4cc9f0",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.7,
-    shadowRadius: 12,
+    boxShadow: "0px 0px 12px rgba(76, 201, 240, 0.7)",
   };
 
   return (
@@ -110,14 +108,12 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
                     label: "Drop me on the custom zones",
                     backgroundColor: "#c1a1d3",
                   }}
-                  style={[
-                    {
-                      top: 0,
-                      left: "25%",
-                      backgroundColor: "#c1a1d3",
-                      borderRadius: 12,
-                    },
-                  ]}
+                  style={{
+                    top: 0,
+                    left: "25%",
+                    backgroundColor: "#c1a1d3",
+                    borderRadius: 12,
+                  }}
                 >
                   <View style={styles.cardContent}>
                     <Text style={styles.cardLabel}>Try Me</Text>
@@ -246,11 +242,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#1C1C1E",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 8,
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
   },
   cardLabel: {
     fontSize: 15,

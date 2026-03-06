@@ -6,8 +6,8 @@
 
 A comprehensive collection of 15 interactive examples demonstrating every feature of the React Native Reanimated DnD library.
 
-[![React Native](https://img.shields.io/badge/React%20Native-0.72+-blue.svg)](https://reactnative.dev/)
-[![Expo](https://img.shields.io/badge/Expo-SDK%2049+-black.svg)](https://expo.dev/)
+[![React Native](https://img.shields.io/badge/React%20Native-0.83+-blue.svg)](https://reactnative.dev/)
+[![Expo](https://img.shields.io/badge/Expo-SDK%2055-black.svg)](https://expo.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
 </div>
@@ -20,7 +20,7 @@ This example app provides a hands-on demonstration of all the features available
 
 ### Prerequisites
 
-- Node.js 16+
+- Node.js 20+
 - React Native development environment
 - iOS Simulator or Android Emulator (or physical device)
 
@@ -30,7 +30,7 @@ This example app provides a hands-on demonstration of all the features available
 
 ```bash
 git clone https://github.com/entropyconquers/react-native-reanimated-dnd.git
-cd react-native-reanimated-dnd/example-app
+cd react-native-reanimated-dnd
 ```
 
 2. **Install dependencies:**
@@ -42,14 +42,14 @@ npm install
 3. **Run the app:**
 
 ```bash
-# iOS
-npx expo run:ios
+# Development server
+npm run start --workspace example-app
 
-# Android
-npx expo run:android
+# iOS development build
+npm run ios --workspace example-app
 
-# Development build
-npx expo start
+# Android development build
+npm run android --workspace example-app
 ```
 
 ## 📚 Examples Catalog

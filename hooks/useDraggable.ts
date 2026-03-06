@@ -9,7 +9,6 @@ import React, {
 import { LayoutChangeEvent } from "react-native";
 import Animated, {
   AnimatedStyle,
-  measure,
   useAnimatedReaction,
   useAnimatedRef,
   useSharedValue,
@@ -36,6 +35,7 @@ import {
   UseDraggableOptions,
   UseDraggableReturn,
 } from "../types/draggable";
+import { safeMeasure } from "./safeMeasure";
 
 /**
  * A powerful hook for creating draggable components with advanced features like
@@ -204,6 +204,7 @@ export const useDraggable = <TData = unknown>(
   const dragDisabledShared = useSharedValue(dragDisabled);
   const dragAxisShared = useSharedValue(dragAxis);
   const preDragDelayShared = useSharedValue(preDragDelay);
+  const nodeReady = useSharedValue(false);
 
   const originX = useSharedValue(0);
   const originY = useSharedValue(0);
@@ -249,7 +250,11 @@ export const useDraggable = <TData = unknown>(
   const updateDraggablePosition = useCallback(() => {
     scheduleOnUI(() => {
       "worklet";
-      const measurement = measure(animatedViewRef);
+      if (!nodeReady.value) {
+        return;
+      }
+
+      const measurement = safeMeasure(animatedViewRef);
       if (measurement === null) {
         return;
       }
@@ -276,7 +281,11 @@ export const useDraggable = <TData = unknown>(
   // Worklet version for use within UI thread contexts
   const updateDraggablePositionWorklet = useCallback(() => {
     "worklet";
-    const measurement = measure(animatedViewRef);
+    if (!nodeReady.value) {
+      return;
+    }
+
+    const measurement = safeMeasure(animatedViewRef);
     if (measurement === null) {
       return;
     }
@@ -364,10 +373,15 @@ export const useDraggable = <TData = unknown>(
   }, [updateBounds]);
 
   const handleLayoutHandler = useCallback(
-    (event: LayoutChangeEvent) => {
+    (_event: LayoutChangeEvent) => {
+      scheduleOnUI(() => {
+        "worklet";
+        nodeReady.value = true;
+      });
+
       updateDraggablePosition();
     },
-    [updateDraggablePosition]
+    [nodeReady, updateDraggablePosition]
   );
 
   const animateDragEndPosition = useCallback(
@@ -608,6 +622,7 @@ export const useDraggable = <TData = unknown>(
         // We use onStart to detect the initial drag start after the preDragDelay
         .onStart(() => {
           "worklet";
+          if (!nodeReady.value) return;
           //first update the position
           updateDraggablePositionWorklet();
           if (dragDisabledShared.value) return;
@@ -717,6 +732,7 @@ export const useDraggable = <TData = unknown>(
       contextOnDragging,
       contextOnDragStart,
       contextOnDragEnd,
+      nodeReady,
       preDragDelay,
     ]
   );

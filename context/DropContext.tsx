@@ -8,7 +8,6 @@ import React, {
   useCallback,
   forwardRef,
   useImperativeHandle,
-  useEffect,
 } from "react";
 import {
   DropProviderProps,
@@ -171,17 +170,21 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
       delete positionUpdateListenersRef.current[id];
     }, []);
 
-    // Call the update callback whenever droppedItems changes
-    useEffect(() => {
-      if (onDroppedItemsUpdate) {
-        onDroppedItemsUpdate(droppedItems);
-      }
-    }, [droppedItems, onDroppedItemsUpdate]);
+    const updateDroppedItems = useCallback(
+      (updater: (currentItems: DroppedItemsMap) => DroppedItemsMap) => {
+        setDroppedItems((currentItems) => {
+          const nextItems = updater(currentItems);
+          onDroppedItemsUpdate?.(nextItems);
+          return nextItems;
+        });
+      },
+      [onDroppedItemsUpdate]
+    );
 
     // Update method to use string IDs
     const registerDroppedItem = useCallback(
       (draggableId: string, droppableId: string, itemData: any) => {
-        setDroppedItems((prev) => ({
+        updateDroppedItems((prev) => ({
           ...prev,
           [draggableId]: {
             droppableId,
@@ -189,16 +192,19 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
           },
         }));
       },
-      []
+      [updateDroppedItems]
     );
 
-    const unregisterDroppedItem = useCallback((draggableId: string) => {
-      setDroppedItems((prev) => {
-        const newItems = { ...prev };
-        delete newItems[draggableId];
-        return newItems;
-      });
-    }, []);
+    const unregisterDroppedItem = useCallback(
+      (draggableId: string) => {
+        updateDroppedItems((prev) => {
+          const newItems = { ...prev };
+          delete newItems[draggableId];
+          return newItems;
+        });
+      },
+      [updateDroppedItems]
+    );
 
     const getDroppedItems = useCallback(() => {
       return droppedItems;

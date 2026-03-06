@@ -71,18 +71,18 @@ implementation 'com.swmansion.gesturehandler:react-native-gesture-handler:2.x.x'
 If you're using Expo, you'll need to install the dependencies through Expo:
 
 ```bash
-npx expo install react-native-reanimated react-native-gesture-handler
+npx expo install react-native-reanimated react-native-worklets react-native-gesture-handler
 ```
 
 **Note**: You'll need to use a development build or eject to a bare workflow to use this library, as it requires native code that's not available in Expo Go.
 
 ##### Creating a Development Build
 
-If you're using Expo SDK 46+, create a development build:
+If you're using Expo SDK 55+, create a development build:
 
 ```bash
 # Install the library
-npx expo install react-native-reanimated-dnd react-native-reanimated react-native-gesture-handler
+npx expo install react-native-reanimated-dnd react-native-reanimated react-native-worklets react-native-gesture-handler
 
 # Create a development build
 npx expo run:ios
@@ -92,12 +92,12 @@ npx expo run:android
 
 ##### Expo Configuration
 
-Add the Reanimated plugin to your `app.json` or `app.config.js`:
+Reanimated 4 requires the New Architecture and the Worklets package. Add `react-native-worklets` to your Expo config:
 
 ```json
 {
   "expo": {
-    "plugins": ["react-native-reanimated/plugin"]
+    "plugins": ["react-native-worklets"]
   }
 }
 ```
@@ -107,25 +107,25 @@ Or if using `app.config.js`:
 ```javascript
 export default {
   expo: {
-    plugins: ["react-native-reanimated/plugin"],
+    plugins: ["react-native-worklets"],
   },
 };
 ```
 
 ### 4. Configure Reanimated
 
-Add the Reanimated plugin to your `babel.config.js`:
+Add the Worklets Babel plugin to your `babel.config.js`:
 
 ```javascript
 module.exports = {
-  presets: ["module:metro-react-native-babel-preset"],
+  presets: ["babel-preset-expo"],
   plugins: [
-    "react-native-reanimated/plugin", // This must be last
+    "react-native-worklets/plugin", // This must be last
   ],
 };
 ```
 
-**Important**: The Reanimated plugin must be the last item in the plugins array.
+**Important**: The Worklets plugin must be the last item in the plugins array.
 
 ### 5. Configure Gesture Handler
 

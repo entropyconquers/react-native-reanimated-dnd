@@ -3,7 +3,10 @@ import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
-import { useDraggable, type UseDraggableOptions } from "@/external-lib";
+import {
+  useDraggable,
+  type UseDraggableOptions,
+} from "react-native-reanimated-dnd";
 
 export interface BasicDraggableProps<TData = unknown>
   extends UseDraggableOptions<TData> {

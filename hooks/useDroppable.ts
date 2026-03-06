@@ -1,6 +1,9 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { LayoutChangeEvent, StyleSheet } from "react-native";
-import Animated, { measure, useAnimatedRef } from "react-native-reanimated";
+import Animated, {
+  useAnimatedRef,
+  useSharedValue,
+} from "react-native-reanimated";
 import { scheduleOnRN, scheduleOnUI } from "react-native-worklets";
 import {
   DropAlignment,
@@ -9,6 +12,7 @@ import {
   SlotsContextValue,
 } from "../types/context";
 import { UseDroppableOptions, UseDroppableReturn } from "../types/droppable";
+import { safeMeasure } from "./safeMeasure";
 
 let _nextDroppableId = 1;
 const _getUniqueDroppableId = (): number => {
@@ -157,6 +161,7 @@ export const useDroppable = <TData = unknown>(
   } = options;
 
   // Create animated ref first
+  const nodeReady = useSharedValue(false);
   const animatedViewRef = useAnimatedRef<Animated.View>();
 
   const id = useRef(_getUniqueDroppableId()).current;
@@ -246,7 +251,11 @@ export const useDroppable = <TData = unknown>(
   const updateDroppablePosition = useCallback(() => {
     scheduleOnUI(() => {
       "worklet";
-      const measurement = measure(animatedViewRef);
+      if (!nodeReady.value) {
+        return;
+      }
+
+      const measurement = safeMeasure(animatedViewRef);
       if (measurement === null) {
         return;
       }
@@ -265,9 +274,14 @@ export const useDroppable = <TData = unknown>(
 
   const handleLayoutHandler = useCallback(
     (_event: LayoutChangeEvent) => {
+      scheduleOnUI(() => {
+        "worklet";
+        nodeReady.value = true;
+      });
+
       updateDroppablePosition();
     },
-    [updateDroppablePosition]
+    [nodeReady, updateDroppablePosition]
   );
 
   useEffect(() => {

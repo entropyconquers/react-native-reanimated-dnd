@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
-  ActivityIndicator,
   Platform,
   Modal,
   Image,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -18,7 +17,7 @@ import {
   SortableItem,
   SortableRenderItemProps,
   SortableDirection,
-} from "@/external-lib";
+} from "react-native-reanimated-dnd";
 import { ExampleHeader } from "./ExampleHeader";
 import { Footer } from "./Footer";
 
@@ -172,8 +171,6 @@ const ITEM_WIDTH = 120;
 const ITEM_GAP = 12;
 const PADDING_HORIZONTAL = 12;
 
-const windowWidth = Dimensions.get("window").width;
-
 interface HorizontalSortableExampleProps {
   onBack: () => void;
 }
@@ -181,16 +178,9 @@ interface HorizontalSortableExampleProps {
 export function HorizontalSortableExample({
   onBack,
 }: HorizontalSortableExampleProps) {
+  const { width: windowWidth } = useWindowDimensions();
   const [isDragHandleMode, setIsDragHandleMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [showWebModal, setShowWebModal] = useState(Platform.OS === "web");
-
-  // this is just to defer loading a large list during navigation
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  }, []);
 
   // Render each horizontal sortable item
   const renderItem = useCallback(
@@ -248,7 +238,7 @@ export function HorizontalSortableExample({
               {
                 borderColor: item.color,
                 borderWidth: 2,
-                backgroundColor: "rgb(11, 11, 11)28)",
+                backgroundColor: "rgba(11, 11, 11, 0.28)",
               },
             ]}
           >
@@ -259,10 +249,7 @@ export function HorizontalSortableExample({
 
                 isDragHandleMode && {
                   borderColor: item.color,
-                  shadowColor: item.color,
-                  shadowOffset: { width: 0, height: 0 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 10,
+                  boxShadow: `0px 0px 10px ${item.color}`,
                 },
               ]}
             >
@@ -293,9 +280,9 @@ export function HorizontalSortableExample({
               <Text style={[styles.tagLabel, { color: item.color }]}>
                 {item.label}
               </Text>
-              <Text style={[styles.tagCategory]}>{item.category}</Text>
+              <Text style={styles.tagCategory}>{item.category}</Text>
             </View>
-            <Text style={[styles.tagCount]}>{item.count}+ downloads</Text>
+            <Text style={styles.tagCount}>{item.count}+ downloads</Text>
           </View>
         </SortableItem>
       );
@@ -319,85 +306,77 @@ export function HorizontalSortableExample({
 
             <View style={styles.controlsContainer}>
               <View style={styles.toggleButtonContainer}>
-                {!isLoading && (
-                  <TouchableOpacity
-                    style={styles.toggleButton}
-                    onPress={() => setIsDragHandleMode(!isDragHandleMode)}
-                  >
-                    <Text style={styles.toggleText}>
-                      {isDragHandleMode ? "Handle Mode" : "Full Item Mode"}
-                    </Text>
-                    <View
-                      style={[
-                        styles.toggleIndicator,
-                        {
-                          backgroundColor: isDragHandleMode
-                            ? "#FF3B30"
-                            : "#8E8E93",
-                        },
-                      ]}
-                    />
-                  </TouchableOpacity>
-                )}
+                <TouchableOpacity
+                  style={styles.toggleButton}
+                  onPress={() => setIsDragHandleMode(!isDragHandleMode)}
+                >
+                  <Text style={styles.toggleText}>
+                    {isDragHandleMode ? "Handle Mode" : "Full Item Mode"}
+                  </Text>
+                  <View
+                    style={[
+                      styles.toggleIndicator,
+                      {
+                        backgroundColor: isDragHandleMode
+                          ? "#FF3B30"
+                          : "#8E8E93",
+                      },
+                    ]}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
 
-            {isLoading ? (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#FF3B30" />
+            <View style={styles.contentContainer}>
+              <View style={styles.statsContainer}>
+                <Text style={styles.statsText}>
+                  {MOCK_TAGS.length} Technology Tags
+                </Text>
+                <Text style={styles.statsSubtext}>
+                  {isDragHandleMode
+                    ? "Drag the logo handle to reorder horizontally"
+                    : "Hold and drag tags to reorder horizontally"}
+                </Text>
               </View>
-            ) : (
-              <View style={styles.contentContainer}>
-                <View style={styles.statsContainer}>
-                  <Text style={styles.statsText}>
-                    {MOCK_TAGS.length} Technology Tags
-                  </Text>
-                  <Text style={styles.statsSubtext}>
-                    {isDragHandleMode
-                      ? "Drag the logo handle to reorder horizontally"
-                      : "Hold and drag tags to reorder horizontally"}
-                  </Text>
-                </View>
 
-                <View style={styles.listContainer}>
-                  <Sortable
-                    data={MOCK_TAGS}
-                    renderItem={renderItem}
-                    direction={SortableDirection.Horizontal}
-                    itemWidth={ITEM_WIDTH}
-                    gap={ITEM_GAP}
-                    paddingHorizontal={PADDING_HORIZONTAL}
-                    style={styles.list}
+              <View style={styles.listContainer}>
+                <Sortable
+                  data={MOCK_TAGS}
+                  renderItem={renderItem}
+                  direction={SortableDirection.Horizontal}
+                  itemWidth={ITEM_WIDTH}
+                  gap={ITEM_GAP}
+                  paddingHorizontal={PADDING_HORIZONTAL}
+                  style={styles.list}
+                />
+              </View>
+
+              <View style={styles.infoContainer}>
+                <View style={styles.infoItem}>
+                  <View
+                    style={[
+                      styles.infoIndicator,
+                      { backgroundColor: "#FF3B30" },
+                    ]}
                   />
+                  <Text style={styles.infoText}>
+                    Handle Mode: Only the logo area is draggable for precise
+                    control
+                  </Text>
                 </View>
-
-                <View style={styles.infoContainer}>
-                  <View style={styles.infoItem}>
-                    <View
-                      style={[
-                        styles.infoIndicator,
-                        { backgroundColor: "#FF3B30" },
-                      ]}
-                    />
-                    <Text style={styles.infoText}>
-                      Handle Mode: Only the logo area is draggable for precise
-                      control
-                    </Text>
-                  </View>
-                  <View style={styles.infoItem}>
-                    <View
-                      style={[
-                        styles.infoIndicator,
-                        { backgroundColor: "#8E8E93" },
-                      ]}
-                    />
-                    <Text style={styles.infoText}>
-                      Full Item Mode: The entire tag card is draggable
-                    </Text>
-                  </View>
+                <View style={styles.infoItem}>
+                  <View
+                    style={[
+                      styles.infoIndicator,
+                      { backgroundColor: "#8E8E93" },
+                    ]}
+                  />
+                  <Text style={styles.infoText}>
+                    Full Item Mode: The entire tag card is draggable
+                  </Text>
                 </View>
               </View>
-            )}
+            </View>
           </View>
         </ScrollView>
 
@@ -553,12 +532,6 @@ const styles = StyleSheet.create({
     width: 12,
     height: 2.5,
     borderRadius: 1.25,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: 200,
   },
   contentContainer: {
     flexDirection: "column",

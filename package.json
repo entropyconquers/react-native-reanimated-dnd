@@ -6,6 +6,9 @@
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "type": "module",
+  "workspaces": [
+    "example-app"
+  ],
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
@@ -17,11 +20,14 @@
   "scripts": {
     "build": "tsc && npm run minify",
     "build:safe": "tsc",
+    "build:watch": "tsc --watch",
     "build:clean": "rm -rf lib && npm run build",
     "build:clean:safe": "rm -rf lib && npm run build:safe",
     "minify": "node scripts/build.js",
-    "sync:external-lib": "node scripts/sync-external-lib.js",
+    "postinstall": "npm run build:safe",
     "type-check": "tsc --noEmit",
+    "type-check:example": "npm run type-check --workspace example-app",
+    "doctor:example": "npm run doctor --workspace example-app",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\" --ignore-path .prettierignore",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\" --ignore-path .prettierignore"
   },
