@@ -561,13 +561,13 @@ function ShadowDraggable({ data }) {
 Always use worklets for animation functions:
 
 ```tsx
-// ✅ Good - runs on UI thread
+// Good - runs on UI thread
 const optimizedAnimation = (toValue) => {
   "worklet";
   return withSpring(toValue);
 };
 
-// ❌ Bad - runs on JS thread
+// Bad - runs on JS thread
 const slowAnimation = (toValue) => {
   return withSpring(toValue);
 };

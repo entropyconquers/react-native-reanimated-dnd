@@ -16,31 +16,31 @@ React Native Reanimated DnD is a comprehensive drag-and-drop solution that provi
 
 ## Key Features
 
-### 🎯 **Easy to Use**
+### Easy to Use
 
 Simple API that works out of the box with minimal configuration.
 
-### ⚡ **High Performance**
+### High Performance
 
 All animations run on the UI thread for consistent 60fps performance with FlatList virtualization.
 
-### 📜 **Vertical & Horizontal Sortable Lists**
+### Vertical & Horizontal Sortable Lists
 
 Drag and drop to sort lists in any direction, with automatic scrolling for out-of-view items.
 
-### 🔲 **Sortable Grids**
+### Sortable Grids
 
 2D grid drag-and-drop with insert and swap reordering strategies, 8-directional auto-scroll, and handle support.
 
-### 🎨 **Highly Customizable**
+### Highly Customizable
 
 Extensive customization options for animations, collision detection, and visual feedback.
 
-### 📱 **Mobile Optimized**
+### Mobile Optimized
 
 Designed specifically for mobile touch interactions with proper gesture handling.
 
-### 🔧 **TypeScript Ready**
+### TypeScript Ready
 
 Full TypeScript support with comprehensive type definitions.
 

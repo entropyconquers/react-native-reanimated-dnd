@@ -6,7 +6,7 @@ Complete API reference for React Native Reanimated DnD library. This section pro
 
 ## Quick Navigation
 
-### 🧩 [Components](./components/draggable)
+### [Components](./components/draggable)
 
 High-level React components for implementing drag-and-drop functionality:
 
@@ -17,7 +17,7 @@ High-level React components for implementing drag-and-drop functionality:
 - **[SortableGrid](./components/sortable-grid)** - High-level sortable grid component
 - **[SortableGridItem](./components/sortable-grid-item)** - Individual items in sortable grids (includes `SortableGridItem.Handle`)
 
-### 🪝 [Hooks](./hooks/useDraggable)
+### [Hooks](./hooks/useDraggable)
 
 Low-level hooks for custom implementations:
 
@@ -28,14 +28,14 @@ Low-level hooks for custom implementations:
 - **[useGridSortable](./hooks/useGridSortable)** - Individual grid sortable item logic
 - **[useGridSortableList](./hooks/useGridSortableList)** - Grid sortable list management
 
-### 🏗️ [Context & Providers](./context/DropProvider)
+### [Context & Providers](./context/DropProvider)
 
 Context providers and their APIs:
 
 - **[DropProvider](./context/DropProvider)** - Main context provider for drag-and-drop
 - **[DragDropContext](./context/DragDropContext)** - Context value and methods
 
-### 📝 [Types & Interfaces](./types/draggable-types)
+### [Types & Interfaces](./types/draggable-types)
 
 Complete TypeScript definitions:
 
@@ -46,7 +46,7 @@ Complete TypeScript definitions:
 - **[Context Types](./types/context-types)** - Types for context and providers
 - **[Enums](./types/enums)** - Enumeration definitions
 
-### 🛠️ [Utilities](./utilities/collision-algorithms)
+### [Utilities](./utilities/collision-algorithms)
 
 Helper functions and algorithms:
 

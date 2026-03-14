@@ -358,14 +358,14 @@ function ComponentWithProviderAccess() {
 Use one `DropProvider` at the root of your drag-and-drop area:
 
 ```tsx
-// ✅ Good: Single provider at the root
+// Good: Single provider at the root
 <GestureHandlerRootView style={{ flex: 1 }}>
   <DropProvider>
     <App />
   </DropProvider>
 </GestureHandlerRootView>
 
-// ❌ Bad: Multiple nested providers
+// Bad: Multiple nested providers
 <GestureHandlerRootView style={{ flex: 1 }}>
   <DropProvider>
     <Screen1 />

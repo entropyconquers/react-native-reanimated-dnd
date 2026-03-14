@@ -200,12 +200,12 @@ interface GridItem {
 
 function CustomGrid() {
   const [items, setItems] = useState<GridItem[]>([
-    { id: "1", label: "Music", emoji: "🎵", color: "#FF3B30" },
-    { id: "2", label: "Games", emoji: "🎮", color: "#FF9500" },
-    { id: "3", label: "Camera", emoji: "📸", color: "#FFCC00" },
-    { id: "4", label: "Art", emoji: "🎨", color: "#34C759" },
-    { id: "5", label: "Books", emoji: "📚", color: "#007AFF" },
-    { id: "6", label: "Power", emoji: "⚡", color: "#5856D6" },
+    { id: "1", label: "Music", emoji: "music", color: "#FF3B30" },
+    { id: "2", label: "Games", emoji: "games", color: "#FF9500" },
+    { id: "3", label: "Camera", emoji: "camera", color: "#FFCC00" },
+    { id: "4", label: "Art", emoji: "art", color: "#34C759" },
+    { id: "5", label: "Books", emoji: "books", color: "#007AFF" },
+    { id: "6", label: "Power", emoji: "power", color: "#5856D6" },
   ]);
 
   const {

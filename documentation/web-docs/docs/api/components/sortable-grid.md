@@ -28,10 +28,10 @@ import { SortableGrid } from "react-native-reanimated-dnd";
 
 ```tsx
 const items = [
-  { id: "1", label: "Music", emoji: "🎵", color: "#FF3B30" },
-  { id: "2", label: "Games", emoji: "🎮", color: "#FF9500" },
-  { id: "3", label: "Camera", emoji: "📸", color: "#FFCC00" },
-  { id: "4", label: "Art", emoji: "🎨", color: "#34C759" },
+  { id: "1", label: "Music", emoji: "music", color: "#FF3B30" },
+  { id: "2", label: "Games", emoji: "games", color: "#FF9500" },
+  { id: "3", label: "Camera", emoji: "camera", color: "#FFCC00" },
+  { id: "4", label: "Art", emoji: "art", color: "#34C759" },
 ];
 
 <SortableGrid
@@ -262,12 +262,12 @@ interface GridItem {
 
 function AppGrid() {
   const [items, setItems] = useState<GridItem[]>([
-    { id: "1", label: "Music", color: "#FF3B30", emoji: "🎵" },
-    { id: "2", label: "Games", color: "#FF9500", emoji: "🎮" },
-    { id: "3", label: "Camera", color: "#FFCC00", emoji: "📸" },
-    { id: "4", label: "Art", color: "#34C759", emoji: "🎨" },
-    { id: "5", label: "Books", color: "#007AFF", emoji: "📚" },
-    { id: "6", label: "Power", color: "#5856D6", emoji: "⚡" },
+    { id: "1", label: "Music", color: "#FF3B30", emoji: "music" },
+    { id: "2", label: "Games", color: "#FF9500", emoji: "games" },
+    { id: "3", label: "Camera", color: "#FFCC00", emoji: "camera" },
+    { id: "4", label: "Art", color: "#34C759", emoji: "art" },
+    { id: "5", label: "Books", color: "#007AFF", emoji: "books" },
+    { id: "6", label: "Power", color: "#5856D6", emoji: "power" },
   ]);
 
   const dimensions = useMemo(

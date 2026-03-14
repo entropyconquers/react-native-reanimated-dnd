@@ -22,7 +22,7 @@ function MyDropZone() {
   return (
     <Droppable onDrop={handleDrop}>
       <View style={styles.dropZone}>
-        <Text>🎯 Drop items here</Text>
+        <Text>Drop items here</Text>
       </View>
     </Droppable>
   );

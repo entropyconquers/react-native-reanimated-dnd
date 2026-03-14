@@ -17,7 +17,7 @@ function MyDraggable() {
   return (
     <Draggable data={{ id: "1", name: "Item 1", type: "task" }}>
       <View style={styles.item}>
-        <Text>📋 Drag me!</Text>
+        <Text>Drag me!</Text>
       </View>
     </Draggable>
   );
