@@ -2,7 +2,11 @@
 import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AppNavigator } from "./navigation/AppNavigator";
-import { Platform, StyleSheet, View } from "react-native";
+import { LogBox, Platform, StyleSheet, View } from "react-native";
+
+// Suppress InteractionManager deprecation warning from @react-navigation/stack
+// (fixed in v8, not yet stable)
+LogBox.ignoreLogs(["InteractionManager has been deprecated"]);
 
 export default function App() {
   return (

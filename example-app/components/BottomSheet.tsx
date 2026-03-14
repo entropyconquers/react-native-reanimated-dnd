@@ -34,8 +34,9 @@ export function BottomSheet({
 
   const progress = useDerivedValue(() =>
     withSpring(isVisible ? 0 : 1, {
-      damping: 30,
-      stiffness: 180,
+      damping: 24,
+      stiffness: 160,
+      mass: 0.8,
     })
   );
 
