@@ -88,11 +88,10 @@ export function AnimatedSplashScreen({ onFinish }: AnimatedSplashScreenProps) {
         reanimated
       </Animated.Text>
 
-      {/* "dnd" */}
-      <Animated.View style={[styles.dndRow, dndStyle]}>
-        <Text style={styles.dndWhite}>dn</Text>
-        <Text style={styles.dndRed}>d</Text>
-      </Animated.View>
+      {/* "DND" */}
+      <Animated.Text style={[styles.dndText, dndStyle]}>
+        DND
+      </Animated.Text>
 
       {/* Underline */}
       <Animated.View style={[styles.underline, underlineStyle]} />
@@ -114,28 +113,19 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   reanimatedText: {
-    fontSize: 22,
-    fontFamily: fonts.displayBold,
+    fontSize: 16,
+    fontFamily: "MajorMonoDisplay_400Regular",
     color: colors.textPrimary,
     opacity: 0.7,
-    letterSpacing: -0.3,
-    marginBottom: 2,
+    textAlign: "center",
+    lineHeight: 24,
+    marginBottom: 4,
   },
-  dndRow: {
-    flexDirection: "row",
-    alignItems: "baseline",
-  },
-  dndWhite: {
-    fontSize: 72,
-    fontFamily: fonts.displayExtraBold,
+  dndText: {
+    fontSize: 64,
+    fontFamily: "MajorMonoDisplay_400Regular",
     color: colors.textPrimary,
-    letterSpacing: -1,
-  },
-  dndRed: {
-    fontSize: 72,
-    fontFamily: fonts.displayExtraBold,
-    color: colors.primary,
-    letterSpacing: -1,
+    letterSpacing: 4,
   },
   underline: {
     height: 4,

@@ -206,9 +206,11 @@ export function ExamplesNavigationPage({
         {/* Hero */}
         <View style={styles.hero}>
           <View style={styles.heroTitleRow}>
-            <Text style={styles.heroTitle}>
-              reanimated <Text style={styles.heroAccent}>dnd</Text>
-            </Text>
+            <Text style={styles.heroTitle}>reanimated </Text>
+            <View style={styles.dndGroup}>
+              <Text style={styles.heroTitle}>DND</Text>
+              <View style={styles.redAccent} />
+            </View>
             <View style={styles.versionBadge}>
               <Text style={styles.versionText}>v2</Text>
             </View>
@@ -230,20 +232,13 @@ export function ExamplesNavigationPage({
                     {idx > 0 && <View style={styles.separator} />}
                     <TouchableOpacity
                       style={styles.row}
-                      onPress={() =>
-                        onNavigateToExample(example.component)
-                      }
+                      onPress={() => onNavigateToExample(example.component)}
                       activeOpacity={0.6}
                     >
                       <View
-                        style={[
-                          styles.iconBadge,
-                          { backgroundColor: cat.bg },
-                        ]}
+                        style={[styles.iconBadge, { backgroundColor: cat.bg }]}
                       >
-                        <Text
-                          style={[styles.iconText, { color: cat.color }]}
-                        >
+                        <Text style={[styles.iconText, { color: cat.color }]}>
                           {example.icon}
                         </Text>
                       </View>
@@ -293,13 +288,17 @@ const styles = StyleSheet.create({
   heroTitleRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 4,
+  },
+  dndGroup: {
+    alignItems: "center",
   },
   versionBadge: {
     backgroundColor: colors.primaryMuted,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
+    marginLeft: 8,
   },
   versionText: {
     fontSize: 12,
@@ -307,19 +306,23 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   heroTitle: {
-    fontSize: 26,
-    fontFamily: fonts.displayExtraBold,
+    fontSize: 20,
+    fontFamily: "MajorMonoDisplay_400Regular",
     color: colors.textPrimary,
-    letterSpacing: -0.5,
+    lineHeight: 30,
   },
-  heroAccent: {
-    color: colors.primary,
+  redAccent: {
+    alignSelf: "stretch",
+    height: 3,
+    backgroundColor: colors.primary,
+    borderRadius: 1.5,
+    marginTop: 2,
   },
   heroSubtitle: {
     fontSize: 14,
     fontFamily: fonts.bodyRegular,
     color: colors.textMuted,
-    marginTop: 4,
+    marginTop: 8,
   },
 
   // Sections
