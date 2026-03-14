@@ -12,7 +12,7 @@ _Powerful, performant, and built for the modern React Native developer_
 [![npm version](https://badge.fury.io/js/react-native-reanimated-dnd.svg)](https://badge.fury.io/js/react-native-reanimated-dnd)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![React Native](https://img.shields.io/badge/React%20Native-0.60+-green.svg)](https://reactnative.dev/)
+[![React Native](https://img.shields.io/badge/React%20Native-0.80+-green.svg)](https://reactnative.dev/)
 
 <br />
 
@@ -38,9 +38,9 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 ## ✨ Features
 
-- 🚀 **High Performance** - Built with Reanimated 3 for buttery-smooth 60fps animations
-- 🏗️ **Full RN Fabric Support** - Works seamlessly with both New Architecture and Old Architecture
-- 📦 **Expo Compatible** - Zero configuration needed, works out of the box with Expo
+- 🚀 **High Performance** - Built with Reanimated 4 and Worklets for buttery-smooth 60fps animations
+- 🏗️ **New Architecture Ready** - Built for the modern React Native architecture used by Expo SDK 55+
+- 📦 **Expo Compatible** - Tested against Expo SDK 55 and React Native 0.83
 - 🪶 **Tiny Bundle Size** - Only 70kb unpacked size, won't bloat your app
 - 🎯 **Flexible API** - From simple drag-and-drop to complex sortable lists
 - 📱 **React Native First** - Designed specifically for mobile, not ported from web
@@ -73,16 +73,16 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 <img src="https://github.com/user-attachments/assets/80f923f6-7c5f-42e9-9817-7770ee27a70b" alt="Expo QR Code" width="200" height="200" />
 
-_Scan with your camera or Expo Go app_
+_Scan with your camera to open in development build_
 
 </td>
 <td align="center" width="50%">
 
 **🚀 Quick Start**
 
-1. Install [Expo Go](https://expo.dev/client) on your phone
+1. Build the example app with `npx expo run:ios` or `npx expo run:android`
 2. Scan the QR code with your camera
-3. Open the link in Expo Go
+3. Open the link in the development build
 4. Explore 15 interactive examples!
 
 **Or browse the code:**
@@ -203,13 +203,16 @@ npm install react-native-reanimated-dnd
 ### Peer Dependencies
 
 ```bash
-npm install react-native-reanimated react-native-gesture-handler
+npm install react-native-reanimated react-native-gesture-handler react-native-worklets
 ```
 
 Follow the setup guides:
 
-- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation)
+- [React Native Worklets](https://docs.swmansion.com/react-native-worklets/docs/getting-started/installation/)
+- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/)
 - [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/docs/installation)
+
+Make sure your Babel config uses `"react-native-worklets/plugin"` as the last plugin and that your app is running on the New Architecture, which is required by Reanimated 4.
 
 ## 📋 Requirements
 
@@ -1114,11 +1117,9 @@ git clone https://github.com/entropyconquers/react-native-reanimated-dnd.git
 cd react-native-reanimated-dnd
 ```
 
-2. Install dependencies:
+2. Install dependencies (uses npm workspaces):
 
 ```bash
-npm install
-cd example-app
 npm install
 ```
 
@@ -1126,11 +1127,15 @@ npm install
 
 ```bash
 # iOS
-npx expo run:ios
+npm run start --workspace example-app
+# then press 'i' for iOS or 'a' for Android
 
-# Android
-npx expo run:android
+# Or run directly:
+npx expo run:ios --cwd example-app
+npx expo run:android --cwd example-app
 ```
+
+**Note:** Reanimated 4 requires the New Architecture, so you must use a development build (`npx expo run:ios` / `npx expo run:android`), not Expo Go.
 
 The example app includes all 15 interactive examples showcasing every feature of the library.
 
@@ -1138,28 +1143,38 @@ The example app includes all 15 interactive examples showcasing every feature of
 
 I am constantly working to improve React Native Reanimated DnD. Here's what's coming next:
 
-### 🎯 Next Release (v2.0.0)
+### ✅ v2.0.0 (Current)
 
-**Focus: Enhanced Functionality & Bug Fixes**
+**Reanimated 4 + Worklets Migration**
+
+- 🚀 **Reanimated 4 & Worklets** - Migrated from Reanimated 3 to Reanimated 4 with react-native-worklets
+- 🏗️ **New Architecture** - Built for React Native's New Architecture (required by Reanimated 4)
+- 📦 **Expo SDK 55** - Tested and compatible with Expo SDK 55 and React Native 0.83
+- 🔧 **Handle Registration** - Replaced tree-walking handle detection with a registration pattern
+- ⚡ **Improved Scheduling** - Uses `scheduleOnRN`/`scheduleOnUI` for better worklet-to-JS communication
+- 🎯 **Pre-drag Delay** - New `preDragDelay` prop for distinguishing taps from drags
+- 📐 **npm Workspaces** - Example app now uses workspace-based development setup
+
+### 🎯 Next Release
+
+**Focus: Enhanced Functionality & New Features**
 
 - 🐛 **Bug Fixes & Issues Resolution**
+
   - Address existing reported issues
   - Performance optimizations
   - Gesture handling improvements
   - API Improvements
 
 - 📐 **Sortable Grids**
+
   - 2D grid drag-and-drop support
   - Flexible grid layouts (2x2, 3x3, custom)
   - Smart auto-positioning and gap management
   - Responsive grid behavior
 
-- ↔️ **Horizontal Sortable Lists**
-  - Full horizontal scrolling support
-  - Auto-scroll for out-of-view items
-  - Customizable scroll behavior
-
 - 🪆 **Nested Sortable Lists**
+
   - Multi-level hierarchy support
   - Collapse/expand functionality
   - Parent-child relationship management
