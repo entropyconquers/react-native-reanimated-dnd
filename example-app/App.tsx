@@ -18,6 +18,9 @@ import {
   Outfit_600SemiBold,
   Outfit_700Bold,
 } from "@expo-google-fonts/outfit";
+import {
+  MajorMonoDisplay_400Regular,
+} from "@expo-google-fonts/major-mono-display";
 import { colors } from "./theme";
 import { ToastProvider } from "./components/toast";
 import { AnimatedSplashScreen } from "./components/AnimatedSplashScreen";
@@ -42,6 +45,15 @@ export default function App() {
     Outfit_500Medium,
     Outfit_600SemiBold,
     Outfit_700Bold,
+    MajorMonoDisplay_400Regular,
+    "SFProDisplay-Regular": require("./assets/fonts/SF-Pro-Display-Regular.otf"),
+    "SFProDisplay-Medium": require("./assets/fonts/SF-Pro-Display-Medium.otf"),
+    "SFProDisplay-Semibold": require("./assets/fonts/SF-Pro-Display-Semibold.otf"),
+    "SFProDisplay-Bold": require("./assets/fonts/SF-Pro-Display-Bold.otf"),
+    "SFProText-Regular": require("./assets/fonts/SF-Pro-Text-Regular.otf"),
+    "SFProText-Medium": require("./assets/fonts/SF-Pro-Text-Medium.otf"),
+    "SFProText-Semibold": require("./assets/fonts/SF-Pro-Text-Semibold.otf"),
+    "SFProText-Bold": require("./assets/fonts/SF-Pro-Text-Bold.otf"),
   });
 
   useEffect(() => {

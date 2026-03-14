@@ -14,7 +14,6 @@ import {
 } from "../types/grid";
 import { SortableData } from "../types/sortable";
 import { useGridSortableList } from "../hooks/useGridSortableList";
-import { dataHash } from "./sortableUtils";
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
@@ -126,13 +125,11 @@ function SortableGridComponent<TData extends SortableData>({
 
 export const SortableGrid = memo(
   ({ data, renderItem, ...props }: SortableGridProps<any>) => {
-    const dataHashKey = dataHash(data);
     return (
       <SortableGridComponent
         data={data}
         renderItem={renderItem}
         {...props}
-        key={dataHashKey}
       />
     );
   }

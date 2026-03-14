@@ -46,10 +46,9 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 - 📱 **React Native First** - Designed specifically for mobile, not ported from web
 - 🔧 **TypeScript Ready** - Full type safety with comprehensive definitions
 - 🎨 **Infinitely Customizable** - Every animation, behavior, and style is configurable
-- 📦 **Complete Component Suite** - Draggable, Droppable, Sortable, SortableGrid, and more
+- 📦 **Complete Component Suite** - Draggable, Droppable, Sortable, and more
 - 🎪 **Smart Collision Detection** - Multiple algorithms (center, intersect, contain)
 - 📜 **Vertical & Horizontal Sortable Lists** - Drag and drop to sort lists in any direction with automatic scrolling
-- 🔲 **Sortable Grids** - 2D grid drag-and-drop with insert and swap reordering strategies
 - ⚡ **FlatList Performance** - Optional FlatList rendering for large datasets with virtualization
 - 🎭 **Drag Handles** - Precise control with dedicated drag areas
 - 🎬 **Custom Animations** - Spring, timing, or bring your own animation functions
@@ -106,7 +105,6 @@ _Comprehensive guides, API reference, and interactive examples_
 The example app includes:
 
 - 🎵 **Sortable Music Queue** - Complete list reordering with handles
-- 🔲 **iOS Home Screen Grid** - 2D grid sorting with jiggle animations and delete buttons
 - 🎯 **Collision Detection** - Different algorithms in action
 - 🎬 **Custom Animations** - Spring, timing, and easing variations
 - 📦 **Boundary Constraints** - Axis-locked and bounded dragging
@@ -848,33 +846,6 @@ Creates drop zones with visual feedback and capacity management.
 </Droppable>
 ```
 
-#### `<SortableGrid>`
-
-High-level component for sortable 2D grids with insert and swap reordering strategies.
-
-```tsx
-<SortableGrid
-  data={Array<{ id: string }>} // Array of items to render
-  renderItem={(props) => ReactNode} // Render function for items
-  dimensions={{
-    columns: number,              // Number of columns (vertical orientation)
-    itemWidth: number,            // Width of each grid item
-    itemHeight: number,           // Height of each grid item
-    rowGap?: number,              // Gap between rows
-    columnGap?: number,           // Gap between columns
-  }}
-  orientation={GridOrientation}   // "vertical" | "horizontal" (default: vertical)
-  strategy={GridStrategy}         // "insert" | "swap" (default: insert)
-  scrollEnabled={boolean}         // Enable/disable scrolling
-  style={StyleProp<ViewStyle>}    // Grid container style
-  contentContainerStyle={StyleProp<ViewStyle>} // Content container style
-/>
-```
-
-#### `<SortableGridItem>`
-
-Individual item within a sortable grid with gesture handling and handle support via `SortableGridItem.Handle`.
-
 #### `<Sortable>`
 
 High-level component for sortable lists with auto-scrolling. Supports both vertical and horizontal directions.
@@ -941,14 +912,6 @@ Core hook for implementing horizontal sortable functionality for individual item
 
 Hook for managing entire horizontal sortable lists with auto-scrolling.
 
-#### `useGridSortable(options)`
-
-Hook for individual sortable grid items with 2D position management and drag gestures.
-
-#### `useGridSortableList(options)`
-
-Hook for managing entire sortable grids with position tracking, auto-scrolling, and content dimensions.
-
 ### Context
 
 #### `<DropProvider>`
@@ -998,24 +961,6 @@ type DropAlignment =
 enum SortableDirection {
   Vertical = "vertical",
   Horizontal = "horizontal",
-}
-```
-
-#### `GridOrientation`
-
-```tsx
-enum GridOrientation {
-  Vertical = "vertical",
-  Horizontal = "horizontal",
-}
-```
-
-#### `GridStrategy`
-
-```tsx
-enum GridStrategy {
-  Insert = "insert",
-  Swap = "swap",
 }
 ```
 
@@ -1220,6 +1165,13 @@ I am constantly working to improve React Native Reanimated DnD. Here's what's co
   - Performance optimizations
   - Gesture handling improvements
   - API Improvements
+
+- 📐 **Sortable Grids**
+
+  - 2D grid drag-and-drop support
+  - Flexible grid layouts (2x2, 3x3, custom)
+  - Smart auto-positioning and gap management
+  - Responsive grid behavior
 
 - 🪆 **Nested Sortable Lists**
 
