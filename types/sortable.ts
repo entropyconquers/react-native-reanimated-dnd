@@ -213,10 +213,17 @@ export interface UseSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
 
   /**
-   * Pan gesture definition for drag interactions.
-   * Attach this to a GestureDetector to enable dragging.
+   * Pan gesture for full-item drag interactions.
+   * Automatically disabled when a handle is registered.
    */
   panGestureHandler: GestureType;
+
+  /**
+   * Pan gesture for handle-only drag interactions.
+   * A separate gesture instance to avoid sharing a gesture object
+   * between multiple GestureDetectors.
+   */
+  handlePanGestureHandler: GestureType;
 
   /**
    * Whether this item is currently being moved/dragged.
@@ -710,10 +717,17 @@ export interface UseHorizontalSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
 
   /**
-   * Pan gesture definition for drag interactions.
-   * Attach this to a GestureDetector to enable dragging.
+   * Pan gesture for full-item drag interactions.
+   * Automatically disabled when a handle is registered.
    */
   panGestureHandler: GestureType;
+
+  /**
+   * Pan gesture for handle-only drag interactions.
+   * A separate gesture instance to avoid sharing a gesture object
+   * between multiple GestureDetectors.
+   */
+  handlePanGestureHandler: GestureType;
 
   /**
    * Whether this item is currently being moved/dragged.

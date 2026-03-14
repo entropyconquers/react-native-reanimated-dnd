@@ -84,21 +84,20 @@ function renderSortableContent(
   style: StyleProp<ViewStyle> | undefined,
   children: React.ReactNode,
   panGestureHandler: SortableContextValue["panGestureHandler"],
+  handlePanGestureHandler: SortableContextValue["panGestureHandler"],
   registerHandle: SortableContextValue["registerHandle"],
-  hasHandle: boolean
 ) {
   const content = (
     <Animated.View style={[animatedStyle, customAnimatedStyle]}>
-      <SortableContext.Provider value={{ panGestureHandler, registerHandle }}>
+      <SortableContext.Provider value={{ panGestureHandler: handlePanGestureHandler, registerHandle }}>
         <Animated.View style={style}>{children}</Animated.View>
       </SortableContext.Provider>
     </Animated.View>
   );
 
-  if (hasHandle) {
-    return content;
-  }
-
+  // Always render the outer GestureDetector to avoid mount/unmount cycles
+  // that trigger Reanimated 4's "Tried to modify key handlerTag" warning.
+  // The panGestureHandler is automatically disabled when a handle is registered.
   return (
     <GestureDetector gesture={panGestureHandler}>{content}</GestureDetector>
   );
@@ -126,7 +125,7 @@ function VerticalSortableItemInner<T>({
   onDrop,
   onDragging,
 }: VerticalSortableItemInnerProps<T>) {
-  const { animatedStyle, panGestureHandler, hasHandle, registerHandle } = useSortable<T>({
+  const { animatedStyle, panGestureHandler, handlePanGestureHandler, registerHandle } = useSortable<T>({
     id,
     positions,
     lowerBound,
@@ -146,8 +145,8 @@ function VerticalSortableItemInner<T>({
     style,
     children,
     panGestureHandler,
+    handlePanGestureHandler,
     registerHandle,
-    hasHandle
   );
 }
 
@@ -177,7 +176,7 @@ function HorizontalSortableItemInner<T>({
   onDrop,
   onDraggingHorizontal,
 }: HorizontalSortableItemInnerProps<T>) {
-  const { animatedStyle, panGestureHandler, hasHandle, registerHandle } =
+  const { animatedStyle, panGestureHandler, handlePanGestureHandler, registerHandle } =
     useHorizontalSortable<T>({
       id,
       positions,
@@ -200,8 +199,8 @@ function HorizontalSortableItemInner<T>({
     style,
     children,
     panGestureHandler,
+    handlePanGestureHandler,
     registerHandle,
-    hasHandle
   );
 }
 

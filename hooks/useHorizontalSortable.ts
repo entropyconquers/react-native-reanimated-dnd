@@ -345,54 +345,61 @@ export function useHorizontalSortable<T>(
     [movingSV]
   );
 
-  const panGestureHandler: GestureType = Gesture.Pan()
-    .activateAfterLongPress(200)
-    .shouldCancelWhenOutside(false)
-    .onStart((event) => {
-      "worklet";
-      initialItemContentX.value = getItemXPosition(
-        positions.value[id],
-        itemWidth,
-        gap,
-        paddingHorizontal
-      );
-      initialFingerAbsoluteX.value = event.absoluteX;
-      initialLeftBound.value = leftBound.value;
+  const createPanGesture = () =>
+    Gesture.Pan()
+      .activateAfterLongPress(200)
+      .shouldCancelWhenOutside(false)
+      .onStart((event) => {
+        "worklet";
+        initialItemContentX.value = getItemXPosition(
+          positions.value[id],
+          itemWidth,
+          gap,
+          paddingHorizontal
+        );
+        initialFingerAbsoluteX.value = event.absoluteX;
+        initialLeftBound.value = leftBound.value;
 
-      positionX.value = initialItemContentX.value;
-      movingSV.value = true;
-      scheduleOnRN(setIsMoving, true);
+        positionX.value = initialItemContentX.value;
+        movingSV.value = true;
+        scheduleOnRN(setIsMoving, true);
 
-      if (onDragStart) {
-        scheduleOnRN(onDragStart, id, positions.value[id]);
-      }
-    })
-    .onUpdate((event) => {
-      "worklet";
-      const fingerDxScreen = event.absoluteX - initialFingerAbsoluteX.value;
-      const scrollDeltaSinceStart = leftBound.value - initialLeftBound.value;
-      positionX.value =
-        initialItemContentX.value + fingerDxScreen + scrollDeltaSinceStart;
-    })
-    .onFinalize(() => {
-      "worklet";
-      const finishPosition = getItemXPosition(
-        positions.value[id],
-        itemWidth,
-        gap,
-        paddingHorizontal
-      );
-      left.value = withTiming(finishPosition);
-      movingSV.value = false;
-      scheduleOnRN(setIsMoving, false);
+        if (onDragStart) {
+          scheduleOnRN(onDragStart, id, positions.value[id]);
+        }
+      })
+      .onUpdate((event) => {
+        "worklet";
+        const fingerDxScreen = event.absoluteX - initialFingerAbsoluteX.value;
+        const scrollDeltaSinceStart = leftBound.value - initialLeftBound.value;
+        positionX.value =
+          initialItemContentX.value + fingerDxScreen + scrollDeltaSinceStart;
+      })
+      .onFinalize(() => {
+        "worklet";
+        const finishPosition = getItemXPosition(
+          positions.value[id],
+          itemWidth,
+          gap,
+          paddingHorizontal
+        );
+        left.value = withTiming(finishPosition);
+        movingSV.value = false;
+        scheduleOnRN(setIsMoving, false);
 
-      if (onDrop) {
-        const positionsCopy = { ...positions.value };
-        scheduleOnRN(onDrop, id, positions.value[id], positionsCopy);
-      }
+        if (onDrop) {
+          const positionsCopy = { ...positions.value };
+          scheduleOnRN(onDrop, id, positions.value[id], positionsCopy);
+        }
 
-      currentOverItemId.value = null;
-    });
+        currentOverItemId.value = null;
+      });
+
+  // Main gesture for full-item dragging — disabled when a handle is registered
+  const panGestureHandler: GestureType = createPanGesture().enabled(!hasHandle);
+
+  // Separate gesture for handle-only dragging
+  const handlePanGestureHandler: GestureType = createPanGesture();
 
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";
@@ -413,6 +420,7 @@ export function useHorizontalSortable<T>(
   return {
     animatedStyle,
     panGestureHandler,
+    handlePanGestureHandler,
     isMoving,
     hasHandle,
     registerHandle,
