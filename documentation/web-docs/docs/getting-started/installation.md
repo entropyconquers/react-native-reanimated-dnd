@@ -12,8 +12,9 @@ Before installing React Native Reanimated DnD, ensure you have the following dep
 
 ### Required Dependencies
 
-1. **React Native Reanimated 3.x**
+1. **React Native Reanimated 4.x**
 2. **React Native Gesture Handler 2.x**
+3. **React Native Worklets 0.7+**
 
 These are peer dependencies and must be installed separately.
 
@@ -36,13 +37,13 @@ yarn add react-native-reanimated-dnd
 Install React Native Reanimated and Gesture Handler if you haven't already:
 
 ```bash
-npm install react-native-reanimated react-native-gesture-handler
+npm install react-native-reanimated react-native-gesture-handler react-native-worklets
 ```
 
 or with yarn:
 
 ```bash
-yarn add react-native-reanimated react-native-gesture-handler
+yarn add react-native-reanimated react-native-gesture-handler react-native-worklets
 ```
 
 ### 3. Platform Setup
@@ -62,7 +63,7 @@ cd ios && pod install
 For Android, the dependencies should be automatically linked. If you encounter issues, ensure your `android/app/build.gradle` includes:
 
 ```gradle
-implementation 'com.swmansion.reanimated:reanimated:3.x.x'
+implementation 'com.swmansion.reanimated:reanimated:4.x.x'
 implementation 'com.swmansion.gesturehandler:react-native-gesture-handler:2.x.x'
 ```
 
@@ -129,7 +130,7 @@ module.exports = {
 
 ### 5. Configure Gesture Handler
 
-#### For React Native 0.60+
+#### For React Native 0.80+
 
 Add the following to the top of your `index.js` (or `App.js`):
 
@@ -286,7 +287,6 @@ This library requires native code and cannot run in Expo Go. You must:
 
 #### iOS
 
-- Ensure you're using Xcode 12+ for React Native 0.64+
 - If you encounter build errors, try cleaning your build folder in Xcode
 - For M1 Macs, you might need to run `arch -x86_64 pod install`
 
@@ -306,9 +306,9 @@ This library requires native code and cannot run in Expo Go. You must:
 
 ## Version Compatibility
 
-| React Native Reanimated DnD | React Native | Reanimated | Gesture Handler | Expo SDK |
-| --------------------------- | ------------ | ---------- | --------------- | -------- |
-| 1.x.x                       | 0.64+        | 3.x.x      | 2.x.x           | 46+      |
+| React Native Reanimated DnD | React Native | Reanimated | Gesture Handler | Worklets | Expo SDK |
+| --------------------------- | ------------ | ---------- | --------------- | -------- | -------- |
+| 2.x.x                       | 0.80+        | 4.x.x      | 2.28+           | 0.7+     | 55+      |
 
 ## Next Steps
 
@@ -324,7 +324,7 @@ Once installation is complete:
 If you encounter issues during installation:
 
 1. Check the [troubleshooting section](#troubleshooting) above
-2. Search existing [GitHub issues](https://github.com/your-repo/react-native-reanimated-dnd/issues)
+2. Search existing [GitHub issues](https://github.com/entropyconquers/react-native-reanimated-dnd/issues)
 3. Create a new issue with:
    - Your React Native version
    - Your platform (iOS/Android)

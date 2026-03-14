@@ -384,12 +384,12 @@ function SmoothScrollController() {
             ? Math.max(0, scrollY.value - scrollSpeed)
             : scrollY.value + scrollSpeed;
 
-        runOnJS(() => {
+        scheduleOnRN(() => {
           scrollViewRef.current?.scrollTo({
             y: newScrollY,
             animated: false,
           });
-        })();
+        });
       }
     }
   );

@@ -40,16 +40,17 @@ The hook returns an object with the following properties:
 | Property            | Type                   | Description                                                |
 | ------------------- | ---------------------- | ---------------------------------------------------------- |
 | `animatedStyle`     | `StyleProp<ViewStyle>` | Animated style for the sortable item containing transforms |
-| `panGestureHandler` | `any`                  | Pan gesture handler for drag interactions                  |
+| `panGestureHandler` | `GestureType`          | Pan gesture to pass to GestureDetector                     |
 | `isMoving`          | `boolean`              | Whether the item is currently being dragged                |
 | `hasHandle`         | `boolean`              | Whether the item has a drag handle component               |
+| `registerHandle`   | `(registered: boolean) => void` | Callback for handle registration                  |
 
 ## Basic Usage
 
 ```typescript
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useHorizontalSortable } from 'react-native-reanimated-dnd';
 
@@ -100,7 +101,7 @@ function HorizontalSortableTag({
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.tagItem, animatedStyle]}>
         <View style={[
           styles.tagContent,
@@ -110,7 +111,7 @@ function HorizontalSortableTag({
           <Text style={styles.tagText}>{tag.label}</Text>
         </View>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
 ```typescript
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useHorizontalSortable } from 'react-native-reanimated-dnd';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -171,17 +172,6 @@ function HorizontalSortableCard({
     itemWidth,
     gap,
     paddingHorizontal,
-    children: (
-      <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.cardSubtitle}>{item.subtitle}</Text>
-
-        <SortableHandle style={styles.dragHandle}>
-          <Icon name="drag-handle" size={16} color="#999" />
-        </SortableHandle>
-      </View>
-    ),
-    handleComponent: SortableHandle,
     onMove: (id, from, to) => {
       // Handle reordering
       reorderItems(id, from, to);
@@ -201,17 +191,12 @@ function HorizontalSortableCard({
     </Animated.View>
   );
 
-  // If has handle, don't wrap with PanGestureHandler
-  // The handle will control the dragging
-  if (hasHandle) {
-    return content;
-  }
-
-  // If no handle, entire item is draggable
+  // The GestureDetector wraps the content regardless;
+  // when a handle is present, only the handle area initiates dragging.
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       {content}
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 

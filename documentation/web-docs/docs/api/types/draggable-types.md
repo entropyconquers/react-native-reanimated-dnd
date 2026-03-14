@@ -122,6 +122,7 @@ interface UseDraggableOptions<TData = unknown> {
   data: TData;
   draggableId?: string;
   dragDisabled?: boolean;
+  preDragDelay?: number;
   onDragStart?: (data: TData) => void;
   onDragEnd?: (data: TData) => void;
   onDragging?: (payload: DraggingPayload<TData>) => void;
@@ -130,8 +131,6 @@ interface UseDraggableOptions<TData = unknown> {
   dragBoundsRef?: React.RefObject<Animated.View | View>;
   dragAxis?: "x" | "y" | "both";
   collisionAlgorithm?: CollisionAlgorithm;
-  children?: React.ReactNode;
-  handleComponent?: React.ComponentType<any>;
 }
 ```
 
@@ -158,6 +157,19 @@ const data = { id: "1", name: "Task 1", priority: "high" };
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Whether dragging is disabled for this item. When true, the item cannot be dragged.
+
+##### preDragDelay
+
+- **Type**: `number`
+- **Default**: `0`
+- **Description**: Delay in milliseconds before dragging starts. Useful for preventing accidental drags.
+
+```tsx
+const handlePressDelay = useDraggable({
+  data: myData,
+  preDragDelay: 200, // 200ms delay before drag activates
+});
+```
 
 ##### onDragStart
 

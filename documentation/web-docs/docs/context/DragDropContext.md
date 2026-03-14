@@ -253,9 +253,9 @@ function CustomDraggable({ data, children }) {
   };
 
   return (
-    <PanGestureHandler onGestureEvent={handleDragMove}>
+    <GestureDetector gesture={handleDragMove}>
       {children}
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```

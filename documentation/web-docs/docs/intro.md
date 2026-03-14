@@ -4,13 +4,13 @@ sidebar_position: 1
 
 # Introduction
 
-Welcome to React Native Reanimated DnD - a powerful, performant drag-and-drop library built on React Native Reanimated 3 and Gesture Handler.
+Welcome to React Native Reanimated DnD - a powerful, performant drag-and-drop library built on React Native Reanimated 4 and Worklets and Gesture Handler.
 
 ## What is React Native Reanimated DnD?
 
 React Native Reanimated DnD is a comprehensive drag-and-drop solution that provides:
 
-- **Smooth 60fps animations** powered by React Native Reanimated 3
+- **Smooth 60fps animations** powered by React Native Reanimated 4 and Worklets
 - **Gesture-based interactions** using React Native Gesture Handler
 - **Flexible collision detection** with multiple algorithms
 - **TypeScript support** with full type safety
@@ -178,7 +178,7 @@ React Native Reanimated DnD is perfect for:
 
 ### Performance First
 
-- UI thread animations via Reanimated 3
+- UI thread animations via Reanimated 4 and Worklets
 - Optimized collision detection algorithms
 - Minimal JavaScript bridge communication
 - Smooth interactions even on lower-end devices
@@ -208,10 +208,10 @@ Ready to add drag-and-drop to your app? Start with our quick setup guide:
 
 ## Community
 
-- **GitHub**: [Repository](https://github.com/your-repo/react-native-reanimated-dnd)
-- **Issues**: [Bug Reports & Feature Requests](https://github.com/your-repo/react-native-reanimated-dnd/issues)
-- **Discussions**: [Community Discussions](https://github.com/your-repo/react-native-reanimated-dnd/discussions)
+- **GitHub**: [Repository](https://github.com/entropyconquers/react-native-reanimated-dnd)
+- **Issues**: [Bug Reports & Feature Requests](https://github.com/entropyconquers/react-native-reanimated-dnd/issues)
+- **Discussions**: [Community Discussions](https://github.com/entropyconquers/react-native-reanimated-dnd/discussions)
 
 ## License
 
-MIT License - see the [LICENSE](https://github.com/your-repo/react-native-reanimated-dnd/blob/main/LICENSE) file for details.
+MIT License - see the [LICENSE](https://github.com/entropyconquers/react-native-reanimated-dnd/blob/main/LICENSE) file for details.
