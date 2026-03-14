@@ -19,7 +19,7 @@ _Powerful, performant, and built for the modern React Native developer_
 <a href="https://www.npmjs.com/package/react-native-reanimated-dnd" target="_blank">
   <img src="https://img.shields.io/badge/📦%20View%20on%20NPM-cb3837?style=for-the-badge&logo=npm&logoColor=white&labelColor=1e293b&fontSize=24" alt="NPM Package" height="36"/>
 </a>
-<a href="https://react-native-reanimated-dnd.netlify.app/" target="_blank">
+<a href="https://reanimated-dnd-docs.vercel.app/" target="_blank">
   <img src="https://img.shields.io/badge/📖%20Read%20the%20Docs-4f46e5?style=for-the-badge&logo=gitbook&logoColor=white&labelColor=1e293b&color=6366f1&fontSize=24" alt="Documentation"  height="36"/>
 </a>
 <a href="#-interactive-examples" target="_blank">
@@ -94,7 +94,7 @@ _Scan with your camera to open in development build_
 
 ### 📚 Complete Documentation
 
-<a href="https://react-native-reanimated-dnd.netlify.app/" target="_blank">
+<a href="https://reanimated-dnd-docs.vercel.app/" target="_blank">
   <img src="https://img.shields.io/badge/📖%20Documentation-Visit%20Docs-4f46e5?style=for-the-badge&logo=gitbook&logoColor=white&labelColor=1e293b" alt="Documentation" />
 </a>
 
@@ -274,63 +274,34 @@ Programmatic list operations (add, update, delete, reorder items) that work corr
 
 ## 🏃‍♂️ Quick Start
 
-### Basic Draggable
+### Basic Drag & Drop
 
 ```tsx
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Draggable, DropProvider } from "react-native-reanimated-dnd";
+import { Draggable, Droppable, DropProvider } from "react-native-reanimated-dnd";
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider>
-        <View style={styles.content}>
-          <Draggable data={{ id: "1", title: "Drag me!" }}>
-            <View style={styles.draggableItem}>
-              <Text style={styles.itemText}>🎯 Drag me around!</Text>
-            </View>
-          </Draggable>
-        </View>
+        <Droppable onDrop={(data) => console.log("Dropped:", data)}>
+          <View style={styles.dropZone}>
+            <Text>Drop here</Text>
+          </View>
+        </Droppable>
+
+        <Draggable data={{ id: "1", title: "Drag me!" }}>
+          <View style={styles.item}>
+            <Text>Drag me around!</Text>
+          </View>
+        </Draggable>
       </DropProvider>
     </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  draggableItem: {
-    padding: 20,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#3A3A3C",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  itemText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-});
 ```
 
-### Drag & Drop with Multiple Zones
+### Sortable List
 
 ```tsx
 import React from "react";
