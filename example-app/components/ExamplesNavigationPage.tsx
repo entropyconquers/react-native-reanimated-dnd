@@ -48,6 +48,13 @@ const categories: Category[] = [
         component: "HorizontalSortableExample",
         icon: `⇌${TEXT}`,
       },
+      {
+        id: "gridSortable",
+        title: "Grid Sortable",
+        description: "Reorderable 2D grid with insert/swap",
+        component: "GridSortableExample",
+        icon: `⊞${TEXT}`,
+      },
     ],
   },
   {
