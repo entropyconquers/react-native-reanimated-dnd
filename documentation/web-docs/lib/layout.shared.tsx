@@ -9,16 +9,16 @@ export function baseOptions(): BaseLayoutProps {
           <Image
             src="/images/logo.svg"
             alt="React Native Reanimated DnD"
-            width={140}
-            height={28}
-            className="hidden dark:block"
+            width={200}
+            height={40}
+            className="logo-light"
           />
           <Image
             src="/images/logo-dark.svg"
             alt="React Native Reanimated DnD"
-            width={140}
-            height={28}
-            className="block dark:hidden"
+            width={200}
+            height={40}
+            className="logo-dark"
           />
         </>
       ),
