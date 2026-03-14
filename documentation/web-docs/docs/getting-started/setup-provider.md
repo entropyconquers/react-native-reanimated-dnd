@@ -1,8 +1,6 @@
 ---
-sidebar_position: 4
+title: "Setup Provider"
 ---
-
-# Setup Provider
 
 Learn how to configure the DropProvider for your application.
 

@@ -1,8 +1,6 @@
 ---
-sidebar_position: 4
+title: "useSortableList Hook"
 ---
-
-# useSortableList Hook
 
 A hook for managing sortable lists with drag-and-drop reordering capabilities, position tracking, and auto-scrolling support.
 

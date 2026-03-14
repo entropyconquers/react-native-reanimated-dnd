@@ -1,8 +1,6 @@
 ---
-sidebar_position: 5
+title: "Enums"
 ---
-
-# Enums
 
 Complete enumeration definitions used throughout the library.
 

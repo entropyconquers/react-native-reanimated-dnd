@@ -1,8 +1,6 @@
 ---
-sidebar_position: 2
+title: "Droppable Types"
 ---
-
-# Droppable Types
 
 Complete type definitions for droppable components and hooks.
 

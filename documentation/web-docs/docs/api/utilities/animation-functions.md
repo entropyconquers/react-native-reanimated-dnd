@@ -1,8 +1,6 @@
 ---
-sidebar_position: 2
+title: "Animation Functions"
 ---
-
-# Animation Functions
 
 Custom animation functions for controlling how draggable items animate during and after drag operations.
 

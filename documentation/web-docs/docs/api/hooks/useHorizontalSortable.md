@@ -3,8 +3,6 @@ title: useHorizontalSortable
 description: API reference for the useHorizontalSortable hook
 ---
 
-# useHorizontalSortable
-
 Hook for creating individual horizontal sortable items with drag-and-drop reordering capabilities.
 
 ## Import
@@ -48,7 +46,8 @@ function useHorizontalSortable<T>(
 | Property            | Type                   | Description                                  |
 | ------------------- | ---------------------- | -------------------------------------------- |
 | `animatedStyle`     | `StyleProp<ViewStyle>` | Animated style for the sortable item         |
-| `panGestureHandler` | `any`                  | Pan gesture handler for drag interactions    |
+| `panGestureHandler` | `GestureType`          | Pan gesture to pass to GestureDetector       |
+| `registerHandle`   | `(registered: boolean) => void` | Callback for handle registration   |
 | `isMoving`          | `boolean`              | Whether the item is currently being dragged  |
 | `hasHandle`         | `boolean`              | Whether the item has a drag handle component |
 

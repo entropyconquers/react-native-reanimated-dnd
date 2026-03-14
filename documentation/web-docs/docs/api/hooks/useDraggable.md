@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "useDraggable Hook"
 ---
-
-# useDraggable Hook
 
 A powerful hook for creating draggable components with advanced features like collision detection, bounded dragging, axis constraints, and custom animations.
 
@@ -50,6 +48,19 @@ const { animatedViewProps, gesture } = useDraggable({
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
   dragDisabled: !user.canDrag,
+});
+```
+
+##### preDragDelay
+
+- **Type**: `number`
+- **Default**: `0`
+- **Description**: Delay in milliseconds before dragging starts. Useful for preventing accidental drags or distinguishing between taps and drags.
+
+```tsx
+const { animatedViewProps, gesture } = useDraggable({
+  data: taskData,
+  preDragDelay: 200, // 200ms delay before drag activates
 });
 ```
 
@@ -257,6 +268,11 @@ return (
 
 - **Type**: `boolean`
 - **Description**: Whether this draggable has a handle component. When true, only the handle can initiate dragging. When false, the entire component is draggable.
+
+#### registerHandle
+
+- **Type**: `(registered: boolean) => void`
+- **Description**: Callback for handle components to register/unregister themselves. Called with `true` when a handle mounts, `false` when it unmounts.
 
 ## Usage Examples
 

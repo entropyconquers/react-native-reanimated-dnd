@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "DropProvider API"
 ---
-
-# DropProvider API
 
 Complete API reference for the `DropProvider` component.
 

@@ -1,8 +1,6 @@
 ---
-sidebar_position: 2
+title: "useDroppable Hook"
 ---
-
-# useDroppable Hook
 
 A hook for creating drop zones that can receive draggable items with collision detection, visual feedback, and flexible positioning.
 

@@ -1,8 +1,6 @@
 ---
-sidebar_position: 2
+title: "Droppable Component"
 ---
-
-# Droppable Component
 
 A component that creates drop zones for receiving draggable items with visual feedback and flexible positioning options.
 

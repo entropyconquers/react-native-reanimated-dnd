@@ -1,8 +1,6 @@
 ---
-sidebar_position: 4
+title: "SortableItem Component"
 ---
-
-# SortableItem Component
 
 A component for individual items within a sortable list, providing drag-and-drop functionality with gesture recognition, position animations, and reordering logic.
 

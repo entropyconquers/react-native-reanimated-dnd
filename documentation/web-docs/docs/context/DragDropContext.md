@@ -1,8 +1,6 @@
 ---
-sidebar_position: 2
+title: "DragDropContext"
 ---
-
-# DragDropContext
 
 The `DragDropContext` (exported as `SlotsContext`) is the React context that provides the underlying infrastructure for drag-and-drop functionality. It's automatically created by the `DropProvider` and consumed by draggable and droppable components throughout the library.
 
@@ -253,9 +251,9 @@ function CustomDraggable({ data, children }) {
   };
 
   return (
-    <PanGestureHandler onGestureEvent={handleDragMove}>
+    <GestureDetector gesture={handleDragMove}>
       {children}
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```

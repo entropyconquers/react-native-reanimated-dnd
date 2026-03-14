@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "useSortable Hook"
 ---
-
-# useSortable Hook
 
 A hook for creating sortable list items with drag-and-drop reordering capabilities, position animations, and auto-scrolling support.
 
@@ -129,18 +127,18 @@ const { animatedStyle, panGestureHandler } = useSortable({
 const { animatedStyle, panGestureHandler } = useSortable(options);
 
 return (
-  <PanGestureHandler {...panGestureHandler}>
+  <GestureDetector gesture={panGestureHandler}>
     <Animated.View style={[styles.item, animatedStyle]}>
       <Text>Sortable content</Text>
     </Animated.View>
-  </PanGestureHandler>
+  </GestureDetector>
 );
 ```
 
 #### panGestureHandler
 
-- **Type**: `any`
-- **Description**: Gesture handler props to spread on PanGestureHandler for handling drag interactions.
+- **Type**: `GestureType`
+- **Description**: Pan gesture definition to pass to a GestureDetector for handling drag interactions.
 
 #### isMoving
 
@@ -151,13 +149,13 @@ return (
 const { animatedStyle, panGestureHandler, isMoving } = useSortable(options);
 
 return (
-  <PanGestureHandler {...panGestureHandler}>
+  <GestureDetector gesture={panGestureHandler}>
     <Animated.View
       style={[styles.item, animatedStyle, isMoving && styles.dragging]}
     >
       <Text>Item content</Text>
     </Animated.View>
-  </PanGestureHandler>
+  </GestureDetector>
 );
 ```
 
@@ -166,13 +164,18 @@ return (
 - **Type**: `boolean`
 - **Description**: Whether this sortable item has a handle component. When true, only the handle can initiate dragging.
 
+#### registerHandle
+
+- **Type**: `(registered: boolean) => void`
+- **Description**: Callback for handle components to register/unregister themselves. Called with `true` when a handle mounts, `false` when it unmounts.
+
 ## Usage Examples
 
 ### Basic Sortable Item
 
 ```tsx
 import { useSortable } from "react-native-reanimated-dnd";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 
 function SortableTaskItem({ task, positions, ...sortableProps }) {
@@ -191,7 +194,7 @@ function SortableTaskItem({ task, positions, ...sortableProps }) {
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View
         style={[styles.taskItem, animatedStyle, isMoving && styles.dragging]}
       >
@@ -202,7 +205,7 @@ function SortableTaskItem({ task, positions, ...sortableProps }) {
           {task.completed ? "Done" : "Pending"}
         </Text>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 
@@ -275,7 +278,7 @@ function AdvancedSortableItem({ task, positions, ...sortableProps }) {
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View
         style={[styles.taskItem, animatedStyle, styles[dragState]]}
       >
@@ -299,7 +302,7 @@ function AdvancedSortableItem({ task, positions, ...sortableProps }) {
           <Text style={styles.dragState}>{dragState}</Text>
         </View>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -352,7 +355,7 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
   };
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View
         style={[
           styles.fileItem,
@@ -389,7 +392,7 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
           </View>
         </TouchableOpacity>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -413,7 +416,7 @@ function SortablePhotoItem({ photo, positions, ...sortableProps }) {
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View
         style={[
           styles.photoItem,
@@ -443,7 +446,7 @@ function SortablePhotoItem({ photo, positions, ...sortableProps }) {
           )}
         </View>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -480,12 +483,12 @@ function AnimatedSortableItem({ item, positions, ...sortableProps }) {
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.item, animatedStyle, customAnimatedStyle]}>
         <Text style={styles.itemTitle}>{item.title}</Text>
         <Text style={styles.itemDescription}>{item.description}</Text>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -508,11 +511,11 @@ const MemoizedSortableItem = React.memo(
     });
 
     return (
-      <PanGestureHandler {...panGestureHandler}>
+      <GestureDetector gesture={panGestureHandler}>
         <Animated.View style={[styles.item, animatedStyle]}>
           <ItemContent item={item} isMoving={isMoving} />
         </Animated.View>
-      </PanGestureHandler>
+      </GestureDetector>
     );
   }
 );
@@ -554,7 +557,7 @@ function ConditionalSortableItem({
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler} enabled={canReorder}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View
         style={[styles.item, animatedStyle, !canReorder && styles.disabled]}
       >
@@ -564,7 +567,7 @@ function ConditionalSortableItem({
         )}
         {item.locked && <Icon name="lock" size={16} />}
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -601,7 +604,7 @@ function PositionTrackingSortableItem({ item, positions, ...sortableProps }) {
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.item, animatedStyle]}>
         <View style={styles.itemContent}>
           <Text style={styles.itemTitle}>{item.title}</Text>
@@ -615,7 +618,7 @@ function PositionTrackingSortableItem({ item, positions, ...sortableProps }) {
           )}
         </View>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -648,11 +651,11 @@ function TypedSortableItem({ task, positions, ...props }) {
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.item, animatedStyle]}>
         <Text>{task.title}</Text>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -679,11 +682,11 @@ const MemoizedSortableItem = React.memo(({ item, ...props }) => {
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.item, animatedStyle]}>
         <ItemContent item={item} />
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 });
 ```
@@ -692,25 +695,18 @@ const MemoizedSortableItem = React.memo(({ item, ...props }) => {
 
 ### Handle Detection Pattern
 
+Handle detection uses a registration pattern. When a `SortableItem.Handle` component mounts, it registers itself via `registerHandle(true)`.
+
 ```tsx
 function SortableWithHandle({ item, positions, ...props }) {
   const { animatedStyle, panGestureHandler, hasHandle } = useSortable({
     id: item.id,
     positions,
     ...props,
-    children: (
-      <View>
-        <Text>{item.title}</Text>
-        <SortableHandle>
-          <Icon name="drag-handle" />
-        </SortableHandle>
-      </View>
-    ),
-    handleComponent: SortableHandle,
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.item, animatedStyle]}>
         {hasHandle ? (
           // Handle controls dragging
@@ -725,7 +721,7 @@ function SortableWithHandle({ item, positions, ...props }) {
           <Text>{item.title}</Text>
         )}
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```

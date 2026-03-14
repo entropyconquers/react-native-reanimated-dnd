@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "API Overview"
 ---
-
-# API Overview
 
 Complete API reference for React Native Reanimated DnD library. This section provides detailed documentation for all components, hooks, types, and utilities.
 

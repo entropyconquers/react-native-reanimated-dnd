@@ -1,0 +1,200 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "maple",
+  "name": "React Native Reanimated DnD",
+  "colors": {
+    "primary": "#FF3B30",
+    "light": "#ff5c54",
+    "dark": "#e6352a"
+  },
+  "logo": {
+    "light": "/images/logo-dark.svg",
+    "dark": "/images/logo.svg"
+  },
+  "favicon": "/images/favicon.ico",
+  "background": {
+    "color": {
+      "dark": "#0e0e0e"
+    }
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter Tight",
+      "weight": 600
+    },
+    "body": {
+      "family": "Kumbh Sans",
+      "weight": 400
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/entropyconquers/react-native-reanimated-dnd"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/entropyconquers/react-native-reanimated-dnd"
+    },
+    "links": [
+      {
+        "header": "Documentation",
+        "items": [
+          { "label": "Getting Started", "href": "/docs/intro" },
+          { "label": "API Reference", "href": "/docs/api/overview" },
+          { "label": "Examples", "href": "/docs/examples/basic-drag-drop" },
+          { "label": "Components", "href": "/docs/components/draggable" }
+        ]
+      },
+      {
+        "header": "Community",
+        "items": [
+          { "label": "GitHub Issues", "href": "https://github.com/entropyconquers/react-native-reanimated-dnd/issues" },
+          { "label": "Discussions", "href": "https://github.com/entropyconquers/react-native-reanimated-dnd/discussions" },
+          { "label": "Contribute", "href": "https://github.com/entropyconquers/react-native-reanimated-dnd" }
+        ]
+      },
+      {
+        "header": "Resources",
+        "items": [
+          { "label": "GitHub Repository", "href": "https://github.com/entropyconquers/react-native-reanimated-dnd" },
+          { "label": "Example App", "href": "https://github.com/entropyconquers/react-native-reanimated-dnd/tree/main/example-app" },
+          { "label": "NPM Package", "href": "https://www.npmjs.com/package/react-native-reanimated-dnd" },
+          { "label": "Releases", "href": "https://github.com/entropyconquers/react-native-reanimated-dnd/releases" }
+        ]
+      }
+    ]
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["docs/intro"]
+          },
+          {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "pages": [
+              "docs/getting-started/installation",
+              "docs/getting-started/quick-start",
+              "docs/getting-started/basic-concepts",
+              "docs/getting-started/setup-provider"
+            ]
+          },
+          {
+            "group": "Core Components",
+            "icon": "cube",
+            "pages": [
+              "docs/components/draggable",
+              "docs/components/droppable",
+              "docs/components/sortable",
+              "docs/components/sortable-item"
+            ]
+          },
+          {
+            "group": "Hooks",
+            "icon": "code",
+            "pages": [
+              "docs/hooks/useDraggable",
+              "docs/hooks/useDroppable",
+              "docs/hooks/useSortable",
+              "docs/hooks/useSortableList",
+              "docs/hooks/useHorizontalSortable",
+              "docs/hooks/useHorizontalSortableList"
+            ]
+          },
+          {
+            "group": "Context & Providers",
+            "icon": "layer-group",
+            "pages": [
+              "docs/context/DropProvider",
+              "docs/context/DragDropContext"
+            ]
+          },
+          {
+            "group": "Examples",
+            "icon": "flask",
+            "pages": [
+              "docs/examples/basic-drag-drop",
+              "docs/examples/drag-handles",
+              "docs/examples/sortable-lists",
+              "docs/examples/horizontal-sortable",
+              "docs/examples/collision-detection",
+              "docs/examples/custom-animations",
+              "docs/examples/bounded-dragging",
+              "docs/examples/axis-constraints",
+              "docs/examples/drop-zones",
+              "docs/examples/visual-feedback",
+              "docs/examples/capacity-limits"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["docs/api/overview"]
+          },
+          {
+            "group": "Components",
+            "icon": "cube",
+            "pages": [
+              "docs/api/components/draggable",
+              "docs/api/components/droppable",
+              "docs/api/components/sortable",
+              "docs/api/components/sortable-item"
+            ]
+          },
+          {
+            "group": "Hooks",
+            "icon": "code",
+            "pages": [
+              "docs/api/hooks/useDraggable",
+              "docs/api/hooks/useDroppable",
+              "docs/api/hooks/useSortable",
+              "docs/api/hooks/useSortableList",
+              "docs/api/hooks/useHorizontalSortable",
+              "docs/api/hooks/useHorizontalSortableList"
+            ]
+          },
+          {
+            "group": "Context & Providers",
+            "icon": "layer-group",
+            "pages": [
+              "docs/api/context/DropProvider",
+              "docs/api/context/DragDropContext"
+            ]
+          },
+          {
+            "group": "Types & Interfaces",
+            "icon": "brackets-curly",
+            "pages": [
+              "docs/api/types/draggable-types",
+              "docs/api/types/droppable-types",
+              "docs/api/types/sortable-types",
+              "docs/api/types/context-types",
+              "docs/api/types/enums"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "icon": "wrench",
+            "pages": [
+              "docs/api/utilities/collision-algorithms",
+              "docs/api/utilities/animation-functions",
+              "docs/api/utilities/helper-functions"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
