@@ -38,9 +38,9 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 ## ✨ Features
 
-- 🚀 **High Performance** - Built with Reanimated 3 for buttery-smooth 60fps animations
-- 🏗️ **Full RN Fabric Support** - Works seamlessly with both New Architecture and Old Architecture
-- 📦 **Expo Compatible** - Zero configuration needed, works out of the box with Expo
+- 🚀 **High Performance** - Built with Reanimated 4 and Worklets for buttery-smooth 60fps animations
+- 🏗️ **New Architecture Ready** - Built for the modern React Native architecture used by Expo SDK 55+
+- 📦 **Expo Compatible** - Tested against Expo SDK 55 and React Native 0.83
 - 🪶 **Tiny Bundle Size** - Only 70kb unpacked size, won't bloat your app
 - 🎯 **Flexible API** - From simple drag-and-drop to complex sortable lists
 - 📱 **React Native First** - Designed specifically for mobile, not ported from web
@@ -203,13 +203,16 @@ npm install react-native-reanimated-dnd
 ### Peer Dependencies
 
 ```bash
-npm install react-native-reanimated react-native-gesture-handler
+npm install react-native-reanimated react-native-gesture-handler react-native-worklets
 ```
 
 Follow the setup guides:
 
-- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation)
+- [React Native Worklets](https://docs.swmansion.com/react-native-worklets/docs/getting-started/installation/)
+- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/)
 - [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/docs/installation)
+
+Make sure your Babel config uses `"react-native-worklets/plugin"` as the last plugin and that your app is running on the New Architecture, which is required by Reanimated 4.
 
 ## 📋 Requirements
 
@@ -1143,23 +1146,27 @@ I am constantly working to improve React Native Reanimated DnD. Here's what's co
 **Focus: Enhanced Functionality & Bug Fixes**
 
 - 🐛 **Bug Fixes & Issues Resolution**
+
   - Address existing reported issues
   - Performance optimizations
   - Gesture handling improvements
   - API Improvements
 
 - 📐 **Sortable Grids**
+
   - 2D grid drag-and-drop support
   - Flexible grid layouts (2x2, 3x3, custom)
   - Smart auto-positioning and gap management
   - Responsive grid behavior
 
 - ↔️ **Horizontal Sortable Lists**
+
   - Full horizontal scrolling support
   - Auto-scroll for out-of-view items
   - Customizable scroll behavior
 
 - 🪆 **Nested Sortable Lists**
+
   - Multi-level hierarchy support
   - Collapse/expand functionality
   - Parent-child relationship management

@@ -1,21 +1,21 @@
-import React, { useRef, useCallback, useState } from "react";
+import React, { useRef, useCallback, useReducer } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Alert,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { withTiming, withSpring, Easing } from "react-native-reanimated";
 import { useSharedValue } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/external-lib";
-import { Droppable } from "@/external-lib";
-import { UseDraggableOptions } from "@/types/draggable";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { UseDraggableOptions } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
-import { Draggable } from "@/external-lib";
+import { Draggable } from "react-native-reanimated-dnd";
 import { Footer } from "@/components/Footer";
 import { BottomSheet } from "@/components/BottomSheet";
 import { BottomSheetOption } from "@/components/BottomSheetOption";
@@ -60,20 +60,50 @@ const easingOptions = [
   { label: "Bounce", value: Easing.bounce, key: "bounce" },
 ];
 
+interface AnimationControlsState {
+  selectedAnimation: AnimationType;
+  selectedDuration: number;
+  selectedEasingKey: string;
+  showAnimationDropdown: boolean;
+  showDurationDropdown: boolean;
+  showEasingDropdown: boolean;
+}
+
+const initialAnimationControlsState: AnimationControlsState = {
+  selectedAnimation: "spring",
+  selectedDuration: 300,
+  selectedEasingKey: "ease-out",
+  showAnimationDropdown: false,
+  showDurationDropdown: false,
+  showEasingDropdown: false,
+};
+
+function mergeAnimationControlsState(
+  state: AnimationControlsState,
+  updates: Partial<AnimationControlsState>
+) {
+  return { ...state, ...updates };
+}
+
 export function AnimationExample({ onBack }: AnimationExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
-  const [selectedAnimation, setSelectedAnimation] =
-    useState<AnimationType>("spring");
-  const [selectedDuration, setSelectedDuration] = useState(300);
-  const [selectedEasingKey, setSelectedEasingKey] = useState("ease-out");
-  const [showAnimationDropdown, setShowAnimationDropdown] = useState(false);
-  const [showDurationDropdown, setShowDurationDropdown] = useState(false);
-  const [showEasingDropdown, setShowEasingDropdown] = useState(false);
+  const [controlsState, updateControlsState] = useReducer(
+    mergeAnimationControlsState,
+    initialAnimationControlsState
+  );
+  const {
+    selectedAnimation,
+    selectedDuration,
+    selectedEasingKey,
+    showAnimationDropdown,
+    showDurationDropdown,
+    showEasingDropdown,
+  } = controlsState;
 
   // Create animation function based on selected options
   const createAnimationFunction =
     useCallback((): UseDraggableOptions<any>["animationFunction"] => {
-      return (toValue) => {
+      return (toValue: number) => {
         "worklet";
 
         const selectedEasing =
@@ -154,7 +184,9 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                 <Text style={styles.controlTitle}>Animation Type</Text>
                 <TouchableOpacity
                   style={styles.dropdown}
-                  onPress={() => setShowAnimationDropdown(true)}
+                  onPress={() =>
+                    updateControlsState({ showAnimationDropdown: true })
+                  }
                 >
                   <Text style={styles.dropdownText}>
                     {selectedAnimationLabel}
@@ -172,7 +204,9 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                   <Text style={styles.controlTitle}>Duration</Text>
                   <TouchableOpacity
                     style={styles.dropdown}
-                    onPress={() => setShowDurationDropdown(true)}
+                    onPress={() =>
+                      updateControlsState({ showDurationDropdown: true })
+                    }
                   >
                     <Text style={styles.dropdownText}>
                       {selectedDurationLabel}
@@ -188,7 +222,9 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                   <Text style={styles.controlTitle}>Easing Function</Text>
                   <TouchableOpacity
                     style={styles.dropdown}
-                    onPress={() => setShowEasingDropdown(true)}
+                    onPress={() =>
+                      updateControlsState({ showEasingDropdown: true })
+                    }
                   >
                     <Text style={styles.dropdownText}>
                       {selectedEasingLabel}
@@ -233,12 +269,10 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                     backgroundColor: "#ff9f43",
                   }}
                   animationFunction={animationFunction}
-                  style={[
-                    {
-                      backgroundColor: "#ff9f43",
-                      borderRadius: 12,
-                    },
-                  ]}
+                  style={{
+                    backgroundColor: "#ff9f43",
+                    borderRadius: 12,
+                  }}
                 >
                   <View style={styles.cardContent}>
                     <Text style={styles.cardLabel}>Test 1</Text>
@@ -278,15 +312,19 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
           {/* Animation Type Dropdown Modal */}
           <BottomSheet
             isVisible={showAnimationDropdown}
-            onClose={() => setShowAnimationDropdown(false)}
+            onClose={() =>
+              updateControlsState({ showAnimationDropdown: false })
+            }
             title="Select Animation Type"
           >
             <BottomSheetOption
               options={animationTypes}
               selectedOption={selectedAnimation}
               onSelect={(option) => {
-                setSelectedAnimation(option.value);
-                setShowAnimationDropdown(false);
+                updateControlsState({
+                  selectedAnimation: option.value,
+                  showAnimationDropdown: false,
+                });
               }}
             />
           </BottomSheet>
@@ -294,15 +332,17 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
           {/* Duration Dropdown Modal */}
           <BottomSheet
             isVisible={showDurationDropdown}
-            onClose={() => setShowDurationDropdown(false)}
+            onClose={() => updateControlsState({ showDurationDropdown: false })}
             title="Select Duration"
           >
             <BottomSheetOption
               options={durationOptions}
               selectedOption={selectedDuration}
               onSelect={(option) => {
-                setSelectedDuration(option.value);
-                setShowDurationDropdown(false);
+                updateControlsState({
+                  selectedDuration: option.value,
+                  showDurationDropdown: false,
+                });
               }}
             />
           </BottomSheet>
@@ -310,15 +350,17 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
           {/* Easing Dropdown Modal */}
           <BottomSheet
             isVisible={showEasingDropdown}
-            onClose={() => setShowEasingDropdown(false)}
+            onClose={() => updateControlsState({ showEasingDropdown: false })}
             title="Select Easing Function"
           >
             <BottomSheetOption
               options={easingOptions}
               selectedOption={selectedEasingKey}
               onSelect={(option) => {
-                setSelectedEasingKey(option.key || "ease-out");
-                setShowEasingDropdown(false);
+                updateControlsState({
+                  selectedEasingKey: option.key || "ease-out",
+                  showEasingDropdown: false,
+                });
               }}
             />
           </BottomSheet>
@@ -434,11 +476,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#1C1C1E",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
   },
   cardLabel: {
     fontSize: 15,

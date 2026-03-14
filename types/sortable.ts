@@ -1,4 +1,5 @@
 import { StyleProp, ViewStyle } from "react-native";
+import { GestureType } from "react-native-gesture-handler";
 import { SharedValue } from "react-native-reanimated";
 import { DropProviderRef } from "../types/context";
 import { ReactNode } from "react";
@@ -199,18 +200,6 @@ export interface UseSortableOptions<T> {
     overItemId: string | null,
     yPosition: number
   ) => void;
-
-  /**
-   * Children elements - used internally for handle detection.
-   * @internal
-   */
-  children?: React.ReactNode;
-
-  /**
-   * Handle component type - used internally for handle detection.
-   * @internal
-   */
-  handleComponent?: React.ComponentType<any>;
 }
 
 /**
@@ -224,10 +213,10 @@ export interface UseSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
 
   /**
-   * Pan gesture handler for drag interactions.
-   * Attach this to a PanGestureHandler to enable dragging.
+   * Pan gesture definition for drag interactions.
+   * Attach this to a GestureDetector to enable dragging.
    */
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
 
   /**
    * Whether this item is currently being moved/dragged.
@@ -241,6 +230,12 @@ export interface UseSortableReturn {
    * When false, the entire item is draggable.
    */
   hasHandle: boolean;
+
+  /**
+   * Callback for handle components to register/unregister themselves.
+   * Called with `true` when a handle mounts, `false` when it unmounts.
+   */
+  registerHandle: (registered: boolean) => void;
 }
 
 /**
@@ -341,7 +336,7 @@ export interface UseSortableListReturn<TData extends SortableData> {
    * Ref for the drop provider context.
    * Used for triggering position updates after scroll events.
    */
-  dropProviderRef: React.RefObject<DropProviderRef>;
+  dropProviderRef: React.RefObject<DropProviderRef | null>;
 
   /**
    * Animated scroll handler to attach to the ScrollView.
@@ -596,7 +591,8 @@ export interface SortableRenderItemProps<TData extends SortableData> {
 }
 
 export interface SortableContextValue {
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
+  registerHandle: (registered: boolean) => void;
 }
 
 /**
@@ -701,18 +697,6 @@ export interface UseHorizontalSortableOptions<T> {
     overItemId: string | null,
     xPosition: number
   ) => void;
-
-  /**
-   * Children elements - used internally for handle detection.
-   * @internal
-   */
-  children?: React.ReactNode;
-
-  /**
-   * Handle component type - used internally for handle detection.
-   * @internal
-   */
-  handleComponent?: React.ComponentType<any>;
 }
 
 /**
@@ -726,10 +710,10 @@ export interface UseHorizontalSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
 
   /**
-   * Pan gesture handler for drag interactions.
-   * Attach this to a PanGestureHandler to enable dragging.
+   * Pan gesture definition for drag interactions.
+   * Attach this to a GestureDetector to enable dragging.
    */
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
 
   /**
    * Whether this item is currently being moved/dragged.
@@ -741,6 +725,11 @@ export interface UseHorizontalSortableReturn {
    * Whether this sortable item has a handle component.
    */
   hasHandle: boolean;
+
+  /**
+   * Callback for handle components to register/unregister themselves.
+   */
+  registerHandle: (registered: boolean) => void;
 }
 
 /**
@@ -808,7 +797,7 @@ export interface UseHorizontalSortableListReturn<TData extends SortableData> {
   /**
    * Ref for the drop provider context.
    */
-  dropProviderRef: React.RefObject<DropProviderRef>;
+  dropProviderRef: React.RefObject<DropProviderRef | null>;
 
   /**
    * Animated scroll handler to attach to the ScrollView.

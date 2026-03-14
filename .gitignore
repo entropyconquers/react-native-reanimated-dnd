@@ -84,6 +84,8 @@ coverage/
 .tern-port 
 
 # example-app
+.expo/
+example-app/.expo/
 example-app/external-lib/
 example-app/ios/
 example-app/android/

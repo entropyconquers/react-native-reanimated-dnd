@@ -4,11 +4,11 @@ import React, {
   createContext,
   ReactNode,
   useState,
+  useEffect,
   useMemo,
   useCallback,
   forwardRef,
   useImperativeHandle,
-  useEffect,
 } from "react";
 import {
   DropProviderProps,
@@ -171,17 +171,24 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
       delete positionUpdateListenersRef.current[id];
     }, []);
 
-    // Call the update callback whenever droppedItems changes
+    const updateDroppedItems = useCallback(
+      (updater: (currentItems: DroppedItemsMap) => DroppedItemsMap) => {
+        setDroppedItems((currentItems) => {
+          return updater(currentItems);
+        });
+      },
+      []
+    );
+
+    // Notify parent after droppedItems state has committed
     useEffect(() => {
-      if (onDroppedItemsUpdate) {
-        onDroppedItemsUpdate(droppedItems);
-      }
+      onDroppedItemsUpdate?.(droppedItems);
     }, [droppedItems, onDroppedItemsUpdate]);
 
     // Update method to use string IDs
     const registerDroppedItem = useCallback(
       (draggableId: string, droppableId: string, itemData: any) => {
-        setDroppedItems((prev) => ({
+        updateDroppedItems((prev) => ({
           ...prev,
           [draggableId]: {
             droppableId,
@@ -189,16 +196,19 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
           },
         }));
       },
-      []
+      [updateDroppedItems]
     );
 
-    const unregisterDroppedItem = useCallback((draggableId: string) => {
-      setDroppedItems((prev) => {
-        const newItems = { ...prev };
-        delete newItems[draggableId];
-        return newItems;
-      });
-    }, []);
+    const unregisterDroppedItem = useCallback(
+      (draggableId: string) => {
+        updateDroppedItems((prev) => {
+          const newItems = { ...prev };
+          delete newItems[draggableId];
+          return newItems;
+        });
+      },
+      [updateDroppedItems]
+    );
 
     const getDroppedItems = useCallback(() => {
       return droppedItems;

@@ -1,9 +1,5 @@
-import { useState, useRef, useEffect, useMemo } from "react";
-import React from "react";
-import Animated, {
-  runOnJS,
-  runOnUI,
-  useAnimatedGestureHandler,
+import { useCallback, useMemo, useRef, useState } from "react";
+import {
   useAnimatedReaction,
   useAnimatedStyle,
   useDerivedValue,
@@ -11,12 +7,13 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
+import { Gesture, GestureType } from "react-native-gesture-handler";
+import { scheduleOnRN } from "react-native-worklets";
 import {
-  setHorizontalPosition,
-  setHorizontalAutoScroll,
-  getItemXPosition,
   getContentWidth,
+  getItemXPosition,
+  setHorizontalAutoScroll,
+  setHorizontalPosition,
 } from "../components/sortableUtils";
 import {
   HorizontalScrollDirection,
@@ -155,12 +152,14 @@ export function useHorizontalSortable<T>(
     onDragStart,
     onDrop,
     onDragging,
-    children,
-    handleComponent,
   } = options;
 
   const [isMoving, setIsMoving] = useState(false);
   const [hasHandle, setHasHandle] = useState(false);
+
+  const registerHandle = useCallback((registered: boolean) => {
+    setHasHandle(registered);
+  }, []);
   const movingSV = useSharedValue(false);
   const currentOverItemId = useSharedValue<string | null>(null);
   const onDraggingLastCallTimestamp = useSharedValue(0);
@@ -179,39 +178,14 @@ export function useHorizontalSortable<T>(
   const positionX = useSharedValue(initialLeftVal);
   const left = useSharedValue(initialLeftVal);
   const targetLeftBound = useSharedValue(initialLeftBoundVal);
+  const initialItemContentX = useSharedValue(0);
+  const initialFingerAbsoluteX = useSharedValue(0);
+  const initialLeftBound = useSharedValue(0);
 
   const calculatedContainerWidth = useRef(containerWidth).current;
   const rightBound = useDerivedValue(
     () => leftBound.value + calculatedContainerWidth
   );
-
-  useEffect(() => {
-    if (!children || !handleComponent) {
-      setHasHandle(false);
-      return;
-    }
-
-    const checkForHandle = (child: React.ReactNode): boolean => {
-      if (React.isValidElement(child)) {
-        if (child.type === handleComponent) {
-          return true;
-        }
-
-        if (child.props && (child.props as any).children) {
-          if (
-            React.Children.toArray((child.props as any).children).some(
-              checkForHandle
-            )
-          ) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    setHasHandle(React.Children.toArray(children).some(checkForHandle));
-  }, [children, handleComponent]);
 
   useAnimatedReaction(
     () => positionX.value,
@@ -249,7 +223,7 @@ export function useHorizontalSortable<T>(
       if (onDragging) {
         const now = Date.now();
         if (now - onDraggingLastCallTimestamp.value > THROTTLE_INTERVAL) {
-          runOnJS(onDragging)(id, newOverItemId, Math.round(currentX));
+          scheduleOnRN(onDragging, id, newOverItemId, Math.round(currentX));
           onDraggingLastCallTimestamp.value = now;
         }
       }
@@ -308,7 +282,7 @@ export function useHorizontalSortable<T>(
           );
           left.value = withSpring(newLeft);
           if (onMove) {
-            runOnJS(onMove)(id, previousPosition, currentPosition);
+            scheduleOnRN(onMove, id, previousPosition, currentPosition);
           }
         }
       }
@@ -371,39 +345,36 @@ export function useHorizontalSortable<T>(
     [movingSV]
   );
 
-  type GestureContext = Record<string, number>;
-
-  const panGestureHandler = useAnimatedGestureHandler<
-    PanGestureHandlerGestureEvent,
-    GestureContext
-  >({
-    onStart(event, ctx) {
+  const panGestureHandler: GestureType = Gesture.Pan()
+    .activateAfterLongPress(200)
+    .shouldCancelWhenOutside(false)
+    .onStart((event) => {
       "worklet";
-      ctx.initialItemContentX = getItemXPosition(
+      initialItemContentX.value = getItemXPosition(
         positions.value[id],
         itemWidth,
         gap,
         paddingHorizontal
       );
-      ctx.initialFingerAbsoluteX = event.absoluteX;
-      ctx.initialLeftBound = leftBound.value;
+      initialFingerAbsoluteX.value = event.absoluteX;
+      initialLeftBound.value = leftBound.value;
 
-      positionX.value = ctx.initialItemContentX;
+      positionX.value = initialItemContentX.value;
       movingSV.value = true;
-      runOnJS(setIsMoving)(true);
+      scheduleOnRN(setIsMoving, true);
 
       if (onDragStart) {
-        runOnJS(onDragStart)(id, positions.value[id]);
+        scheduleOnRN(onDragStart, id, positions.value[id]);
       }
-    },
-    onActive(event, ctx) {
+    })
+    .onUpdate((event) => {
       "worklet";
-      const fingerDxScreen = event.absoluteX - ctx.initialFingerAbsoluteX;
-      const scrollDeltaSinceStart = leftBound.value - ctx.initialLeftBound;
+      const fingerDxScreen = event.absoluteX - initialFingerAbsoluteX.value;
+      const scrollDeltaSinceStart = leftBound.value - initialLeftBound.value;
       positionX.value =
-        ctx.initialItemContentX + fingerDxScreen + scrollDeltaSinceStart;
-    },
-    onFinish() {
+        initialItemContentX.value + fingerDxScreen + scrollDeltaSinceStart;
+    })
+    .onFinalize(() => {
       "worklet";
       const finishPosition = getItemXPosition(
         positions.value[id],
@@ -413,16 +384,15 @@ export function useHorizontalSortable<T>(
       );
       left.value = withTiming(finishPosition);
       movingSV.value = false;
-      runOnJS(setIsMoving)(false);
+      scheduleOnRN(setIsMoving, false);
 
       if (onDrop) {
         const positionsCopy = { ...positions.value };
-        runOnJS(onDrop)(id, positions.value[id], positionsCopy);
+        scheduleOnRN(onDrop, id, positions.value[id], positionsCopy);
       }
 
       currentOverItemId.value = null;
-    },
-  });
+    });
 
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";
@@ -445,5 +415,6 @@ export function useHorizontalSortable<T>(
     panGestureHandler,
     isMoving,
     hasHandle,
+    registerHandle,
   };
 }

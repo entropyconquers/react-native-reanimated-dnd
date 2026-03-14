@@ -1,11 +1,7 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
-import React from "react";
-import Animated, {
-  runOnJS,
-  runOnUI,
+import {
   SharedValue,
-  useAnimatedGestureHandler,
   useAnimatedReaction,
   useAnimatedStyle,
   useDerivedValue,
@@ -13,7 +9,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
+import { Gesture, GestureType } from "react-native-gesture-handler";
+import { scheduleOnRN } from "react-native-worklets";
 
 export enum ScrollDirection {
   None = "none",
@@ -133,15 +130,14 @@ export interface UseSortableOptions<T> {
     overItemId: string | null,
     yPosition: number
   ) => void;
-  children?: React.ReactNode;
-  handleComponent?: React.ComponentType<any>;
 }
 
 export interface UseSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
   isMoving: boolean;
   hasHandle: boolean;
+  registerHandle: (registered: boolean) => void;
 }
 
 /**
@@ -279,12 +275,14 @@ export function useSortable<T>(
     onDragStart,
     onDrop,
     onDragging,
-    children,
-    handleComponent,
   } = options;
 
   const [isMoving, setIsMoving] = useState(false);
   const [hasHandle, setHasHandle] = useState(false);
+
+  const registerHandle = useCallback((registered: boolean) => {
+    setHasHandle(registered);
+  }, []);
   const movingSV = useSharedValue(false);
   const currentOverItemId = useSharedValue<string | null>(null);
   const onDraggingLastCallTimestamp = useSharedValue(0);
@@ -303,37 +301,14 @@ export function useSortable<T>(
   const positionY = useSharedValue(initialTopVal);
   const top = useSharedValue(initialTopVal);
   const targetLowerBound = useSharedValue(initialLowerBoundVal);
+  const initialItemContentY = useSharedValue(0);
+  const initialFingerAbsoluteY = useSharedValue(0);
+  const initialLowerBound = useSharedValue(0);
 
   const calculatedContainerHeight = useRef(containerHeight).current;
   const upperBound = useDerivedValue(
     () => lowerBound.value + calculatedContainerHeight
   );
-
-  useEffect(() => {
-    if (!children || !handleComponent) {
-      setHasHandle(false);
-      return;
-    }
-
-    const checkForHandle = (child: React.ReactNode): boolean => {
-      if (React.isValidElement(child)) {
-        if (child.type === handleComponent) {
-          return true;
-        }
-
-        if (child.props && child.props.children) {
-          if (
-            React.Children.toArray(child.props.children).some(checkForHandle)
-          ) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    setHasHandle(React.Children.toArray(children).some(checkForHandle));
-  }, [children, handleComponent]);
 
   useAnimatedReaction(
     () => positionY.value,
@@ -369,7 +344,7 @@ export function useSortable<T>(
       if (onDragging) {
         const now = Date.now();
         if (now - onDraggingLastCallTimestamp.value > THROTTLE_INTERVAL) {
-          runOnJS(onDragging)(id, newOverItemId, Math.round(currentY));
+          scheduleOnRN(onDragging, id, newOverItemId, Math.round(currentY));
           onDraggingLastCallTimestamp.value = now;
         }
       }
@@ -412,7 +387,7 @@ export function useSortable<T>(
         if (!movingSV.value) {
           top.value = withSpring(currentPosition * itemHeight);
           if (onMove) {
-            runOnJS(onMove)(id, previousPosition, currentPosition);
+            scheduleOnRN(onMove, id, previousPosition, currentPosition);
           }
         }
       }
@@ -466,48 +441,44 @@ export function useSortable<T>(
     [movingSV]
   );
 
-  type GestureContext = Record<string, number>;
-
-  const panGestureHandler = useAnimatedGestureHandler<
-    PanGestureHandlerGestureEvent,
-    GestureContext
-  >({
-    onStart(event, ctx) {
+  const panGestureHandler: GestureType = Gesture.Pan()
+    .activateAfterLongPress(200)
+    .shouldCancelWhenOutside(false)
+    .onStart((event) => {
       "worklet";
-      ctx.initialItemContentY = positions.value[id] * itemHeight;
-      ctx.initialFingerAbsoluteY = event.absoluteY;
-      ctx.initialLowerBound = lowerBound.value;
+      initialItemContentY.value = positions.value[id] * itemHeight;
+      initialFingerAbsoluteY.value = event.absoluteY;
+      initialLowerBound.value = lowerBound.value;
 
-      positionY.value = ctx.initialItemContentY;
+      positionY.value = initialItemContentY.value;
       movingSV.value = true;
-      runOnJS(setIsMoving)(true);
+      scheduleOnRN(setIsMoving, true);
 
       if (onDragStart) {
-        runOnJS(onDragStart)(id, positions.value[id]);
+        scheduleOnRN(onDragStart, id, positions.value[id]);
       }
-    },
-    onActive(event, ctx) {
+    })
+    .onUpdate((event) => {
       "worklet";
-      const fingerDyScreen = event.absoluteY - ctx.initialFingerAbsoluteY;
-      const scrollDeltaSinceStart = lowerBound.value - ctx.initialLowerBound;
+      const fingerDyScreen = event.absoluteY - initialFingerAbsoluteY.value;
+      const scrollDeltaSinceStart = lowerBound.value - initialLowerBound.value;
       positionY.value =
-        ctx.initialItemContentY + fingerDyScreen + scrollDeltaSinceStart;
-    },
-    onFinish() {
+        initialItemContentY.value + fingerDyScreen + scrollDeltaSinceStart;
+    })
+    .onFinalize(() => {
       "worklet";
       const finishPosition = positions.value[id] * itemHeight;
       top.value = withTiming(finishPosition);
       movingSV.value = false;
-      runOnJS(setIsMoving)(false);
+      scheduleOnRN(setIsMoving, false);
 
       if (onDrop) {
         const positionsCopy = { ...positions.value };
-        runOnJS(onDrop)(id, positions.value[id], positionsCopy);
+        scheduleOnRN(onDrop, id, positions.value[id], positionsCopy);
       }
 
       currentOverItemId.value = null;
-    },
-  });
+    });
 
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";
@@ -529,5 +500,6 @@ export function useSortable<T>(
     panGestureHandler,
     isMoving,
     hasHandle,
+    registerHandle,
   };
 }

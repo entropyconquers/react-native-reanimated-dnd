@@ -2,14 +2,21 @@ import React, { useRef, createContext, useContext } from "react";
 import { ViewStyle, StyleProp } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
-import { useDraggable } from "@/external-lib";
-import { UseDraggableOptions, DraggableState } from "@/types/draggable";
+import {
+  useDraggable,
+  type UseDraggableOptions,
+} from "react-native-reanimated-dnd";
 
 export interface CustomDraggableProps<TData = unknown>
   extends UseDraggableOptions<TData> {
   initialStyle?: StyleProp<ViewStyle>;
   children: React.ReactNode;
 }
+
+type CustomDraggableHookOptions<TData> = UseDraggableOptions<TData> & {
+  children: React.ReactNode;
+  handleComponent: React.ComponentType<any>;
+};
 
 // Create a context for CustomDraggable
 interface CustomDraggableContextValue {
@@ -53,12 +60,13 @@ const CustomDraggableComponent = <TData = unknown,>({
   initialStyle,
   ...draggableOptions
 }: CustomDraggableProps<TData>) => {
+  const dragOptions = draggableOptions as UseDraggableOptions<TData>;
   const { animatedViewProps, gesture, hasHandle, animatedViewRef } =
     useDraggable<TData>({
-      ...draggableOptions,
+      ...dragOptions,
       children,
       handleComponent: CustomDraggableHandle,
-    });
+    } as CustomDraggableHookOptions<TData>);
 
   const combinedStyle = [initialStyle, animatedViewProps.style];
 

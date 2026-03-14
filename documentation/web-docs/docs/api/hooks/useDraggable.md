@@ -198,17 +198,6 @@ const { animatedViewProps, gesture } = useDraggable({
 });
 ```
 
-##### children
-
-- **Type**: `React.ReactNode`
-- **Required**: No
-- **Description**: Used internally for handle detection. Not typically used directly.
-
-##### handleComponent
-
-- **Type**: `React.ComponentType<any>`
-- **Required**: No
-- **Description**: Used internally for handle detection. Not typically used directly.
 
 ## Return Value
 
@@ -625,27 +614,17 @@ function TypedDraggable() {
 
 ```tsx
 function DragHandlePattern() {
-  const { animatedViewProps, gesture, hasHandle } = useDraggable({
-    data: { id: "1" },
-    children: <DragHandle />, // Pass handle as children for detection
-    handleComponent: DragHandle,
-  });
-
   return (
-    <Animated.View {...animatedViewProps}>
-      {hasHandle ? (
-        // Handle controls dragging
-        <View>
-          <Text>Content (not draggable)</Text>
-          <DragHandle />
-        </View>
-      ) : (
-        // Entire component is draggable
-        <GestureDetector gesture={gesture}>
-          <Text>Entire component draggable</Text>
-        </GestureDetector>
-      )}
-    </Animated.View>
+    <Draggable data={{ id: "1" }}>
+      <View>
+        <Text>Content (not draggable)</Text>
+        <Draggable.Handle>
+          <View style={styles.handle}>
+            <Text>Drag here</Text>
+          </View>
+        </Draggable.Handle>
+      </View>
+    </Draggable>
   );
 }
 ```

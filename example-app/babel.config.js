@@ -11,15 +11,12 @@ module.exports = function (api) {
             "@": "./",
             "@/components": "./components",
             "@/hooks": "./hooks",
-            "@/types": "./types",
-            "@/context": "./context",
             "@/navigation": "./navigation",
-            "@/external-lib": "./external-lib",
           },
         },
       ],
       "@babel/plugin-proposal-export-namespace-from",
-      "react-native-reanimated/plugin",
+      "react-native-worklets/plugin",
     ],
   };
 };

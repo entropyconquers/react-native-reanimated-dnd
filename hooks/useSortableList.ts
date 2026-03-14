@@ -21,7 +21,7 @@ export interface UseSortableListReturn<TData> {
   scrollY: any;
   autoScroll: any;
   scrollViewRef: any;
-  dropProviderRef: React.RefObject<DropProviderRef>;
+  dropProviderRef: React.RefObject<DropProviderRef | null>;
   handleScroll: any;
   handleScrollEnd: () => void;
   contentHeight: number;
@@ -216,7 +216,7 @@ export function useSortableList<TData extends { id: string }>(
   const scrollY = useSharedValue(0);
   const autoScroll = useSharedValue(ScrollDirection.None);
   const scrollViewRef = useAnimatedRef();
-  const dropProviderRef = useRef<DropProviderRef>(null);
+  const dropProviderRef = useRef<DropProviderRef | null>(null);
 
   // Scrolling synchronization
   useAnimatedReaction(
