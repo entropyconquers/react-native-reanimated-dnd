@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -59,6 +59,13 @@ const SortableContext = createContext<SortableContextValue | null>(null);
 const SortableHandle = ({ children, style }: SortableHandleProps) => {
   const sortableContext = useContext(SortableContext);
 
+  useEffect(() => {
+    sortableContext?.registerHandle(true);
+    return () => {
+      sortableContext?.registerHandle(false);
+    };
+  }, [sortableContext]);
+
   if (!sortableContext) {
     console.warn("SortableHandle must be used within a SortableItem component");
     return <>{children}</>;
@@ -77,11 +84,12 @@ function renderSortableContent(
   style: StyleProp<ViewStyle> | undefined,
   children: React.ReactNode,
   panGestureHandler: SortableContextValue["panGestureHandler"],
+  registerHandle: SortableContextValue["registerHandle"],
   hasHandle: boolean
 ) {
   const content = (
     <Animated.View style={[animatedStyle, customAnimatedStyle]}>
-      <SortableContext.Provider value={{ panGestureHandler }}>
+      <SortableContext.Provider value={{ panGestureHandler, registerHandle }}>
         <Animated.View style={style}>{children}</Animated.View>
       </SortableContext.Provider>
     </Animated.View>
@@ -118,7 +126,7 @@ function VerticalSortableItemInner<T>({
   onDrop,
   onDragging,
 }: VerticalSortableItemInnerProps<T>) {
-  const { animatedStyle, panGestureHandler, hasHandle } = useSortable<T>({
+  const { animatedStyle, panGestureHandler, hasHandle, registerHandle } = useSortable<T>({
     id,
     positions,
     lowerBound,
@@ -130,8 +138,6 @@ function VerticalSortableItemInner<T>({
     onDragStart,
     onDrop,
     onDragging,
-    children,
-    handleComponent: SortableHandle,
   });
 
   return renderSortableContent(
@@ -140,6 +146,7 @@ function VerticalSortableItemInner<T>({
     style,
     children,
     panGestureHandler,
+    registerHandle,
     hasHandle
   );
 }
@@ -170,7 +177,7 @@ function HorizontalSortableItemInner<T>({
   onDrop,
   onDraggingHorizontal,
 }: HorizontalSortableItemInnerProps<T>) {
-  const { animatedStyle, panGestureHandler, hasHandle } =
+  const { animatedStyle, panGestureHandler, hasHandle, registerHandle } =
     useHorizontalSortable<T>({
       id,
       positions,
@@ -185,8 +192,6 @@ function HorizontalSortableItemInner<T>({
       onDragStart,
       onDrop,
       onDragging: onDraggingHorizontal,
-      children,
-      handleComponent: SortableHandle,
     });
 
   return renderSortableContent(
@@ -195,6 +200,7 @@ function HorizontalSortableItemInner<T>({
     style,
     children,
     panGestureHandler,
+    registerHandle,
     hasHandle
   );
 }

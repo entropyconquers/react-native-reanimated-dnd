@@ -116,18 +116,6 @@ const { animatedStyle, panGestureHandler } = useSortable({
 - **Required**: No
 - **Description**: Callback fired continuously while dragging. Provides information about which item is being hovered over.
 
-##### children
-
-- **Type**: `React.ReactNode`
-- **Required**: No
-- **Description**: Used internally for handle detection. When provided, the hook will scan for handle components.
-
-##### handleComponent
-
-- **Type**: `React.ComponentType<any>`
-- **Required**: No
-- **Description**: Component type to look for when detecting handles.
-
 ## Return Value
 
 ### UseSortableReturn

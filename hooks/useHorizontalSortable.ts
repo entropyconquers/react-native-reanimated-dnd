@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   useAnimatedReaction,
   useAnimatedStyle,
@@ -152,12 +152,14 @@ export function useHorizontalSortable<T>(
     onDragStart,
     onDrop,
     onDragging,
-    children,
-    handleComponent,
   } = options;
 
   const [isMoving, setIsMoving] = useState(false);
   const [hasHandle, setHasHandle] = useState(false);
+
+  const registerHandle = useCallback((registered: boolean) => {
+    setHasHandle(registered);
+  }, []);
   const movingSV = useSharedValue(false);
   const currentOverItemId = useSharedValue<string | null>(null);
   const onDraggingLastCallTimestamp = useSharedValue(0);
@@ -184,34 +186,6 @@ export function useHorizontalSortable<T>(
   const rightBound = useDerivedValue(
     () => leftBound.value + calculatedContainerWidth
   );
-
-  useEffect(() => {
-    if (!children || !handleComponent) {
-      setHasHandle(false);
-      return;
-    }
-
-    const checkForHandle = (child: React.ReactNode): boolean => {
-      if (React.isValidElement(child)) {
-        if (child.type === handleComponent) {
-          return true;
-        }
-
-        if (child.props && (child.props as any).children) {
-          if (
-            React.Children.toArray((child.props as any).children).some(
-              checkForHandle
-            )
-          ) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    setHasHandle(React.Children.toArray(children).some(checkForHandle));
-  }, [children, handleComponent]);
 
   useAnimatedReaction(
     () => positionX.value,
@@ -441,5 +415,6 @@ export function useHorizontalSortable<T>(
     panGestureHandler,
     isMoving,
     hasHandle,
+    registerHandle,
   };
 }

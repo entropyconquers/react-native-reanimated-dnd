@@ -200,18 +200,6 @@ export interface UseSortableOptions<T> {
     overItemId: string | null,
     yPosition: number
   ) => void;
-
-  /**
-   * Children elements - used internally for handle detection.
-   * @internal
-   */
-  children?: React.ReactNode;
-
-  /**
-   * Handle component type - used internally for handle detection.
-   * @internal
-   */
-  handleComponent?: React.ComponentType<any>;
 }
 
 /**
@@ -242,6 +230,12 @@ export interface UseSortableReturn {
    * When false, the entire item is draggable.
    */
   hasHandle: boolean;
+
+  /**
+   * Callback for handle components to register/unregister themselves.
+   * Called with `true` when a handle mounts, `false` when it unmounts.
+   */
+  registerHandle: (registered: boolean) => void;
 }
 
 /**
@@ -598,6 +592,7 @@ export interface SortableRenderItemProps<TData extends SortableData> {
 
 export interface SortableContextValue {
   panGestureHandler: GestureType;
+  registerHandle: (registered: boolean) => void;
 }
 
 /**
@@ -702,18 +697,6 @@ export interface UseHorizontalSortableOptions<T> {
     overItemId: string | null,
     xPosition: number
   ) => void;
-
-  /**
-   * Children elements - used internally for handle detection.
-   * @internal
-   */
-  children?: React.ReactNode;
-
-  /**
-   * Handle component type - used internally for handle detection.
-   * @internal
-   */
-  handleComponent?: React.ComponentType<any>;
 }
 
 /**
@@ -742,6 +725,11 @@ export interface UseHorizontalSortableReturn {
    * Whether this sortable item has a handle component.
    */
   hasHandle: boolean;
+
+  /**
+   * Callback for handle components to register/unregister themselves.
+   */
+  registerHandle: (registered: boolean) => void;
 }
 
 /**

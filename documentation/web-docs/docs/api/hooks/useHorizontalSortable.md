@@ -40,8 +40,6 @@ function useHorizontalSortable<T>(
 | `onDragStart`         | `(id: string, position: number) => void`                              | ❌       | -       | Callback when dragging starts                     |
 | `onDrop`              | `(id: string, position: number) => void`                              | ❌       | -       | Callback when dragging ends                       |
 | `onDragging`          | `(id: string, overItemId: string \| null, xPosition: number) => void` | ❌       | -       | Callback during dragging                          |
-| `children`            | `React.ReactNode`                                                     | ❌       | -       | Children elements (used for handle detection)     |
-| `handleComponent`     | `React.ComponentType<any>`                                            | ❌       | -       | Handle component type (used for handle detection) |
 
 ## Return Value
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import {
   SharedValue,
@@ -130,8 +130,6 @@ export interface UseSortableOptions<T> {
     overItemId: string | null,
     yPosition: number
   ) => void;
-  children?: React.ReactNode;
-  handleComponent?: React.ComponentType<any>;
 }
 
 export interface UseSortableReturn {
@@ -139,6 +137,7 @@ export interface UseSortableReturn {
   panGestureHandler: GestureType;
   isMoving: boolean;
   hasHandle: boolean;
+  registerHandle: (registered: boolean) => void;
 }
 
 /**
@@ -276,12 +275,14 @@ export function useSortable<T>(
     onDragStart,
     onDrop,
     onDragging,
-    children,
-    handleComponent,
   } = options;
 
   const [isMoving, setIsMoving] = useState(false);
   const [hasHandle, setHasHandle] = useState(false);
+
+  const registerHandle = useCallback((registered: boolean) => {
+    setHasHandle(registered);
+  }, []);
   const movingSV = useSharedValue(false);
   const currentOverItemId = useSharedValue<string | null>(null);
   const onDraggingLastCallTimestamp = useSharedValue(0);
@@ -308,31 +309,6 @@ export function useSortable<T>(
   const upperBound = useDerivedValue(
     () => lowerBound.value + calculatedContainerHeight
   );
-
-  useEffect(() => {
-    if (!children || !handleComponent) {
-      setHasHandle(false);
-      return;
-    }
-
-    const checkForHandle = (child: React.ReactNode): boolean => {
-      if (React.isValidElement(child)) {
-        if (child.type === handleComponent) {
-          return true;
-        }
-
-        const props = child.props as { children?: React.ReactNode };
-        if (child.props && props.children) {
-          if (React.Children.toArray(props.children).some(checkForHandle)) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    setHasHandle(React.Children.toArray(children).some(checkForHandle));
-  }, [children, handleComponent]);
 
   useAnimatedReaction(
     () => positionY.value,
@@ -524,5 +500,6 @@ export function useSortable<T>(
     panGestureHandler,
     isMoving,
     hasHandle,
+    registerHandle,
   };
 }

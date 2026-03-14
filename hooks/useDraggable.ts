@@ -153,8 +153,6 @@ export const useDraggable = <TData = unknown>(
     dragBoundsRef,
     dragAxis = "both",
     collisionAlgorithm = "intersect",
-    children,
-    handleComponent,
   } = options;
 
   // Create animated ref first
@@ -164,34 +162,9 @@ export const useDraggable = <TData = unknown>(
   const [state, setState] = useState<DraggableState>(DraggableState.IDLE);
   const [hasHandle, setHasHandle] = useState(false);
 
-  // Check if any child is a Handle component
-  useEffect(() => {
-    if (!children || !handleComponent) {
-      setHasHandle(false);
-      return;
-    }
-
-    // Check if children contain a Handle component
-    const checkForHandle = (child: React.ReactNode): boolean => {
-      if (React.isValidElement(child)) {
-        // Check for direct component type match
-        if (child.type === handleComponent) {
-          return true;
-        }
-
-        // Check children recursively
-        const props = child.props as { children?: React.ReactNode };
-        if (child.props && props.children) {
-          if (React.Children.toArray(props.children).some(checkForHandle)) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    setHasHandle(React.Children.toArray(children).some(checkForHandle));
-  }, [children, handleComponent]);
+  const registerHandle = useCallback((registered: boolean) => {
+    setHasHandle(registered);
+  }, []);
 
   useEffect(() => {
     onStateChange?.(state);
@@ -784,5 +757,6 @@ export const useDraggable = <TData = unknown>(
     state,
     animatedViewRef,
     hasHandle,
+    registerHandle,
   };
 };
