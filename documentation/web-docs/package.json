@@ -1,15 +1,32 @@
 {
   "name": "web-docs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "mintlify dev",
-    "build": "mintlify build"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "postinstall": "fumadocs-mdx"
+  },
+  "dependencies": {
+    "fumadocs-core": "^15.4.3",
+    "fumadocs-mdx": "^11.6.7",
+    "fumadocs-ui": "^15.4.3",
+    "next": "^15.3.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "mintlify": "latest"
+    "@types/mdx": "^2.0.13",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "tailwindcss": "^4.1.4",
+    "@tailwindcss/postcss": "^4.1.4",
+    "typescript": "^5.8.3",
+    "postcss": "^8.5.3"
   },
   "engines": {
-    "node": ">=20.17.0"
+    "node": ">=20"
   }
 }

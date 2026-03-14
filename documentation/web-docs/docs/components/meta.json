@@ -1,0 +1,9 @@
+{
+  "title": "Core Components",
+  "pages": [
+    "draggable",
+    "droppable",
+    "sortable",
+    "sortable-item"
+  ]
+}
