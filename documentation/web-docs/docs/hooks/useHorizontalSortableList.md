@@ -3,8 +3,6 @@ title: useHorizontalSortableList
 description: Hook for managing horizontal sortable lists
 ---
 
-# useHorizontalSortableList
-
 A hook for managing horizontal sortable lists with drag-and-drop reordering capabilities. This hook provides the foundational state management and utilities needed to create horizontal sortable lists, handling position tracking, scroll synchronization, auto-scrolling, gap management, and providing helper functions for individual sortable items.
 
 ## Import

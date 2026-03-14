@@ -1,8 +1,6 @@
 ---
-sidebar_position: 4
+title: "SortableItem"
 ---
-
-# SortableItem
 
 The `SortableItem` component represents individual items within a sortable list, providing drag-and-drop functionality, gesture handling, and smooth reordering animations.
 

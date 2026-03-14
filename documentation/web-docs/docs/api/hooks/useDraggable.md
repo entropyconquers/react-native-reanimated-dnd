@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "useDraggable Hook"
 ---
-
-# useDraggable Hook
 
 A powerful hook for creating draggable components with advanced features like collision detection, bounded dragging, axis constraints, and custom animations.
 

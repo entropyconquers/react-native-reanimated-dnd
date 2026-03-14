@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "Sortable Types"
 ---
-
-# Sortable Types
 
 Complete type definitions for sortable components and hooks.
 

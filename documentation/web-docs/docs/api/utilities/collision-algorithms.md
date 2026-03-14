@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "Collision Algorithms"
 ---
-
-# Collision Algorithms
 
 Collision detection algorithms for determining when a draggable item overlaps with a droppable zone.
 

@@ -3,8 +3,6 @@ title: useHorizontalSortable
 description: Hook for creating individual horizontal sortable items
 ---
 
-# useHorizontalSortable
-
 A hook for creating horizontal sortable list items with drag-and-drop reordering capabilities. This hook provides the core functionality for individual items within a horizontal sortable list, handling drag gestures, position animations, auto-scrolling, and reordering logic.
 
 ## Import

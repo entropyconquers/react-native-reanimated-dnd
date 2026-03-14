@@ -1,8 +1,6 @@
 ---
-sidebar_position: 2
+title: "Quick Start"
 ---
-
-# Quick Start
 
 Get up and running with React Native Reanimated DnD in minutes.
 

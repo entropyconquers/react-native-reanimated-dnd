@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "Installation"
 ---
-
-# Installation
 
 Get started with React Native Reanimated DnD in your project.
 

@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "Helper Functions"
 ---
-
-# Helper Functions
 
 Utility functions for working with sortable lists, position calculations, and data transformations.
 

@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "useSortable"
 ---
-
-# useSortable
 
 The `useSortable` hook provides the core functionality for individual items within a sortable list, handling drag gestures, position animations, auto-scrolling, and reordering logic.
 

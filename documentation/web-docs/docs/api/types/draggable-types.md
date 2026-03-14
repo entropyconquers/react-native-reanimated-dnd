@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "Draggable Types"
 ---
-
-# Draggable Types
 
 Complete type definitions for draggable components and hooks.
 

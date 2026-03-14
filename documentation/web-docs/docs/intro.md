@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "Introduction"
 ---
-
-# Introduction
 
 Welcome to React Native Reanimated DnD - a powerful, performant drag-and-drop library built on React Native Reanimated 4 and Worklets and Gesture Handler.
 

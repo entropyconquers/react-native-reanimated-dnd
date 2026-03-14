@@ -1,8 +1,6 @@
 ---
-sidebar_position: 4
+title: "Context Types"
 ---
-
-# Context Types
 
 Complete type definitions for context and provider components.
 

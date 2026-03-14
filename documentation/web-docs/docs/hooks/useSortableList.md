@@ -1,8 +1,6 @@
 ---
-sidebar_position: 4
+title: "useSortableList"
 ---
-
-# useSortableList
 
 The `useSortableList` hook provides the foundational state management and utilities needed to create **vertical** sortable lists with drag-and-drop reordering capabilities.
 

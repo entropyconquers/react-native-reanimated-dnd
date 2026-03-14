@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "Basic Concepts"
 ---
-
-# Basic Concepts
 
 Understanding the core concepts and architecture of React Native Reanimated DnD.
 

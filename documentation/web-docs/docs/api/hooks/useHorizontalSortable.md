@@ -3,8 +3,6 @@ title: useHorizontalSortable
 description: API reference for the useHorizontalSortable hook
 ---
 
-# useHorizontalSortable
-
 Hook for creating individual horizontal sortable items with drag-and-drop reordering capabilities.
 
 ## Import

@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "useDraggable"
 ---
-
-# useDraggable
 
 The `useDraggable` hook provides the core functionality for creating draggable components with advanced features like collision detection, bounded dragging, axis constraints, and custom animations.
 
