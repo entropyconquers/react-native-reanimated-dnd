@@ -1,0 +1,16 @@
+{
+  "title": "Examples",
+  "pages": [
+    "basic-drag-drop",
+    "drag-handles",
+    "sortable-lists",
+    "horizontal-sortable",
+    "collision-detection",
+    "custom-animations",
+    "bounded-dragging",
+    "axis-constraints",
+    "drop-zones",
+    "visual-feedback",
+    "capacity-limits"
+  ]
+}

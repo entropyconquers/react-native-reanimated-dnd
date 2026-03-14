@@ -2,9 +2,7 @@
 title: "Visual Feedback"
 ---
 
-import ExamplePreview from '/snippets/example-preview.mdx';
 
-<ExamplePreview />
 
 Enhance user experience with clear visual indicators and responsive feedback.
 
@@ -77,7 +75,7 @@ export function VisualFeedbackExample() {
           <View style={styles.dropZonesContainer}>
             <FeedbackDropZone
               id="success-zone"
-              title="✅ Success Zone"
+              title="Success Zone"
               isActive={activeZone === "success-zone"}
               onDragEnter={() => setActiveZone("success-zone")}
               onDragLeave={() => setActiveZone(null)}
@@ -89,7 +87,7 @@ export function VisualFeedbackExample() {
 
             <FeedbackDropZone
               id="error-zone"
-              title="❌ Error Zone"
+              title="Error Zone"
               isActive={activeZone === "error-zone"}
               onDragEnter={() => setActiveZone("error-zone")}
               onDragLeave={() => setActiveZone(null)}
@@ -357,7 +355,7 @@ function FeedbackAnimation({ type }) {
   return (
     <Animated.View style={[styles.feedback, animatedStyle]}>
       <Text style={styles.feedbackText}>
-        {type === "success" ? "✅" : "❌"}
+        {type === "success" ? "Success" : "Error"}
       </Text>
     </Animated.View>
   );

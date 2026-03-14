@@ -196,17 +196,17 @@ const styles = StyleSheet.create({
 When working with sortable lists, all data items **MUST** have an `id` property of type string:
 
 ```tsx
-// ✅ Correct - Each item has a unique string id
+// Correct - Each item has a unique string id
 const items = [
   { id: "1", title: "First Item" },
   { id: "2", title: "Second Item" },
   { id: "3", title: "Third Item" },
 ];
 
-// ❌ Incorrect - Missing id properties
+// Incorrect - Missing id properties
 const badItems = [{ title: "Item without ID" }, { name: "Another item" }];
 
-// ❌ Incorrect - Non-string ids
+// Incorrect - Non-string ids
 const badIds = [
   { id: 1, title: "Numeric ID" },
   { id: null, title: "Null ID" },

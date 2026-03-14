@@ -25,11 +25,11 @@ function useHorizontalSortableList<TData extends { id: string }>(
 
 | Property            | Type                                     | Required | Default           | Description                                     |
 | ------------------- | ---------------------------------------- | -------- | ----------------- | ----------------------------------------------- |
-| `data`              | `TData[]`                                | ✅       | -                 | Array of data items to render as sortable items |
-| `itemWidth`         | `number`                                 | ✅       | -                 | Width of each item in pixels                    |
-| `gap`               | `number`                                 | ❌       | `0`               | Gap between items in pixels                     |
-| `paddingHorizontal` | `number`                                 | ❌       | `0`               | Container horizontal padding in pixels          |
-| `itemKeyExtractor`  | `(item: TData, index: number) => string` | ❌       | `item => item.id` | Function to extract unique key from each item   |
+| `data`              | `TData[]`                                | Yes      | -                 | Array of data items to render as sortable items |
+| `itemWidth`         | `number`                                 | Yes      | -                 | Width of each item in pixels                    |
+| `gap`               | `number`                                 | No       | `0`               | Gap between items in pixels                     |
+| `paddingHorizontal` | `number`                                 | No       | `0`               | Container horizontal padding in pixels          |
+| `itemKeyExtractor`  | `(item: TData, index: number) => string` | No       | `item => item.id` | Function to extract unique key from each item   |
 
 ## Return Value
 

@@ -93,3 +93,4 @@ example-app/build/
 example-app/dist/
 example-app/lib/
 example-app/coverage/
+.vercel

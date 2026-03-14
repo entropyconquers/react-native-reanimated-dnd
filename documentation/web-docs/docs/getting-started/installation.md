@@ -60,7 +60,7 @@ cd ios && pod install
 
 For Android, the dependencies should be automatically linked. If you encounter issues, ensure your `android/app/build.gradle` includes:
 
-```gradle
+```groovy
 implementation 'com.swmansion.reanimated:reanimated:4.x.x'
 implementation 'com.swmansion.gesturehandler:react-native-gesture-handler:2.x.x'
 ```

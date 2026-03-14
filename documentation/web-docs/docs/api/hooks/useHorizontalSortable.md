@@ -25,19 +25,19 @@ function useHorizontalSortable<T>(
 
 | Property              | Type                                                                  | Required | Default | Description                                       |
 | --------------------- | --------------------------------------------------------------------- | -------- | ------- | ------------------------------------------------- |
-| `id`                  | `string`                                                              | ✅       | -       | Unique identifier for this sortable item          |
-| `positions`           | `SharedValue<{[id: string]: number}>`                                 | ✅       | -       | Shared value containing positions of all items    |
-| `leftBound`           | `SharedValue<number>`                                                 | ✅       | -       | Current horizontal scroll position                |
-| `autoScrollDirection` | `SharedValue<HorizontalScrollDirection>`                              | ✅       | -       | Auto-scroll direction state                       |
-| `itemsCount`          | `number`                                                              | ✅       | -       | Total number of items in the list                 |
-| `itemWidth`           | `number`                                                              | ✅       | -       | Width of each item in pixels                      |
-| `gap`                 | `number`                                                              | ❌       | `0`     | Gap between items in pixels                       |
-| `paddingHorizontal`   | `number`                                                              | ❌       | `0`     | Container horizontal padding                      |
-| `containerWidth`      | `number`                                                              | ❌       | `500`   | Container width for auto-scroll calculations      |
-| `onMove`              | `(id: string, from: number, to: number) => void`                      | ❌       | -       | Callback when item position changes               |
-| `onDragStart`         | `(id: string, position: number) => void`                              | ❌       | -       | Callback when dragging starts                     |
-| `onDrop`              | `(id: string, position: number) => void`                              | ❌       | -       | Callback when dragging ends                       |
-| `onDragging`          | `(id: string, overItemId: string \| null, xPosition: number) => void` | ❌       | -       | Callback during dragging                          |
+| `id`                  | `string`                                                              | Yes      | -       | Unique identifier for this sortable item          |
+| `positions`           | `SharedValue<{[id: string]: number}>`                                 | Yes      | -       | Shared value containing positions of all items    |
+| `leftBound`           | `SharedValue<number>`                                                 | Yes      | -       | Current horizontal scroll position                |
+| `autoScrollDirection` | `SharedValue<HorizontalScrollDirection>`                              | Yes      | -       | Auto-scroll direction state                       |
+| `itemsCount`          | `number`                                                              | Yes      | -       | Total number of items in the list                 |
+| `itemWidth`           | `number`                                                              | Yes      | -       | Width of each item in pixels                      |
+| `gap`                 | `number`                                                              | No       | `0`     | Gap between items in pixels                       |
+| `paddingHorizontal`   | `number`                                                              | No       | `0`     | Container horizontal padding                      |
+| `containerWidth`      | `number`                                                              | No       | `500`   | Container width for auto-scroll calculations      |
+| `onMove`              | `(id: string, from: number, to: number) => void`                      | No       | -       | Callback when item position changes               |
+| `onDragStart`         | `(id: string, position: number) => void`                              | No       | -       | Callback when dragging starts                     |
+| `onDrop`              | `(id: string, position: number) => void`                              | No       | -       | Callback when dragging ends                       |
+| `onDragging`          | `(id: string, overItemId: string \| null, xPosition: number) => void` | No       | -       | Callback during dragging                          |
 
 ## Return Value
 

@@ -298,7 +298,7 @@ function BasicTaskList() {
           <Text style={styles.taskPriority}>{item.priority}</Text>
         </View>
         <View style={styles.taskStatus}>
-          <Text>{item.completed ? "✅" : "⏳"}</Text>
+          <Text>{item.completed ? "Done" : "Pending"}</Text>
         </View>
       </View>
     </SortableItem>

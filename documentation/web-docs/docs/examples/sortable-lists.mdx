@@ -2,9 +2,7 @@
 title: "Sortable Lists"
 ---
 
-import ExamplePreview from '/snippets/example-preview.mdx';
 
-<ExamplePreview />
 
 Create reorderable lists with smooth animations and intuitive interactions.
 
@@ -361,7 +359,7 @@ Track sorting events with callbacks:
 **Important**: The `itemHeight` prop must be a consistent value for all items in the list. The library uses this value for position calculations and animations.
 
 ```tsx
-// ✅ Correct: Fixed height for all items
+// Correct: Fixed height for all items
 <Sortable
   data={items}
   renderItem={renderItem}
@@ -369,7 +367,7 @@ Track sorting events with callbacks:
   style={styles.list}
 />;
 
-// ❌ Incorrect: Don't use dynamic heights
+// Incorrect: Don't use dynamic heights
 const getItemHeight = (item: Item) => {
   const baseHeight = 60;
   const extraHeight = item.description ? 40 : 0;
