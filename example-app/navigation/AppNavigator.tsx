@@ -23,6 +23,7 @@ import {
   CustomDraggableExample,
 } from "@/components/examples";
 import { HorizontalSortableExample } from "@/components/HorizontalSortableExample";
+import { colors } from "@/theme";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -162,7 +163,7 @@ export function AppNavigator() {
         initialRouteName="Home"
         screenOptions={{
           headerShown: false, // We'll use our custom headers
-          cardStyle: { backgroundColor: "#000000" },
+          cardStyle: { backgroundColor: colors.bg },
           gestureEnabled: true,
           gestureDirection: "horizontal",
         }}

@@ -3,18 +3,18 @@ import {
   View,
   Text,
   StyleSheet,
-  Alert,
   ScrollView,
   StyleProp,
   TextStyle,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
 import { Droppable } from "react-native-reanimated-dnd";
 import { Draggable, DraggableState } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
+import { useToast } from "@/components/toast";
 
 interface DraggableItemData {
   id: string;
@@ -26,118 +26,26 @@ interface DragStateExampleProps {
   onBack: () => void;
 }
 
-export function DragStateExample({ onBack }: DragStateExampleProps) {
-  const dropProviderRef = useRef<DropProviderRef>(null);
-  const [dragState, setDragState] = useState<DraggableState>(
-    DraggableState.IDLE
-  );
+function getStateBannerBg(state: DraggableState): string {
+  switch (state) {
+    case DraggableState.IDLE:
+      return "rgba(144, 190, 109, 0.1)";
+    case DraggableState.DRAGGING:
+      return "rgba(248, 150, 30, 0.1)";
+    case DraggableState.DROPPED:
+      return "rgba(87, 117, 144, 0.1)";
+  }
+}
 
-  return (
-    <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView style={styles.container}>
-        <ExampleHeader title="Drag State Management" onBack={onBack} />
-
-        <DropProvider ref={dropProviderRef}>
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
-            scrollEventThrottle={16}
-          >
-            <View style={styles.section}>
-              <Text style={styles.sectionDescription}>
-                This example demonstrates the DraggableState enum and
-                onStateChange callback. Current State:{" "}
-                <Text style={getStateStyle(dragState)}>{dragState}</Text>
-              </Text>
-
-              <View style={styles.dropZoneArea}>
-                <Droppable<DraggableItemData>
-                  droppableId="state-demo-drop-zone"
-                  style={[styles.dropZone, styles.dropZoneBlue]}
-                  onDrop={(data) => {
-                    Alert.alert(
-                      "Drop!",
-                      `Item "${data.label}" dropped with state: ${dragState}`
-                    );
-                  }}
-                >
-                  <Text style={styles.dropZoneText}>Drop Target</Text>
-                  <Text style={styles.dZoneSubText}>(Check state changes)</Text>
-                </Droppable>
-              </View>
-
-              <View style={styles.draggableItemsArea}>
-                <Draggable<DraggableItemData>
-                  key="D-State-Demo"
-                  data={{
-                    id: "state-demo-item",
-                    label: "State Demo Item",
-                    backgroundColor: "#e63946",
-                  }}
-                  style={[
-                    styles.draggable,
-                    {
-                      top: 0,
-                      left: "25%",
-                      backgroundColor: "#e63946",
-                      borderWidth: 2,
-                      borderColor: getBorderColor(dragState),
-                      borderRadius: 12,
-                    },
-                  ]}
-                  onStateChange={(state) => {
-                    setDragState(state);
-                  }}
-                >
-                  <View style={styles.cardContent}>
-                    <Text style={styles.cardLabel}>Drag Me</Text>
-                    <Text style={styles.cardHint}>State: {dragState}</Text>
-                  </View>
-                </Draggable>
-              </View>
-
-              <View style={styles.stateInfo}>
-                <View style={styles.stateItem}>
-                  <View
-                    style={[
-                      styles.stateIndicator,
-                      { backgroundColor: "#90be6d" },
-                    ]}
-                  />
-                  <Text style={styles.stateText}>
-                    IDLE: Initial or reset state
-                  </Text>
-                </View>
-                <View style={styles.stateItem}>
-                  <View
-                    style={[
-                      styles.stateIndicator,
-                      { backgroundColor: "#f8961e" },
-                    ]}
-                  />
-                  <Text style={styles.stateText}>
-                    DRAGGING: Currently being dragged
-                  </Text>
-                </View>
-                <View style={styles.stateItem}>
-                  <View
-                    style={[
-                      styles.stateIndicator,
-                      { backgroundColor: "#577590" },
-                    ]}
-                  />
-                  <Text style={styles.stateText}>
-                    DROPPED: Successfully dropped on target
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </ScrollView>
-        </DropProvider>
-      </SafeAreaView>
-      <Footer />
-    </GestureHandlerRootView>
-  );
+function getStateBannerColor(state: DraggableState): string {
+  switch (state) {
+    case DraggableState.IDLE:
+      return "#90be6d";
+    case DraggableState.DRAGGING:
+      return "#f8961e";
+    case DraggableState.DROPPED:
+      return "#577590";
+  }
 }
 
 // Helper function to get state-specific text style
@@ -164,117 +72,259 @@ function getBorderColor(state: DraggableState): string {
   }
 }
 
+export function DragStateExample({ onBack }: DragStateExampleProps) {
+  const dropProviderRef = useRef<DropProviderRef>(null);
+  const { showToast } = useToast();
+  const [dragState, setDragState] = useState<DraggableState>(
+    DraggableState.IDLE
+  );
+
+  return (
+    <GestureHandlerRootView style={styles.container}>
+      <View style={styles.container}>
+        <ExampleHeader title="Drag State Management" onBack={onBack} />
+
+        <DropProvider ref={dropProviderRef}>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            scrollEventThrottle={16}
+          >
+            <Text style={styles.sectionDescription}>
+              Drag the item and watch the state change in real-time.
+            </Text>
+
+            <View
+              style={[
+                styles.stateBanner,
+                { backgroundColor: getStateBannerBg(dragState) },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.stateBannerText,
+                  { color: getStateBannerColor(dragState) },
+                ]}
+              >
+                {dragState.toUpperCase()}
+              </Text>
+            </View>
+
+            <View style={styles.dropZoneArea}>
+              <Droppable<DraggableItemData>
+                droppableId="state-demo-drop-zone"
+                style={styles.dropZone}
+                onDrop={(data) => {
+                  showToast({
+                    title: "Dropped!",
+                    subtitle: `State changed to ${dragState}`,
+                    autodismiss: true,
+                  });
+                }}
+              >
+                <Text style={styles.dropZoneText}>Drop Target</Text>
+                <Text style={styles.dZoneSubText}>Check state changes</Text>
+              </Droppable>
+            </View>
+
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>DRAG ITEM</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            <View style={styles.draggableItemsArea}>
+              <Draggable<DraggableItemData>
+                key="D-State-Demo"
+                data={{
+                  id: "state-demo-item",
+                  label: "State Demo Item",
+                  backgroundColor: "#e63946",
+                }}
+                style={[
+                  styles.draggable,
+                  {
+                    backgroundColor: "#e63946",
+                    borderWidth: 1.5,
+                    borderColor: getBorderColor(dragState),
+                    borderRadius: 12,
+                  },
+                ]}
+                onStateChange={(state) => {
+                  setDragState(state);
+                }}
+              >
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardLabel}>Drag Me</Text>
+                  <Text style={styles.cardHint}>{dragState}</Text>
+                </View>
+              </Draggable>
+            </View>
+
+            <View style={styles.stateChips}>
+              <View style={[styles.chip, { borderColor: "#90be6d" }]}>
+                <View
+                  style={[styles.chipDot, { backgroundColor: "#90be6d" }]}
+                />
+                <Text style={styles.chipText}>IDLE</Text>
+              </View>
+              <View style={[styles.chip, { borderColor: "#f8961e" }]}>
+                <View
+                  style={[styles.chipDot, { backgroundColor: "#f8961e" }]}
+                />
+                <Text style={styles.chipText}>DRAGGING</Text>
+              </View>
+              <View style={[styles.chip, { borderColor: "#577590" }]}>
+                <View
+                  style={[styles.chipDot, { backgroundColor: "#577590" }]}
+                />
+                <Text style={styles.chipText}>DROPPED</Text>
+              </View>
+            </View>
+          </ScrollView>
+        </DropProvider>
+      </View>
+      <Footer />
+    </GestureHandlerRootView>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-  },
-  section: {
-    padding: 24,
-    backgroundColor: "#000000",
-    marginBottom: 20,
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
   sectionDescription: {
-    fontSize: 15,
-    color: "#8E8E93",
-    marginBottom: 24,
-    lineHeight: 22,
+    fontSize: 14,
+    fontFamily: "Outfit_400Regular",
+    color: "#94A3B8",
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  stateBanner: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  stateBannerText: {
+    fontSize: 17,
+    fontFamily: "Outfit_600SemiBold",
+    fontWeight: "700",
+    letterSpacing: 1.5,
   },
   dropZoneArea: {
-    flexDirection: "row",
+    flex: 1,
     justifyContent: "center",
-    minHeight: 120,
-    marginBottom: 32,
+    alignItems: "stretch",
+    marginBottom: 20,
+    minHeight: 140,
   },
   dropZone: {
-    width: "70%",
-    height: 100,
-    borderWidth: 2,
+    flex: 1,
+    maxHeight: 200,
+    borderWidth: 1.5,
     borderStyle: "dashed",
+    borderColor: "rgba(88, 166, 255, 0.3)",
+    backgroundColor: "rgba(88, 166, 255, 0.05)",
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 16,
-    padding: 8,
-  },
-  dropZoneBlue: {
-    borderColor: "#58a6ff",
-    backgroundColor: "rgba(88, 166, 255, 0.08)",
   },
   dropZoneText: {
     textAlign: "center",
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "600",
+    fontFamily: "Outfit_600SemiBold",
     color: "#FFFFFF",
     letterSpacing: 0.2,
   },
   dZoneSubText: {
-    fontSize: 12,
-    color: "#8E8E93",
-    marginTop: 6,
-    letterSpacing: 0.1,
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    marginTop: 4,
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#1A1C26",
+  },
+  dividerText: {
+    fontSize: 11,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#475569",
+    letterSpacing: 1.5,
   },
   draggableItemsArea: {
-    minHeight: 100,
-    position: "relative",
-    marginTop: 16,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
   },
-  draggable: {
-    position: "absolute",
-  },
+  draggable: {},
   cardContent: {
-    width: 120,
-    height: 72,
-    padding: 12,
+    width: 130,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1C1C1E",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+    backgroundColor: "#151823",
   },
   cardLabel: {
     fontSize: 15,
     fontWeight: "600",
+    fontFamily: "Outfit_600SemiBold",
     color: "#FFFFFF",
     letterSpacing: 0.2,
     textAlign: "center",
   },
   cardHint: {
     fontSize: 13,
-    marginTop: 6,
-    color: "#8E8E93",
-    letterSpacing: 0.1,
+    fontFamily: "Outfit_400Regular",
+    marginTop: 3,
+    color: "#64748B",
     textAlign: "center",
   },
-  stateInfo: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
+  stateChips: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
   },
-  stateItem: {
+  chip: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    gap: 6,
   },
-  stateIndicator: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    marginRight: 12,
+  chipDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
-  stateText: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    flex: 1,
-    lineHeight: 20,
+  chipText: {
+    fontSize: 11,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#94A3B8",
+    letterSpacing: 0.5,
   },
 });

@@ -7,6 +7,8 @@ import {
   Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { colors, fonts } from "../theme";
+import { useToast } from "./toast";
 
 interface ExampleHeaderProps {
   title: string;
@@ -14,13 +16,20 @@ interface ExampleHeaderProps {
 }
 
 export function ExampleHeader({ title, onBack }: ExampleHeaderProps) {
+  const { dismissAll } = useToast();
+
+  const handleBack = () => {
+    dismissAll();
+    onBack();
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
         <View style={styles.headerContent}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={onBack}
+            onPress={handleBack}
             activeOpacity={0.7}
           >
             <Text style={styles.backIcon}>‹</Text>
@@ -28,7 +37,9 @@ export function ExampleHeader({ title, onBack }: ExampleHeaderProps) {
           </TouchableOpacity>
 
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.title} numberOfLines={1}>
+              {title}
+            </Text>
           </View>
 
           <View style={styles.spacer} />
@@ -40,12 +51,12 @@ export function ExampleHeader({ title, onBack }: ExampleHeaderProps) {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: "#000000",
+    backgroundColor: colors.bg,
   },
   headerContainer: {
-    backgroundColor: "#000000",
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#2C2C2E",
+    backgroundColor: colors.bg,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
     paddingHorizontal: 16,
     paddingTop: Platform.OS === "android" ? 8 : 6,
     paddingBottom: Platform.OS === "android" ? 8 : 6,
@@ -67,7 +78,7 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     fontSize: 28,
-    color: "#FF3B30",
+    color: colors.primary,
     fontWeight: "300",
     marginRight: 4,
     lineHeight: Platform.OS === "android" ? 32 : 28,
@@ -75,8 +86,8 @@ const styles = StyleSheet.create({
   },
   backText: {
     fontSize: 17,
-    color: "#FF3B30",
-    fontWeight: "400",
+    fontFamily: fonts.bodyMedium,
+    color: colors.primary,
     lineHeight: Platform.OS === "android" ? 24 : 20,
     textAlignVertical: Platform.OS === "android" ? "center" : "auto",
   },
@@ -87,16 +98,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: "KumbhSans_700Bold",
+    fontFamily: fonts.displayBold,
     textAlign: "center",
-    color: "#FFFFFF",
+    color: colors.textPrimary,
     lineHeight: Platform.OS === "android" ? 24 : 20,
-  },
-  redAccent: {
-    width: 40,
-    height: 3,
-    backgroundColor: "#FF3B30",
-    borderRadius: 1.5,
+    letterSpacing: -0.3,
   },
   spacer: {
     flex: 1,

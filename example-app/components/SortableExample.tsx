@@ -585,7 +585,8 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeHeader} edges={["top"]}>
       <View style={styles.headerContainer}>
         <View style={styles.headerContent}>
           <TouchableOpacity
@@ -622,6 +623,7 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
           </View>
         </View>
       </View>
+      </SafeAreaView>
       <View style={styles.listContainer}>
         <Sortable
           data={data}
@@ -690,20 +692,22 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  safeHeader: {
+    backgroundColor: "#08090E",
+  },
   container: {
     flex: 1,
-    paddingTop: 10,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   headerContainer: {
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
     borderBottomWidth: 0.5,
-    borderBottomColor: "#2C2C2E",
+    borderBottomColor: "#1A1C26",
     paddingHorizontal: 20,
     paddingTop: 12,
     paddingBottom: 16,
@@ -740,14 +744,15 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: "Syne_700Bold",
     textAlign: "center",
-    color: "#FFFFFF",
+    color: "#F1F5F9",
     marginBottom: 6,
+    letterSpacing: -0.3,
   },
   tipText: {
     fontSize: 13,
-    color: "#8E8E93",
+    color: "#94A3B8",
     fontWeight: "400",
     textAlign: "center",
     lineHeight: 16,
@@ -763,9 +768,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderWidth: 1,
-    borderColor: "#3A3A3C",
+    borderColor: "#1E2028",
     borderRadius: 8,
-    backgroundColor: "#1C1C1E",
+    backgroundColor: "#12141C",
     minWidth: 70,
   },
   controlsIcon: {
@@ -779,7 +784,7 @@ const styles = StyleSheet.create({
     width: 3,
     height: 3,
     borderRadius: 1.5,
-    backgroundColor: "#8E8E93",
+    backgroundColor: "#94A3B8",
   },
   controlsText: {
     fontSize: 11,
@@ -788,24 +793,24 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   list: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   itemContainer: {
     height: ITEM_HEIGHT,
     justifyContent: "center",
     borderBottomWidth: 0.5,
-    borderBottomColor: "#2C2C2E",
-    backgroundColor: "#000000",
+    borderBottomColor: "#1A1C26",
+    backgroundColor: "#08090E",
   },
   itemContent: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
     height: "100%",
   },
   coverImage: {
@@ -829,13 +834,13 @@ const styles = StyleSheet.create({
   },
   artistName: {
     fontSize: 14,
-    color: "#8E8E93",
+    color: "#94A3B8",
     fontWeight: "400",
     lineHeight: 18,
   },
   durationText: {
     fontSize: 14,
-    color: "#8E8E93",
+    color: "#94A3B8",
     fontWeight: "500",
     fontVariant: ["tabular-nums"],
     marginRight: 12,
@@ -866,7 +871,7 @@ const styles = StyleSheet.create({
     width: 2.5,
     height: 2.5,
     borderRadius: 1.25,
-    backgroundColor: "#6D6D70",
+    backgroundColor: "#64748B",
   },
   // Controls styles
   controlsContainer: {
@@ -877,7 +882,8 @@ const styles = StyleSheet.create({
   },
   controlSectionTitle: {
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: "Syne_700Bold",
+    letterSpacing: -0.3,
     color: "#FFFFFF",
     marginBottom: 16,
   },
@@ -891,9 +897,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: "#3A3A3C",
+    borderColor: "#1E2028",
     borderRadius: 8,
-    backgroundColor: "#2C2C2E",
+    backgroundColor: "#1A1C26",
     alignItems: "center",
   },
   modeButtonActive: {
@@ -903,14 +909,14 @@ const styles = StyleSheet.create({
   modeButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#8E8E93",
+    color: "#94A3B8",
   },
   modeButtonTextActive: {
     color: "#FFFFFF",
   },
   controlDescription: {
     fontSize: 13,
-    color: "#8E8E93",
+    color: "#94A3B8",
     lineHeight: 18,
   },
   addButton: {
@@ -942,9 +948,9 @@ const styles = StyleSheet.create({
   multiAddButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#2C2C2E",
+    backgroundColor: "#1A1C26",
     borderWidth: 1,
-    borderColor: "#3A3A3C",
+    borderColor: "#1E2028",
     borderRadius: 6,
     alignItems: "center",
     minWidth: 50,
@@ -969,7 +975,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: "#8E8E93",
+    color: "#94A3B8",
     fontWeight: "500",
   },
   modalOverlay: {
@@ -987,16 +993,17 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: "700",
-    color: "#000000",
-    fontFamily: "KumbhSans_700Bold",
+    fontFamily: "Syne_700Bold",
+    letterSpacing: -0.3,
+    color: "#08090E",
+    fontFamily: "Syne_700Bold",
     marginBottom: 10,
     textAlign: "center",
   },
   modalMessage: {
     fontSize: 14,
-    color: "#000000",
-    fontFamily: "KumbhSans_400Regular",
+    color: "#08090E",
+    fontFamily: "Outfit_400Regular",
     marginBottom: 10,
     textAlign: "center",
     lineHeight: 20,
