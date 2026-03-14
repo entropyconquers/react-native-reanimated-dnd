@@ -65,10 +65,20 @@ export function useGridSortableList<TData extends SortableData>(
   const scrollViewRef = useAnimatedRef();
   const dropProviderRef = useRef<DropProviderRef>(null);
 
-  // Update positions when data changes
+  // Update positions when data or dimensions change
   useEffect(() => {
     positions.value = listToGridObject(data, dimensions, orientation);
-  }, [data.length, data.map((d) => itemKeyExtractor(d, 0)).join(",")]);
+  }, [
+    data.length,
+    data.map((d) => itemKeyExtractor(d, 0)).join(","),
+    dimensions.columns,
+    dimensions.rows,
+    dimensions.itemWidth,
+    dimensions.itemHeight,
+    dimensions.rowGap,
+    dimensions.columnGap,
+    orientation,
+  ]);
 
   // Scrolling synchronization
   useAnimatedReaction(

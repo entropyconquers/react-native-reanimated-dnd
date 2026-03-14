@@ -213,7 +213,10 @@ export function useGridSortable<T>(
         previousPosition !== null &&
         previousPosition !== undefined
       ) {
-        if (currentPosition.index !== previousPosition.index) {
+        if (
+          currentPosition.x !== previousPosition.x ||
+          currentPosition.y !== previousPosition.y
+        ) {
           if (!movingSV.value) {
             topValue.value = withSpring(currentPosition.y);
             leftValue.value = withSpring(currentPosition.x);
