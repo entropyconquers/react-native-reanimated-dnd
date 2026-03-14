@@ -28,6 +28,10 @@ All animations run on the UI thread for consistent 60fps performance with FlatLi
 
 Drag and drop to sort lists in any direction, with automatic scrolling for out-of-view items.
 
+### 🔲 **Sortable Grids**
+
+2D grid drag-and-drop with insert and swap reordering strategies, 8-directional auto-scroll, and handle support.
+
 ### 🎨 **Highly Customizable**
 
 Extensive customization options for animations, collision detection, and visual feedback.
@@ -99,6 +103,24 @@ Create drop zones that receive draggable items:
 <Droppable onDrop={(data) => handleDrop(data)}>
   <YourDropZone />
 </Droppable>
+```
+
+### SortableGrid
+
+High-level component for reorderable 2D grids:
+
+```tsx
+<SortableGrid
+  data={items}
+  renderItem={({ item, id, ...props }) => (
+    <SortableGridItem key={id} id={id} data={item} {...props}>
+      <ItemComponent item={item} />
+    </SortableGridItem>
+  )}
+  dimensions={{ columns: 4, itemWidth: 80, itemHeight: 80, rowGap: 12, columnGap: 12 }}
+  orientation={GridOrientation.Vertical}
+  strategy={GridStrategy.Insert}
+/>
 ```
 
 ### Sortable
