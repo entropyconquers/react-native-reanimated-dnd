@@ -135,6 +135,7 @@ export interface UseSortableOptions<T> {
 export interface UseSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
   panGestureHandler: GestureType;
+  handlePanGestureHandler: GestureType;
   isMoving: boolean;
   hasHandle: boolean;
   registerHandle: (registered: boolean) => void;
@@ -441,44 +442,52 @@ export function useSortable<T>(
     [movingSV]
   );
 
-  const panGestureHandler: GestureType = Gesture.Pan()
-    .activateAfterLongPress(200)
-    .shouldCancelWhenOutside(false)
-    .onStart((event) => {
-      "worklet";
-      initialItemContentY.value = positions.value[id] * itemHeight;
-      initialFingerAbsoluteY.value = event.absoluteY;
-      initialLowerBound.value = lowerBound.value;
+  const createPanGesture = () =>
+    Gesture.Pan()
+      .activateAfterLongPress(200)
+      .shouldCancelWhenOutside(false)
+      .onStart((event) => {
+        "worklet";
+        initialItemContentY.value = positions.value[id] * itemHeight;
+        initialFingerAbsoluteY.value = event.absoluteY;
+        initialLowerBound.value = lowerBound.value;
 
-      positionY.value = initialItemContentY.value;
-      movingSV.value = true;
-      scheduleOnRN(setIsMoving, true);
+        positionY.value = initialItemContentY.value;
+        movingSV.value = true;
+        scheduleOnRN(setIsMoving, true);
 
-      if (onDragStart) {
-        scheduleOnRN(onDragStart, id, positions.value[id]);
-      }
-    })
-    .onUpdate((event) => {
-      "worklet";
-      const fingerDyScreen = event.absoluteY - initialFingerAbsoluteY.value;
-      const scrollDeltaSinceStart = lowerBound.value - initialLowerBound.value;
-      positionY.value =
-        initialItemContentY.value + fingerDyScreen + scrollDeltaSinceStart;
-    })
-    .onFinalize(() => {
-      "worklet";
-      const finishPosition = positions.value[id] * itemHeight;
-      top.value = withTiming(finishPosition);
-      movingSV.value = false;
-      scheduleOnRN(setIsMoving, false);
+        if (onDragStart) {
+          scheduleOnRN(onDragStart, id, positions.value[id]);
+        }
+      })
+      .onUpdate((event) => {
+        "worklet";
+        const fingerDyScreen = event.absoluteY - initialFingerAbsoluteY.value;
+        const scrollDeltaSinceStart = lowerBound.value - initialLowerBound.value;
+        positionY.value =
+          initialItemContentY.value + fingerDyScreen + scrollDeltaSinceStart;
+      })
+      .onFinalize(() => {
+        "worklet";
+        const finishPosition = positions.value[id] * itemHeight;
+        top.value = withTiming(finishPosition);
+        movingSV.value = false;
+        scheduleOnRN(setIsMoving, false);
 
-      if (onDrop) {
-        const positionsCopy = { ...positions.value };
-        scheduleOnRN(onDrop, id, positions.value[id], positionsCopy);
-      }
+        if (onDrop) {
+          const positionsCopy = { ...positions.value };
+          scheduleOnRN(onDrop, id, positions.value[id], positionsCopy);
+        }
 
-      currentOverItemId.value = null;
-    });
+        currentOverItemId.value = null;
+      });
+
+  // Main gesture for full-item dragging — disabled when a handle is registered
+  const panGestureHandler: GestureType = createPanGesture().enabled(!hasHandle);
+
+  // Separate gesture for handle-only dragging (avoids sharing a gesture
+  // object between two GestureDetectors and the handlerTag mutation warning)
+  const handlePanGestureHandler: GestureType = createPanGesture();
 
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";
@@ -498,6 +507,7 @@ export function useSortable<T>(
   return {
     animatedStyle,
     panGestureHandler,
+    handlePanGestureHandler,
     isMoving,
     hasHandle,
     registerHandle,
