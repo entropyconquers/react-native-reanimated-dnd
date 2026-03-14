@@ -1,16 +1,11 @@
 {
   "expo": {
-    "name": "rn-dnd-test",
+    "name": "Reanimated DnD",
     "slug": "rn-dnd-test",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.pr-zkp2p.rn-dnd-test"
@@ -18,12 +13,23 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#08090E"
+      },
+      "package": "com.przkp2p.rndndtest"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#08090E",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 280
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "72d391b1-7ea6-4206-a8bf-e04f4ffc7719"

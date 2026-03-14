@@ -5,20 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  useFonts,
-  MajorMonoDisplay_400Regular,
-} from "@expo-google-fonts/major-mono-display";
-import {
-  KumbhSans_400Regular,
-  KumbhSans_500Medium,
-  KumbhSans_600SemiBold,
-  KumbhSans_700Bold,
-} from "@expo-google-fonts/kumbh-sans";
 import { Footer } from "./Footer";
+import { colors, fonts, categoryColors } from "../theme";
+
+// ─── Data ────────────────────────────────────────────────────
 
 interface Example {
   id: string;
@@ -28,121 +20,167 @@ interface Example {
   icon: string;
 }
 
-const examples: Example[] = [
+interface Category {
+  key: keyof typeof categoryColors;
+  name: string;
+  examples: Example[];
+}
+
+// U+FE0E forces text presentation (prevents emoji rendering on iOS)
+const TEXT = "\uFE0E";
+
+const categories: Category[] = [
   {
-    id: "sortable",
-    title: "Sortable Music Queue",
-    description: "Reorderable Vertical list with drag handles.",
-    component: "SortableExample",
-    icon: "♫",
+    key: "sortable",
+    name: "Sortable",
+    examples: [
+      {
+        id: "sortable",
+        title: "Music Queue",
+        description: "Reorderable vertical list with drag handles",
+        component: "SortableExample",
+        icon: `♫${TEXT}`,
+      },
+      {
+        id: "horizontalSortable",
+        title: "Horizontal Tags",
+        description: "Reorderable horizontal scrolling list",
+        component: "HorizontalSortableExample",
+        icon: `⇌${TEXT}`,
+      },
+    ],
   },
   {
-    id: "horizontalSortable",
-    title: "Horizontal Sortable",
-    description: "Reorderable Horizontal list with drag handles.",
-    component: "HorizontalSortableExample",
-    icon: "↔️",
+    key: "gettingStarted",
+    name: "Getting Started",
+    examples: [
+      {
+        id: "basicDragDrop",
+        title: "Basic Drag & Drop",
+        description: "Drag items to multiple drop zones",
+        component: "BasicDragDropExample",
+        icon: `◎${TEXT}`,
+      },
+      {
+        id: "dragHandles",
+        title: "Drag Handles",
+        description: "Dedicated regions for drag control",
+        component: "DragHandlesExample",
+        icon: `⋮⋮`,
+      },
+    ],
   },
   {
-    id: "basicDragDrop",
-    title: "Basic Drag & Drop",
-    description: "Simple drag and drop with multiple zones",
-    component: "BasicDragDropExample",
-    icon: "👆",
+    key: "motionStyle",
+    name: "Motion & Style",
+    examples: [
+      {
+        id: "animation",
+        title: "Custom Animations",
+        description: "Spring, timing, bounce & easing",
+        component: "AnimationExample",
+        icon: `◆${TEXT}`,
+      },
+      {
+        id: "activeStyles",
+        title: "Active Drop Styles",
+        description: "Visual effects on hover",
+        component: "ActiveStylesExample",
+        icon: `◈${TEXT}`,
+      },
+      {
+        id: "alignment",
+        title: "Alignment & Offset",
+        description: "Precise drop positioning",
+        component: "AlignmentOffsetExample",
+        icon: `⬡${TEXT}`,
+      },
+    ],
   },
   {
-    id: "dragHandles",
-    title: "Drag Handles",
-    description: "Precise dragging control with dedicated handles",
-    component: "DragHandlesExample",
-    icon: "🔧",
+    key: "constraints",
+    name: "Constraints",
+    examples: [
+      {
+        id: "bounded",
+        title: "Bounded Dragging",
+        description: "Constrain within boundaries",
+        component: "BoundedDraggingExample",
+        icon: `▣${TEXT}`,
+      },
+      {
+        id: "xAxis",
+        title: "X-Axis Lock",
+        description: "Horizontal-only movement",
+        component: "XAxisConstrainedExample",
+        icon: `⟷${TEXT}`,
+      },
+      {
+        id: "yAxis",
+        title: "Y-Axis Lock",
+        description: "Vertical-only movement",
+        component: "YAxisConstrainedExample",
+        icon: `↕${TEXT}`,
+      },
+      {
+        id: "boundedYAxis",
+        title: "Bounded Y-Axis",
+        description: "Vertical within bounds",
+        component: "BoundedYAxisExample",
+        icon: `⊞${TEXT}`,
+      },
+    ],
   },
   {
-    id: "alignment",
-    title: "Alignment & Offset",
-    description: "Control drop positioning with alignment and offset options",
-    component: "AlignmentOffsetExample",
-    icon: "📐",
+    key: "dropZones",
+    name: "Drop Zones",
+    examples: [
+      {
+        id: "capacity",
+        title: "Capacity Limits",
+        description: "Zones with item capacity limits",
+        component: "CapacityExample",
+        icon: `▦${TEXT}`,
+      },
+      {
+        id: "droppedItems",
+        title: "Dropped Items Map",
+        description: "Track items across zones",
+        component: "DroppedItemsMapExample",
+        icon: `◉${TEXT}`,
+      },
+      {
+        id: "collision",
+        title: "Collision Detection",
+        description: "Center, intersect & contain",
+        component: "CollisionDetectionExample",
+        icon: `⊕${TEXT}`,
+      },
+    ],
   },
   {
-    id: "animation",
-    title: "Custom Animations",
-    description: "Various animation types, durations, and easing functions",
-    component: "AnimationExample",
-    icon: "🎬",
-  },
-  {
-    id: "activeStyles",
-    title: "Active Drop Styles",
-    description: "Custom visual effects when hovering over drop zones",
-    component: "ActiveStylesExample",
-    icon: "✨",
-  },
-  {
-    id: "collision",
-    title: "Collision Detection",
-    description: "Different algorithms: center, intersect, and contain",
-    component: "CollisionDetectionExample",
-    icon: "🎯",
-  },
-  {
-    id: "capacity",
-    title: "Drop Zone Capacity",
-    description: "Zones with different item capacity limits",
-    component: "CapacityExample",
-    icon: "🗂️",
-  },
-  {
-    id: "bounded",
-    title: "Bounded Dragging",
-    description: "Constrain dragging within specific boundaries",
-    component: "BoundedDraggingExample",
-    icon: "📦",
-  },
-  {
-    id: "xAxis",
-    title: "X-Axis Constraints",
-    description: "Horizontal-only dragging movement",
-    component: "XAxisConstrainedExample",
-    icon: "↔️",
-  },
-  {
-    id: "yAxis",
-    title: "Y-Axis Constraints",
-    description: "Vertical-only dragging movement",
-    component: "YAxisConstrainedExample",
-    icon: "↕️",
-  },
-  {
-    id: "boundedYAxis",
-    title: "Bounded Y-Axis",
-    description: "Vertical dragging within boundaries",
-    component: "BoundedYAxisExample",
-    icon: "📏",
-  },
-  {
-    id: "dragState",
-    title: "Drag State Management",
-    description: "Demonstrates DraggableState enum and onStateChange callback",
-    component: "DragStateExample",
-    icon: "⚡",
-  },
-  {
-    id: "droppedItems",
-    title: "Dropped Items Map",
-    description:
-      "Track which draggables are currently dropped on which droppables",
-    component: "DroppedItemsMapExample",
-    icon: "📍",
-  },
-  {
-    id: "customDraggable",
-    title: "Custom Draggable",
-    description: "Custom implementation with handle support",
-    component: "CustomDraggableExample",
-    icon: "⚙️",
+    key: "advanced",
+    name: "Advanced",
+    examples: [
+      {
+        id: "dragState",
+        title: "Drag State",
+        description: "State enum & onStateChange",
+        component: "DragStateExample",
+        icon: `⚡${TEXT}`,
+      },
+      {
+        id: "customDraggable",
+        title: "Custom Draggable",
+        description: "useDraggable hook implementation",
+        component: "CustomDraggableExample",
+        icon: `⚙${TEXT}`,
+      },
+    ],
   },
 ];
+
+// ─── Components ──────────────────────────────────────────────
 
 interface ExamplesNavigationPageProps {
   onNavigateToExample: (component: string) => void;
@@ -151,135 +189,205 @@ interface ExamplesNavigationPageProps {
 export function ExamplesNavigationPage({
   onNavigateToExample,
 }: ExamplesNavigationPageProps) {
-  let [fontsLoaded] = useFonts({
-    MajorMonoDisplay_400Regular,
-    KumbhSans_400Regular,
-    KumbhSans_500Medium,
-    KumbhSans_600SemiBold,
-    KumbhSans_700Bold,
-  });
-
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator />
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>React native reanimated DND</Text>
-        <View style={styles.redAccent} />
-      </View>
-
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-        {examples.map((example) => (
-          <TouchableOpacity
-            key={example.id}
-            style={styles.exampleItem}
-            onPress={() => onNavigateToExample(example.component)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.exampleContent}>
-              <View style={styles.iconContainer}>
-                <Text style={styles.icon}>{example.icon}</Text>
-              </View>
-              <View style={styles.textContainer}>
-                <Text style={styles.exampleTitle}>{example.title}</Text>
-                <Text style={styles.exampleDescription}>
-                  {example.description}
-                </Text>
-              </View>
-              <Text style={styles.chevron}>›</Text>
+        {/* Hero */}
+        <View style={styles.hero}>
+          <View style={styles.heroTitleRow}>
+            <Text style={styles.heroTitle}>
+              reanimated <Text style={styles.heroAccent}>dnd</Text>
+            </Text>
+            <View style={styles.versionBadge}>
+              <Text style={styles.versionText}>v2</Text>
             </View>
-          </TouchableOpacity>
-        ))}
+          </View>
+          <Text style={styles.heroSubtitle}>
+            Drag & drop toolkit for React Native
+          </Text>
+        </View>
+
+        {/* Sections */}
+        {categories.map((category) => {
+          const cat = categoryColors[category.key];
+          return (
+            <View key={category.key} style={styles.section}>
+              <Text style={styles.sectionLabel}>{category.name}</Text>
+              <View style={styles.groupCard}>
+                {category.examples.map((example, idx) => (
+                  <React.Fragment key={example.id}>
+                    {idx > 0 && <View style={styles.separator} />}
+                    <TouchableOpacity
+                      style={styles.row}
+                      onPress={() =>
+                        onNavigateToExample(example.component)
+                      }
+                      activeOpacity={0.6}
+                    >
+                      <View
+                        style={[
+                          styles.iconBadge,
+                          { backgroundColor: cat.bg },
+                        ]}
+                      >
+                        <Text
+                          style={[styles.iconText, { color: cat.color }]}
+                        >
+                          {example.icon}
+                        </Text>
+                      </View>
+                      <View style={styles.rowText}>
+                        <Text style={styles.rowTitle}>{example.title}</Text>
+                        <Text style={styles.rowDescription} numberOfLines={1}>
+                          {example.description}
+                        </Text>
+                      </View>
+                      <Text style={styles.chevron}>{">"}</Text>
+                    </TouchableOpacity>
+                  </React.Fragment>
+                ))}
+              </View>
+            </View>
+          );
+        })}
+
+        <View style={styles.bottomSpacer} />
       </ScrollView>
       <Footer />
     </SafeAreaView>
   );
 }
 
+// ─── Styles ──────────────────────────────────────────────────
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
-  },
-  headerContainer: {
-    backgroundColor: "#000000",
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#2C2C2E",
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 16,
-  },
-  header: {
-    fontSize: 20,
-    fontFamily: "MajorMonoDisplay_400Regular",
-    textAlign: "left",
-    color: "#FFFFFF",
-    marginBottom: 4,
-    lineHeight: 30,
-  },
-  redAccent: {
-    width: 46,
-    height: 3,
-    backgroundColor: "#FF3B30",
-    borderRadius: 1.5,
+    backgroundColor: colors.bg,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
   },
-  exampleItem: {
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
-    marginBottom: 12,
-    overflow: "hidden",
+
+  // Hero
+  hero: {
+    paddingTop: 10,
+    paddingBottom: 24,
+    paddingHorizontal: 2,
   },
-  exampleContent: {
+  heroTitleRow: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    gap: 10,
   },
-  iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#2C2C2E",
+  versionBadge: {
+    backgroundColor: colors.primaryMuted,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  versionText: {
+    fontSize: 12,
+    fontFamily: fonts.bodySemiBold,
+    color: colors.primary,
+  },
+  heroTitle: {
+    fontSize: 26,
+    fontFamily: fonts.displayExtraBold,
+    color: colors.textPrimary,
+    letterSpacing: -0.5,
+  },
+  heroAccent: {
+    color: colors.primary,
+  },
+  heroSubtitle: {
+    fontSize: 14,
+    fontFamily: fonts.bodyRegular,
+    color: colors.textMuted,
+    marginTop: 4,
+  },
+
+  // Sections
+  section: {
+    marginBottom: 20,
+  },
+  sectionLabel: {
+    fontSize: 13,
+    fontFamily: fonts.bodySemiBold,
+    color: colors.textMuted,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    marginBottom: 6,
+    marginLeft: 4,
+  },
+
+  // Group card
+  groupCard: {
+    backgroundColor: "#171921",
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+
+  // Row
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#1E2030",
+    marginLeft: 58,
+  },
+
+  // Icon
+  iconBadge: {
+    width: 34,
+    height: 34,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 16,
+    marginRight: 12,
   },
-  icon: {
-    fontSize: 24,
+  iconText: {
+    fontSize: 16,
   },
-  textContainer: {
+
+  // Text
+  rowText: {
     flex: 1,
+    marginRight: 8,
   },
-  exampleTitle: {
-    fontSize: 17,
-    fontFamily: "KumbhSans_600SemiBold",
-    color: "#FFFFFF",
-    marginBottom: 4,
+  rowTitle: {
+    fontSize: 16,
+    fontFamily: fonts.bodySemiBold,
+    color: colors.textPrimary,
+    marginBottom: 2,
   },
-  exampleDescription: {
-    fontSize: 15,
-    fontFamily: "KumbhSans_400Regular",
-    color: "#8E8E93",
-    lineHeight: 20,
+  rowDescription: {
+    fontSize: 13,
+    fontFamily: fonts.bodyRegular,
+    color: colors.textMuted,
+    lineHeight: 17,
   },
+
+  // Chevron
   chevron: {
-    fontSize: 20,
-    fontFamily: "KumbhSans_400Regular",
-    color: "#8E8E93",
-    fontWeight: "300",
+    fontSize: 16,
+    color: colors.textDim,
+    fontFamily: fonts.bodyRegular,
+  },
+
+  bottomSpacer: {
+    height: 4,
   },
 });

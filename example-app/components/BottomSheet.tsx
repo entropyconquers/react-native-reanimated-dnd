@@ -13,6 +13,7 @@ import Animated, {
   useDerivedValue,
   withSpring,
 } from "react-native-reanimated";
+import { colors, fonts } from "../theme";
 
 interface BottomSheetProps {
   isVisible: boolean;
@@ -30,7 +31,7 @@ export function BottomSheet({
   duration = 300,
 }: BottomSheetProps) {
   const height = useSharedValue(0);
-  const hiddenOffset = useDerivedValue(() => height.value || 420);
+  const hiddenOffset = useDerivedValue(() => (height.value || 420) + 60);
 
   const progress = useDerivedValue(() =>
     withSpring(isVisible ? 0 : 1, {
@@ -86,14 +87,13 @@ export function BottomSheet({
 const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    boxShadow: "0px 0px 24px rgba(0, 0, 0, 0.35)",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
   backdropTouchable: {
     flex: 1,
   },
   sheet: {
-    backgroundColor: "#1C1C1E",
+    backgroundColor: colors.surface,
     paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 40,
@@ -104,13 +104,16 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
     zIndex: 10000,
-    boxShadow: "0px -4px 16px rgba(0, 0, 0, 0.35)",
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderColor: colors.glassBorder,
+    boxShadow: "0px -4px 24px rgba(0, 0, 0, 0.5)",
   },
   handle: {
-    width: 40,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: "#8E8E93",
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.textMuted,
     alignSelf: "center",
     marginBottom: 15,
   },
@@ -121,9 +124,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 24,
-    fontFamily: "KumbhSans_700Bold",
-    color: "#FFFFFF",
+    fontSize: 22,
+    fontFamily: fonts.displayBold,
+    color: colors.textPrimary,
+    letterSpacing: -0.3,
   },
   closeButton: {
     justifyContent: "center",
@@ -131,14 +135,15 @@ const styles = StyleSheet.create({
   },
   closeText: {
     fontSize: 14,
-    borderRadius: 20,
-    backgroundColor: "#2C2C2E",
+    borderRadius: 18,
+    backgroundColor: colors.surfaceElevated,
     width: 36,
     height: 36,
     textAlign: "center",
     lineHeight: 36,
-    color: "#FFFFFF",
+    color: colors.textSecondary,
     fontWeight: "600",
+    overflow: "hidden",
   },
   content: {
     maxHeight: "80%",
