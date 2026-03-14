@@ -4,6 +4,7 @@ import React, {
   createContext,
   ReactNode,
   useState,
+  useEffect,
   useMemo,
   useCallback,
   forwardRef,
@@ -173,13 +174,16 @@ export const DropProvider = forwardRef<DropProviderRef, DropProviderProps>(
     const updateDroppedItems = useCallback(
       (updater: (currentItems: DroppedItemsMap) => DroppedItemsMap) => {
         setDroppedItems((currentItems) => {
-          const nextItems = updater(currentItems);
-          onDroppedItemsUpdate?.(nextItems);
-          return nextItems;
+          return updater(currentItems);
         });
       },
-      [onDroppedItemsUpdate]
+      []
     );
+
+    // Notify parent after droppedItems state has committed
+    useEffect(() => {
+      onDroppedItemsUpdate?.(droppedItems);
+    }, [droppedItems, onDroppedItemsUpdate]);
 
     // Update method to use string IDs
     const registerDroppedItem = useCallback(
