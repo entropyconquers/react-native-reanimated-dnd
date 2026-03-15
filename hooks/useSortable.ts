@@ -11,6 +11,10 @@ import {
 } from "react-native-reanimated";
 import { Gesture, GestureType } from "react-native-gesture-handler";
 import { scheduleOnRN } from "react-native-worklets";
+import {
+  findPositionForY,
+  getItemCumulativeY,
+} from "../components/sortableUtils";
 
 export enum ScrollDirection {
   None = "none",
@@ -116,8 +120,11 @@ export interface UseSortableOptions<T> {
   lowerBound: SharedValue<number>;
   autoScrollDirection: SharedValue<ScrollDirection>;
   itemsCount: number;
-  itemHeight: number;
+  itemHeight?: number;
   containerHeight?: number;
+  estimatedItemHeight?: number;
+  isDynamicHeight?: boolean;
+  itemHeights?: SharedValue<{ [id: string]: number }>;
   onMove?: (id: string, from: number, to: number) => void;
   onDragStart?: (id: string, position: number) => void;
   onDrop?: (
@@ -144,116 +151,12 @@ export interface UseSortableReturn {
 /**
  * A hook for creating sortable list items with drag-and-drop reordering capabilities.
  *
- * This hook provides the core functionality for individual items within a sortable list,
- * handling drag gestures, position animations, auto-scrolling, and reordering logic.
- * It works in conjunction with useSortableList to provide a complete sortable solution.
+ * Supports both fixed height and dynamic height modes. In dynamic height mode,
+ * positions are calculated using cumulative heights instead of uniform itemHeight.
  *
  * @template T - The type of data associated with the sortable item
  * @param options - Configuration options for the sortable item behavior
  * @returns Object containing animated styles, gesture handlers, and state for the sortable item
- *
- * @example
- * Basic sortable item:
- * ```typescript
- * import { useSortable } from './hooks/useSortable';
- *
- * function SortableTaskItem({ task, positions, ...sortableProps }) {
- *   const { animatedStyle, panGestureHandler, isMoving } = useSortable({
- *     id: task.id,
- *     positions,
- *     ...sortableProps,
- *     onMove: (id, from, to) => {
- *       console.log(`Task ${id} moved from ${from} to ${to}`);
- *       reorderTasks(id, from, to);
- *     }
- *   });
- *
- *   return (
- *     <PanGestureHandler {...panGestureHandler}>
- *       <Animated.View style={[styles.taskItem, animatedStyle]}>
- *         <Text style={[styles.taskText, isMoving && styles.dragging]}>
- *           {task.title}
- *         </Text>
- *       </Animated.View>
- *     </PanGestureHandler>
- *   );
- * }
- * ```
- *
- * @example
- * Sortable item with drag handle:
- * ```typescript
- * import { useSortable } from './hooks/useSortable';
- * import { SortableHandle } from './components/SortableItem';
- *
- * function TaskWithHandle({ task, ...sortableProps }) {
- *   const { animatedStyle, panGestureHandler, hasHandle } = useSortable({
- *     id: task.id,
- *     ...sortableProps,
- *     children: (
- *       <View style={styles.taskContent}>
- *         <Text>{task.title}</Text>
- *         <SortableHandle>
- *           <Icon name="drag-handle" />
- *         </SortableHandle>
- *       </View>
- *     )
- *   });
- *
- *   return (
- *     <PanGestureHandler {...panGestureHandler}>
- *       <Animated.View style={[styles.taskItem, animatedStyle]}>
- *         <View style={styles.taskContent}>
- *           <Text>{task.title}</Text>
- *           <SortableHandle>
- *             <Icon name="drag-handle" />
- *           </SortableHandle>
- *         </View>
- *       </Animated.View>
- *     </PanGestureHandler>
- *   );
- * }
- * ```
- *
- * @example
- * Sortable item with callbacks and state tracking:
- * ```typescript
- * function AdvancedSortableItem({ item, ...sortableProps }) {
- *   const [isDragging, setIsDragging] = useState(false);
- *
- *   const { animatedStyle, panGestureHandler } = useSortable({
- *     id: item.id,
- *     ...sortableProps,
- *     onDragStart: (id, position) => {
- *       setIsDragging(true);
- *       analytics.track('drag_start', { itemId: id, position });
- *     },
- *     onDrop: (id, position) => {
- *       setIsDragging(false);
- *       analytics.track('drag_end', { itemId: id, position });
- *     },
- *     onDragging: (id, overItemId, yPosition) => {
- *       if (overItemId) {
- *         showDropPreview(overItemId);
- *       }
- *     }
- *   });
- *
- *   return (
- *     <PanGestureHandler {...panGestureHandler}>
- *       <Animated.View
- *         style={[
- *           styles.item,
- *           animatedStyle,
- *           isDragging && styles.dragging
- *         ]}
- *       >
- *         <Text>{item.title}</Text>
- *       </Animated.View>
- *     </PanGestureHandler>
- *   );
- * }
- * ```
  *
  * @see {@link UseSortableOptions} for configuration options
  * @see {@link UseSortableReturn} for return value details
@@ -272,11 +175,17 @@ export function useSortable<T>(
     itemsCount,
     itemHeight,
     containerHeight = 500,
+    estimatedItemHeight = 60,
+    isDynamicHeight = false,
+    itemHeights,
     onMove,
     onDragStart,
     onDrop,
     onDragging,
   } = options;
+
+  // Effective item height for fixed mode calculations
+  const effectiveItemHeight = itemHeight || estimatedItemHeight;
 
   const [isMoving, setIsMoving] = useState(false);
   const [hasHandle, setHasHandle] = useState(false);
@@ -291,8 +200,10 @@ export function useSortable<T>(
 
   const initialTopVal = useMemo(() => {
     const posArr = positions.get();
-    const pos = posArr?.[id];
-    return pos * itemHeight;
+    const pos = posArr?.[id] ?? 0;
+    // For dynamic heights, use estimated height for initial position.
+    // The animated reaction will correct it once cumulative heights are available.
+    return pos * effectiveItemHeight;
   }, []);
 
   const initialLowerBoundVal = useMemo(() => {
@@ -311,6 +222,44 @@ export function useSortable<T>(
     () => lowerBound.value + calculatedContainerHeight
   );
 
+  // === Position sync for non-moving items ===
+  // In dynamic mode: compute cumulative Y inline from positions + itemHeights
+  // In fixed mode: watch position index and multiply by itemHeight
+  useAnimatedReaction(
+    () => {
+      if (isDynamicHeight && itemHeights) {
+        // Compute Y position inline — avoids an intermediate shared value
+        // that would cause all items to cascade on every position change.
+        return getItemCumulativeY(id, positions.value, itemHeights.value, estimatedItemHeight);
+      }
+      return (positions.value[id] ?? 0) * effectiveItemHeight;
+    },
+    (newTop, oldTop) => {
+      if (oldTop !== null && newTop !== oldTop && !movingSV.value) {
+        top.value = withSpring(newTop);
+      }
+    },
+    [isDynamicHeight, itemHeights, positions, id, effectiveItemHeight, estimatedItemHeight, movingSV]
+  );
+
+  // === Position change callback (onMove) ===
+  useAnimatedReaction(
+    () => positions.value[id],
+    (currentPosition, previousPosition) => {
+      if (
+        currentPosition !== null &&
+        previousPosition !== null &&
+        currentPosition !== previousPosition &&
+        !movingSV.value &&
+        onMove
+      ) {
+        scheduleOnRN(onMove, id, previousPosition, currentPosition);
+      }
+    },
+    [movingSV, onMove]
+  );
+
+  // === Drag position tracking ===
   useAnimatedReaction(
     () => positionY.value,
     (currentY, previousY) => {
@@ -323,16 +272,30 @@ export function useSortable<T>(
       }
 
       // Calculate target discrete position
-      const clampedPosition = Math.min(
-        Math.max(0, Math.ceil(currentY / itemHeight)),
-        itemsCount - 1
-      );
+      let clampedPosition: number;
+
+      if (isDynamicHeight && itemHeights) {
+        // Dynamic mode: find position using item heights (computed inline)
+        clampedPosition = findPositionForY(
+          currentY,
+          positions.value,
+          itemHeights.value,
+          estimatedItemHeight,
+          itemsCount
+        );
+      } else {
+        // Fixed mode: simple division
+        clampedPosition = Math.min(
+          Math.max(0, Math.ceil(currentY / effectiveItemHeight)),
+          itemsCount - 1
+        );
+      }
 
       // Determine overItemId based on the current state of positions.value
-      // BEFORE setPosition modifies it for this specific currentY
       let newOverItemId: string | null = null;
-      for (const [itemIdIter, itemPosIter] of Object.entries(positions.value)) {
-        if (itemPosIter === clampedPosition && itemIdIter !== id) {
+      const positionsObj = positions.value;
+      for (const itemIdIter in positionsObj) {
+        if (positionsObj[itemIdIter] === clampedPosition && itemIdIter !== id) {
           newOverItemId = itemIdIter;
           break;
         }
@@ -350,20 +313,37 @@ export function useSortable<T>(
         }
       }
 
-      // Update visual position and logical positions
+      // Update visual position
       top.value = currentY;
-      setPosition(currentY, itemsCount, positions, id, itemHeight);
+
+      // Update logical positions
+      if (isDynamicHeight) {
+        // Dynamic: use cumulative-heights-based position finding
+        if (clampedPosition !== positions.value[id]) {
+          positions.value = objectMove(
+            positions.value,
+            positions.value[id],
+            clampedPosition
+          );
+        }
+      } else {
+        // Fixed: use standard position calculation
+        setPosition(currentY, itemsCount, positions, id, effectiveItemHeight);
+      }
+
       setAutoScroll(
         currentY,
         lowerBound.value,
         upperBound.value,
-        itemHeight,
+        effectiveItemHeight,
         autoScrollDirection
       );
     },
     [
       movingSV,
-      itemHeight,
+      effectiveItemHeight,
+      isDynamicHeight,
+      estimatedItemHeight,
       itemsCount,
       positions,
       id,
@@ -374,28 +354,11 @@ export function useSortable<T>(
       currentOverItemId,
       top,
       onDraggingLastCallTimestamp,
+      itemHeights,
     ]
   );
 
-  useAnimatedReaction(
-    () => positions.value[id],
-    (currentPosition, previousPosition) => {
-      if (
-        currentPosition !== null &&
-        previousPosition !== null &&
-        currentPosition !== previousPosition
-      ) {
-        if (!movingSV.value) {
-          top.value = withSpring(currentPosition * itemHeight);
-          if (onMove) {
-            scheduleOnRN(onMove, id, previousPosition, currentPosition);
-          }
-        }
-      }
-    },
-    [movingSV]
-  );
-
+  // === Auto-scroll handling ===
   useAnimatedReaction(
     () => autoScrollDirection.value,
     (scrollDirection, previousValue) => {
@@ -411,7 +374,18 @@ export function useSortable<T>(
             break;
           }
           case ScrollDirection.Down: {
-            const contentHeight = itemsCount * itemHeight;
+            let contentHeight: number;
+            if (isDynamicHeight && itemHeights) {
+              // Sum all item heights for total content height
+              contentHeight = 0;
+              const heights = itemHeights.value;
+              const posObj = positions.value;
+              for (const itemId in posObj) {
+                contentHeight += heights[itemId] ?? estimatedItemHeight;
+              }
+            } else {
+              contentHeight = itemsCount * effectiveItemHeight;
+            }
             const maxScroll = contentHeight - calculatedContainerHeight;
             targetLowerBound.value = lowerBound.value;
             targetLowerBound.value = withTiming(maxScroll, { duration: 1500 });
@@ -423,7 +397,8 @@ export function useSortable<T>(
           }
         }
       }
-    }
+    },
+    [isDynamicHeight, itemHeights, effectiveItemHeight, estimatedItemHeight, itemsCount, calculatedContainerHeight]
   );
 
   useAnimatedReaction(
@@ -442,13 +417,25 @@ export function useSortable<T>(
     [movingSV]
   );
 
+  // === Pan gesture ===
   const createPanGesture = () =>
     Gesture.Pan()
       .activateAfterLongPress(200)
       .shouldCancelWhenOutside(false)
       .onStart((event) => {
         "worklet";
-        initialItemContentY.value = positions.value[id] * itemHeight;
+        // Calculate initial content Y position
+        if (isDynamicHeight && itemHeights) {
+          initialItemContentY.value = getItemCumulativeY(
+            id,
+            positions.value,
+            itemHeights.value,
+            estimatedItemHeight
+          );
+        } else {
+          initialItemContentY.value = positions.value[id] * effectiveItemHeight;
+        }
+
         initialFingerAbsoluteY.value = event.absoluteY;
         initialLowerBound.value = lowerBound.value;
 
@@ -469,7 +456,19 @@ export function useSortable<T>(
       })
       .onFinalize(() => {
         "worklet";
-        const finishPosition = positions.value[id] * itemHeight;
+        // Calculate finish position
+        let finishPosition: number;
+        if (isDynamicHeight && itemHeights) {
+          finishPosition = getItemCumulativeY(
+            id,
+            positions.value,
+            itemHeights.value,
+            estimatedItemHeight
+          );
+        } else {
+          finishPosition = positions.value[id] * effectiveItemHeight;
+        }
+
         top.value = withTiming(finishPosition);
         movingSV.value = false;
         scheduleOnRN(setIsMoving, false);
@@ -497,7 +496,6 @@ export function useSortable<T>(
       right: 0,
       top: top.value,
       zIndex: movingSV.value ? 1 : 0,
-      backgroundColor: "#000000",
       shadowColor: "black",
       shadowOpacity: withSpring(movingSV.value ? 0.2 : 0),
       shadowRadius: 10,

@@ -92,7 +92,7 @@ export interface UseSortableOptions<T> {
   itemsCount: number;
 
   /**
-   * Height of each item in pixels. All items must have the same height.
+   * Height of each item in pixels (optional when using dynamic heights).
    * Used for position calculations and auto-scrolling.
    *
    * @example
@@ -100,7 +100,7 @@ export interface UseSortableOptions<T> {
    * const ITEM_HEIGHT = 60; // 60px per item
    * ```
    */
-  itemHeight: number;
+  itemHeight?: number;
 
   /**
    * Height of the scrollable container in pixels.
@@ -109,6 +109,25 @@ export interface UseSortableOptions<T> {
    * @default 500
    */
   containerHeight?: number;
+
+  /**
+   * Estimated height for unmeasured items when using dynamic heights.
+   * Used as fallback when actual heights are not yet known.
+   * @default 60
+   */
+  estimatedItemHeight?: number;
+
+  /**
+   * Whether dynamic height mode is active.
+   * When true, positions are calculated using cumulative heights instead of fixed itemHeight.
+   */
+  isDynamicHeight?: boolean;
+
+  /**
+   * Shared value containing measured heights for each item (dynamic heights only).
+   * Maps item IDs to their pixel heights.
+   */
+  itemHeights?: SharedValue<{ [id: string]: number }>;
 
   /**
    * Callback fired when an item's position changes within the list.
@@ -267,15 +286,45 @@ export interface UseSortableListOptions<TData extends SortableData> {
   data: TData[];
 
   /**
-   * Height of each item in pixels. All items must have the same height
-   * for proper position calculations and smooth animations.
+   * Height specification for items. Can be:
+   * - `number`: Fixed height for all items
+   * - `number[]`: Array of heights for each item by index
+   * - `(item, index) => number`: Function that returns height for each item
+   * - `undefined`: Use with `enableDynamicHeights: true` for auto-measurement
    *
    * @example
    * ```typescript
-   * const ITEM_HEIGHT = 80; // Each list item is 80px tall
+   * // Fixed height
+   * itemHeight: 80
+   *
+   * // Array of heights
+   * itemHeight: [60, 120, 80, 100]
+   *
+   * // Function-based heights
+   * itemHeight: (item, index) => item.type === 'header' ? 100 : 60
    * ```
    */
-  itemHeight: number;
+  itemHeight?: number | number[] | ((item: TData, index: number) => number);
+
+  /**
+   * Enable dynamic height measurement using onLayout.
+   * When true, items are measured automatically and itemHeight becomes optional.
+   * @default false
+   */
+  enableDynamicHeights?: boolean;
+
+  /**
+   * Estimated height for unmeasured items when using dynamic heights.
+   * Used for initial positioning before actual measurements are available.
+   * @default 60
+   */
+  estimatedItemHeight?: number;
+
+  /**
+   * Callback fired when item heights are measured (dynamic heights only).
+   * Useful for caching or debugging height measurements.
+   */
+  onHeightsMeasured?: (heights: { [id: string]: number }) => void;
 
   /**
    * Function to extract a unique key from each data item.
@@ -359,9 +408,19 @@ export interface UseSortableListReturn<TData extends SortableData> {
 
   /**
    * Total height of the scrollable content.
-   * Calculated as `data.length * itemHeight`.
+   * For fixed heights: `data.length * itemHeight`.
+   * For dynamic heights: sum of all measured/estimated heights.
    */
   contentHeight: number;
+
+  /** Whether dynamic height mode is active */
+  isDynamicHeight: boolean;
+
+  /** Shared value containing measured heights for each item */
+  itemHeights: SharedValue<{ [id: string]: number }>;
+
+  /** Function to update an item's measured height (dynamic heights only) */
+  scheduleHeightUpdate?: (id: string, height: number) => void;
 
   /**
    * Helper function to get props for individual sortable items.
@@ -396,8 +455,16 @@ export interface UseSortableListReturn<TData extends SortableData> {
     autoScrollDirection: any;
     /** Total number of items */
     itemsCount: number;
-    /** Height of each item */
-    itemHeight: number;
+    /** Height of each item (fixed mode) */
+    itemHeight?: number;
+    /** Whether dynamic height mode is active */
+    isDynamicHeight: boolean;
+    /** Estimated item height for dynamic mode */
+    estimatedItemHeight: number;
+    /** Shared value with measured heights (dynamic mode) */
+    itemHeights?: SharedValue<{ [id: string]: number }>;
+    /** Function to schedule height updates (dynamic mode) */
+    scheduleHeightUpdate?: (id: string, height: number) => void;
   };
 }
 
@@ -457,6 +524,18 @@ export interface SortableItemProps<T> {
   /** Width of the scrollable container (optional, for horizontal) */
   containerWidth?: number;
 
+  /** Whether dynamic height mode is active */
+  isDynamicHeight?: boolean;
+
+  /** Estimated height for unmeasured items */
+  estimatedItemHeight?: number;
+
+  /** Shared value containing measured heights for each item */
+  itemHeights?: SharedValue<{ [id: string]: number }>;
+
+  /** Function to schedule height updates (dynamic heights only) */
+  scheduleHeightUpdate?: (id: string, height: number) => void;
+
   /** Child components to render inside the sortable item */
   children: ReactNode;
 
@@ -514,8 +593,8 @@ export interface SortableProps<TData extends SortableData> {
   /** Direction of the sortable list */
   direction?: SortableDirection;
 
-  /** Height of each item in pixels (required for vertical direction) */
-  itemHeight?: number;
+  /** Height specification for items (for vertical direction) */
+  itemHeight?: number | number[] | ((item: TData, index: number) => number);
 
   /** Width of each item in pixels (required for horizontal direction) */
   itemWidth?: number;
@@ -525,6 +604,15 @@ export interface SortableProps<TData extends SortableData> {
 
   /** Horizontal padding of the container (only for horizontal direction) */
   paddingHorizontal?: number;
+
+  /** Enable dynamic height measurement using onLayout */
+  enableDynamicHeights?: boolean;
+
+  /** Estimated height for unmeasured items when using dynamic heights */
+  estimatedItemHeight?: number;
+
+  /** Callback fired when item heights are measured (dynamic heights only) */
+  onHeightsMeasured?: (heights: { [id: string]: number }) => void;
 
   /** Style to apply to the scroll view */
   style?: StyleProp<ViewStyle>;
@@ -595,6 +683,18 @@ export interface SortableRenderItemProps<TData extends SortableData> {
 
   /** Horizontal padding of the container (for horizontal) */
   paddingHorizontal?: number;
+
+  /** Whether dynamic height mode is active */
+  isDynamicHeight?: boolean;
+
+  /** Estimated height for unmeasured items */
+  estimatedItemHeight?: number;
+
+  /** Shared value containing measured heights for each item */
+  itemHeights?: SharedValue<{ [id: string]: number }>;
+
+  /** Function to schedule height updates (dynamic heights only) */
+  scheduleHeightUpdate?: (id: string, height: number) => void;
 }
 
 export interface SortableContextValue {

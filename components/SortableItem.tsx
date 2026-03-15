@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect } from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import React, { createContext, useCallback, useContext, useEffect } from "react";
+import { LayoutChangeEvent, StyleProp, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
 import { useHorizontalSortable } from "../hooks/useHorizontalSortable";
@@ -22,39 +22,6 @@ const SortableContext = createContext<SortableContextValue | null>(null);
  * initiate dragging, while the rest of the item remains non-draggable.
  *
  * @param props - Props for the handle component
- *
- * @example
- * Basic drag handle:
- * ```typescript
- * <SortableItem id="item-1" {...sortableProps}>
- *   <View style={styles.itemContent}>
- *     <Text>Item content (not draggable)</Text>
- *
- *     <SortableItem.Handle style={styles.dragHandle}>
- *       <Icon name="drag-handle" size={20} />
- *     </SortableItem.Handle>
- *   </View>
- * </SortableItem>
- * ```
- *
- * @example
- * Custom styled handle:
- * ```typescript
- * <SortableItem id="item-2" {...sortableProps}>
- *   <View style={styles.card}>
- *     <Text style={styles.title}>Card Title</Text>
- *     <Text style={styles.content}>Card content...</Text>
- *
- *     <SortableItem.Handle style={styles.customHandle}>
- *       <View style={styles.handleDots}>
- *         <View style={styles.dot} />
- *         <View style={styles.dot} />
- *         <View style={styles.dot} />
- *       </View>
- *     </SortableItem.Handle>
- *   </View>
- * </SortableItem>
- * ```
  */
 const SortableHandle = ({ children, style }: SortableHandleProps) => {
   const sortableContext = useContext(SortableContext);
@@ -86,9 +53,10 @@ function renderSortableContent(
   panGestureHandler: SortableContextValue["panGestureHandler"],
   handlePanGestureHandler: SortableContextValue["panGestureHandler"],
   registerHandle: SortableContextValue["registerHandle"],
+  onLayout?: (event: LayoutChangeEvent) => void,
 ) {
   const content = (
-    <Animated.View style={[animatedStyle, customAnimatedStyle]}>
+    <Animated.View style={[animatedStyle, customAnimatedStyle]} onLayout={onLayout}>
       <SortableContext.Provider value={{ panGestureHandler: handlePanGestureHandler, registerHandle }}>
         <Animated.View style={style}>{children}</Animated.View>
       </SortableContext.Provider>
@@ -105,7 +73,6 @@ function renderSortableContent(
 
 interface VerticalSortableItemInnerProps<T> extends SortableItemProps<T> {
   autoScrollDirection: NonNullable<SortableItemProps<T>["autoScrollDirection"]>;
-  itemHeight: number;
   lowerBound: NonNullable<SortableItemProps<T>["lowerBound"]>;
 }
 
@@ -117,6 +84,10 @@ function VerticalSortableItemInner<T>({
   itemsCount,
   itemHeight,
   containerHeight,
+  isDynamicHeight = false,
+  estimatedItemHeight,
+  itemHeights,
+  scheduleHeightUpdate,
   children,
   style,
   animatedStyle: customAnimatedStyle,
@@ -133,11 +104,24 @@ function VerticalSortableItemInner<T>({
     itemsCount,
     itemHeight,
     containerHeight,
+    estimatedItemHeight,
+    isDynamicHeight,
+    itemHeights,
     onMove,
     onDragStart,
     onDrop,
     onDragging,
   });
+
+  // Handle layout measurement for dynamic heights
+  const handleLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      if (!isDynamicHeight || !scheduleHeightUpdate) return;
+      const { height } = event.nativeEvent.layout;
+      scheduleHeightUpdate(id, height);
+    },
+    [id, isDynamicHeight, scheduleHeightUpdate]
+  );
 
   return renderSortableContent(
     animatedStyle,
@@ -147,6 +131,7 @@ function VerticalSortableItemInner<T>({
     panGestureHandler,
     handlePanGestureHandler,
     registerHandle,
+    isDynamicHeight && scheduleHeightUpdate ? handleLayout : undefined,
   );
 }
 
@@ -216,57 +201,6 @@ function HorizontalSortableItemInner<T>({
  *
  * @template T - The type of data associated with this sortable item
  * @param props - Configuration props for the sortable item
- *
- * @example
- * Basic vertical sortable item (entire item is draggable):
- * ```typescript
- * import { SortableItem } from './components/SortableItem';
- *
- * function TaskItem({ task, positions, ...sortableProps }) {
- *   return (
- *     <SortableItem
- *       id={task.id}
- *       data={task}
- *       positions={positions}
- *       direction="vertical"
- *       itemHeight={60}
- *       {...sortableProps}
- *       onMove={(id, from, to) => {
- *         console.log(`Task ${id} moved from ${from} to ${to}`);
- *         reorderTasks(id, from, to);
- *       }}
- *     >
- *       <View style={styles.taskContainer}>
- *         <Text style={styles.taskTitle}>{task.title}</Text>
- *         <Text style={styles.taskStatus}>{task.completed ? 'Done' : 'Pending'}</Text>
- *       </View>
- *     </SortableItem>
- *   );
- * }
- * ```
- *
- * @example
- * Horizontal sortable item:
- * ```typescript
- * function TagItem({ tag, positions, ...sortableProps }) {
- *   return (
- *     <SortableItem
- *       id={tag.id}
- *       data={tag}
- *       positions={positions}
- *       direction="horizontal"
- *       itemWidth={120}
- *       gap={12}
- *       paddingHorizontal={16}
- *       {...sortableProps}
- *     >
- *       <View style={[styles.tagContainer, { backgroundColor: tag.color }]}>
- *         <Text style={styles.tagText}>{tag.label}</Text>
- *       </View>
- *     </SortableItem>
- *   );
- * }
- * ```
  */
 export function SortableItem<T>({
   direction = SortableDirection.Vertical,
@@ -275,10 +209,12 @@ export function SortableItem<T>({
   // Validate required props based on direction
   if (
     direction === SortableDirection.Vertical &&
-    (!props.itemHeight || !props.lowerBound || !props.autoScrollDirection)
+    !props.isDynamicHeight &&
+    !props.itemHeight &&
+    (!props.lowerBound || !props.autoScrollDirection)
   ) {
     throw new Error(
-      "itemHeight, lowerBound, and autoScrollDirection are required for vertical direction"
+      "itemHeight (or isDynamicHeight), lowerBound, and autoScrollDirection are required for vertical direction"
     );
   }
   if (
@@ -308,7 +244,6 @@ export function SortableItem<T>({
     <VerticalSortableItemInner
       {...props}
       direction={direction}
-      itemHeight={props.itemHeight!}
       lowerBound={props.lowerBound!}
       autoScrollDirection={props.autoScrollDirection!}
     />

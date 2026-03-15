@@ -177,6 +177,124 @@ export function setHorizontalAutoScroll(
 }
 
 /**
+ * Resolves the height for a specific item based on the itemHeight prop format.
+ * Supports number (uniform), array (per-index), function (computed), or fallback.
+ * NOT a worklet — supports function callbacks on JS thread.
+ */
+export function resolveItemHeight<TData>(
+  itemHeightProp:
+    | number
+    | number[]
+    | ((item: TData, index: number) => number)
+    | undefined,
+  item: TData,
+  index: number,
+  fallback: number
+): number {
+  if (typeof itemHeightProp === "number") return itemHeightProp;
+  if (Array.isArray(itemHeightProp)) return itemHeightProp[index] ?? fallback;
+  if (typeof itemHeightProp === "function") return itemHeightProp(item, index);
+  return fallback;
+}
+
+/**
+ * Recalculates cumulative Y offsets based on current positions and item heights.
+ * Items are laid out in order of their logical position index.
+ * Uses position-indexed array (O(n)) instead of sort (O(n log n)).
+ */
+export function recalculateCumulativeHeights(
+  positions: { [id: string]: number },
+  itemHeights: { [id: string]: number },
+  estimatedHeight: number
+): { cumulative: { [id: string]: number }; total: number } {
+  "worklet";
+  // Build position-indexed array — positions are 0..n-1 integers,
+  // so we can use them as direct indices instead of sorting.
+  let count = 0;
+  for (const _id in positions) {
+    count++;
+  }
+  const idsByPosition: (string | undefined)[] = new Array(count);
+  for (const id in positions) {
+    idsByPosition[positions[id]] = id;
+  }
+
+  const cumulative: { [id: string]: number } = {};
+  let total = 0;
+
+  for (let i = 0; i < count; i++) {
+    const itemId = idsByPosition[i];
+    if (itemId !== undefined) {
+      cumulative[itemId] = total;
+      total += itemHeights[itemId] ?? estimatedHeight;
+    }
+  }
+
+  return { cumulative, total };
+}
+
+/**
+ * Finds the logical position index for a given Y coordinate using item heights.
+ * Equivalent to Math.floor(positionY / itemHeight) for fixed heights.
+ * Computes cumulative offsets inline (O(n)) to avoid maintaining a separate shared value.
+ */
+export function findPositionForY(
+  positionY: number,
+  positions: { [id: string]: number },
+  itemHeights: { [id: string]: number },
+  estimatedHeight: number,
+  itemsCount: number
+): number {
+  "worklet";
+  // Build position-indexed lookup (positions are 0..n-1 integers)
+  let count = 0;
+  for (const _id in positions) count++;
+  const idsByPosition: (string | undefined)[] = new Array(count);
+  for (const id in positions) {
+    idsByPosition[positions[id]] = id;
+  }
+
+  // Walk positions in order, accumulating heights to find which slot positionY falls into
+  let cumY = 0;
+  let result = 0;
+  for (let i = 0; i < count; i++) {
+    const itemId = idsByPosition[i];
+    if (itemId !== undefined) {
+      if (positionY >= cumY) {
+        result = i;
+      }
+      cumY += itemHeights[itemId] ?? estimatedHeight;
+    }
+  }
+
+  return clamp(result, 0, itemsCount - 1);
+}
+
+/**
+ * Calculates the Y position for a specific item by summing heights
+ * of all items with lower position indices.
+ * Uses for...in instead of Object.entries() to avoid allocation in worklets.
+ */
+export function getItemCumulativeY(
+  id: string,
+  positions: { [id: string]: number },
+  itemHeights: { [id: string]: number },
+  estimatedHeight: number
+): number {
+  "worklet";
+  const targetPos = positions[id] ?? 0;
+  let y = 0;
+
+  for (const itemId in positions) {
+    if (positions[itemId] < targetPos) {
+      y += itemHeights[itemId] ?? estimatedHeight;
+    }
+  }
+
+  return y;
+}
+
+/**
  * Returns a hash code based on the data
  * @param  {any[]} data The data to hash.
  * @return {string}    A 32bit integer

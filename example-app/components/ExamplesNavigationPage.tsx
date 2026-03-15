@@ -55,6 +55,13 @@ const categories: Category[] = [
         component: "GridSortableExample",
         icon: `⊞${TEXT}`,
       },
+      {
+        id: "dynamicHeight",
+        title: "Dynamic Heights",
+        description: "Sortable list with variable item heights",
+        component: "DynamicHeightExample",
+        icon: `↕${TEXT}`,
+      },
     ],
   },
   {
@@ -231,6 +238,7 @@ export function ExamplesNavigationPage({
                   <React.Fragment key={example.id}>
                     {idx > 0 && <View style={styles.separator} />}
                     <TouchableOpacity
+                      testID={`nav-${example.id}-button`}
                       style={styles.row}
                       onPress={() => onNavigateToExample(example.component)}
                       activeOpacity={0.6}

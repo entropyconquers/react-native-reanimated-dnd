@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import Animated from "react-native-reanimated";
 import {
@@ -27,146 +27,15 @@ const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 /**
  * A high-level component for creating sortable lists with smooth reordering animations.
  *
- * The Sortable component provides a complete solution for sortable lists, handling
- * all the complex state management, gesture handling, and animations internally.
- * It renders a scrollable list where items can be dragged to reorder them with
- * smooth animations and auto-scrolling support.
- *
- * Supports both vertical (default) and horizontal directions via the `direction` prop.
+ * Supports both fixed and dynamic item heights. For dynamic heights, use
+ * `enableDynamicHeights` or provide an array/function for `itemHeight`.
  *
  * @template TData - The type of data items in the list (must extend `{ id: string }`)
  * @param props - Configuration props for the sortable list
  *
- * @example
- * Basic vertical sortable list (default):
- * ```typescript
- * import { Sortable } from './components/Sortable';
- *
- * interface Task {
- *   id: string;
- *   title: string;
- *   completed: boolean;
- * }
- *
- * function TaskList() {
- *   const [tasks, setTasks] = useState<Task[]>([
- *     { id: '1', title: 'Learn React Native', completed: false },
- *     { id: '2', title: 'Build an app', completed: false },
- *     { id: '3', title: 'Deploy to store', completed: false }
- *   ]);
- *
- *   const renderTask = ({ item, id, positions, ...props }) => (
- *     <SortableItem key={id} id={id} positions={positions} {...props}>
- *       <View style={styles.taskItem}>
- *         <Text>{item.title}</Text>
- *         <Text>{item.completed ? '✓' : '○'}</Text>
- *       </View>
- *     </SortableItem>
- *   );
- *
- *   return (
- *     <Sortable
- *       data={tasks}
- *       renderItem={renderTask}
- *       itemHeight={60}
- *       style={styles.list}
- *     />
- *   );
- * }
- * ```
- *
- * @example
- * Horizontal sortable list:
- * ```typescript
- * function HorizontalTagList() {
- *   const [tags, setTags] = useState<Tag[]>([
- *     { id: '1', label: 'React', color: '#61dafb' },
- *     { id: '2', label: 'TypeScript', color: '#3178c6' },
- *     { id: '3', label: 'React Native', color: '#0fa5e9' }
- *   ]);
- *
- *   const renderTag = ({ item, id, positions, ...props }) => (
- *     <SortableItem key={id} id={id} positions={positions} {...props}>
- *       <View style={[styles.tagItem, { backgroundColor: item.color }]}>
- *         <Text style={styles.tagText}>{item.label}</Text>
- *       </View>
- *     </SortableItem>
- *   );
- *
- *   return (
- *     <Sortable
- *       data={tags}
- *       renderItem={renderTag}
- *       direction="horizontal"
- *       itemWidth={120}
- *       gap={12}
- *       paddingHorizontal={16}
- *       style={styles.horizontalList}
- *     />
- *   );
- * }
- * ```
- *
- * @example
- * Sortable list with custom styling and callbacks:
- * ```typescript
- * function AdvancedTaskList() {
- *   const [tasks, setTasks] = useState(initialTasks);
- *
- *   const renderTask = ({ item, id, positions, ...props }) => (
- *     <SortableItem
- *       key={id}
- *       id={id}
- *       positions={positions}
- *       {...props}
- *       onMove={(itemId, from, to) => {
- *         // Update data when items are reordered
- *         const newTasks = [...tasks];
- *         const [movedTask] = newTasks.splice(from, 1);
- *         newTasks.splice(to, 0, movedTask);
- *         setTasks(newTasks);
- *
- *         // Analytics
- *         analytics.track('task_reordered', { taskId: itemId, from, to });
- *       }}
- *       onDragStart={(itemId) => {
- *         hapticFeedback();
- *         setDraggingTask(itemId);
- *       }}
- *       onDrop={(itemId) => {
- *         setDraggingTask(null);
- *       }}
- *     >
- *       <Animated.View style={[styles.taskItem, item.priority === 'high' && styles.highPriority]}>
- *         <Text style={styles.taskTitle}>{item.title}</Text>
- *         <Text style={styles.taskDue}>{item.dueDate}</Text>
- *         <View style={styles.dragHandle}>
- *           <Icon name="drag-handle" size={20} color="#666" />
- *         </View>
- *       </Animated.View>
- *     </SortableItem>
- *   );
- *
- *   return (
- *     <View style={styles.container}>
- *       <Text style={styles.header}>My Tasks ({tasks.length})</Text>
- *       <Sortable
- *         data={tasks}
- *         renderItem={renderTask}
- *         itemHeight={80}
- *         style={styles.sortableList}
- *         contentContainerStyle={styles.listContent}
- *       />
- *     </View>
- *   );
- * }
- * ```
- *
  * @see {@link SortableItem} for individual item component
  * @see {@link useSortableList} for the underlying vertical hook
  * @see {@link useHorizontalSortableList} for the underlying horizontal hook
- * @see {@link SortableRenderItemProps} for render function props
- * @see {@link SortableDirection} for direction options
  */
 function SortableComponent<TData extends { id: string }>({
   data,
@@ -176,14 +45,32 @@ function SortableComponent<TData extends { id: string }>({
   itemWidth,
   gap = 0,
   paddingHorizontal = 0,
+  enableDynamicHeights = false,
+  estimatedItemHeight = 60,
+  onHeightsMeasured,
   style,
   contentContainerStyle,
   itemKeyExtractor = (item) => item.id,
   useFlatList = true,
 }: SortableProps<TData>) {
+  // Determine if dynamic height mode applies
+  const isDynamicHeightMode = useMemo(() => {
+    if (direction === SortableDirection.Horizontal) return false;
+    if (enableDynamicHeights) return true;
+    if (typeof itemHeight === "number") return false;
+    if (itemHeight === undefined) return false;
+    return true; // Array or function
+  }, [enableDynamicHeights, itemHeight, direction]);
+
   // Validate required props based on direction
-  if (direction === SortableDirection.Vertical && !itemHeight) {
-    throw new Error("itemHeight is required when direction is vertical");
+  if (
+    direction === SortableDirection.Vertical &&
+    !isDynamicHeightMode &&
+    !itemHeight
+  ) {
+    throw new Error(
+      "itemHeight is required when direction is vertical and not using dynamic heights"
+    );
   }
   if (direction === SortableDirection.Horizontal && !itemWidth) {
     throw new Error("itemWidth is required when direction is horizontal");
@@ -212,6 +99,9 @@ function SortableComponent<TData extends { id: string }>({
       renderItem={renderItem}
       direction={direction}
       itemHeight={itemHeight}
+      enableDynamicHeights={enableDynamicHeights}
+      estimatedItemHeight={estimatedItemHeight}
+      onHeightsMeasured={onHeightsMeasured}
       style={style}
       contentContainerStyle={contentContainerStyle}
       itemKeyExtractor={itemKeyExtractor}
@@ -225,6 +115,9 @@ function VerticalSortableContent<TData extends { id: string }>({
   renderItem,
   direction,
   itemHeight,
+  enableDynamicHeights,
+  estimatedItemHeight,
+  onHeightsMeasured,
   style,
   contentContainerStyle,
   itemKeyExtractor,
@@ -239,7 +132,10 @@ function VerticalSortableContent<TData extends { id: string }>({
     getItemProps,
   } = useSortableList<TData>({
     data,
-    itemHeight: itemHeight!,
+    itemHeight,
+    enableDynamicHeights,
+    estimatedItemHeight,
+    onHeightsMeasured,
     itemKeyExtractor,
   });
 

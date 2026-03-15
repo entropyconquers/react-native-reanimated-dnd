@@ -1,0 +1,317 @@
+appId: com.przkp2p.rndndtest
+---
+# Dynamic Height Sortable List — Comprehensive Test
+# Verifies: dynamic heights, expand/collapse, controls bottom sheet,
+# handle mode, add/remove items
+# NOTE: Drag-to-reorder is tested via the companion bash script
+# (dynamic-height-drag-test.sh) using ADB draganddrop since Maestro
+# does not support long-press-and-drag gestures natively.
+
+# ── Navigate to Dynamic Heights ──
+- waitForAnimationToEnd:
+    timeout: 5000
+- scrollUntilVisible:
+    element: "Dynamic Heights"
+    direction: DOWN
+    timeout: 10000
+- tapOn: "Dynamic Heights"
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# ── Verify screen loaded with custom header ──
+- assertVisible:
+    id: "header-title-text"
+- assertVisible: "Flight to Tokyo"
+- assertVisible: "Hotel Check-in"
+- assertVisible:
+    id: "dynamic-item-1-title"
+- assertVisible:
+    id: "dynamic-item-2-title"
+- assertVisible:
+    id: "dynamic-controls-button"
+
+# ══════════════════════════════════════════
+# TEST 1: Expand/Collapse items
+# ══════════════════════════════════════════
+
+# Expand "Flight to Tokyo" (item 1)
+- tapOn:
+    id: "dynamic-item-1"
+- waitForAnimationToEnd:
+    timeout: 2000
+- assertVisible:
+    id: "dynamic-item-1-description"
+
+# Verify remove button appears when expanded
+- assertVisible:
+    id: "dynamic-remove-1"
+
+# Collapse it back
+- tapOn:
+    id: "dynamic-item-1"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Expand "Hotel Check-in" (item 2)
+- tapOn:
+    id: "dynamic-item-2"
+- waitForAnimationToEnd:
+    timeout: 2000
+- assertVisible:
+    id: "dynamic-item-2-description"
+
+# Collapse it
+- tapOn:
+    id: "dynamic-item-2"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# ══════════════════════════════════════════
+# TEST 2: Open controls bottom sheet
+# ══════════════════════════════════════════
+
+- tapOn:
+    id: "dynamic-controls-button"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Verify all controls sections
+- assertVisible: "Itinerary Controls"
+- assertVisible: "Drag Mode"
+- assertVisible: "Full Item"
+- assertVisible: "Handle Only"
+- assertVisible: "Add Activities"
+- assertVisible: "Remove"
+- assertVisible: "Stats"
+- assertVisible:
+    id: "dynamic-stats-total"
+
+# ══════════════════════════════════════════
+# TEST 3: Toggle to Handle Only mode
+# ══════════════════════════════════════════
+
+- tapOn:
+    id: "dynamic-drag-mode-handle"
+- waitForAnimationToEnd:
+    timeout: 1000
+- assertVisible:
+    text: ".*handle on the right.*"
+
+# Close controls
+- tapOn: "\u2715"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Verify handles are visible on items
+- assertVisible:
+    id: "dynamic-item-1-handle"
+- assertVisible:
+    id: "dynamic-item-2-handle"
+
+# ══════════════════════════════════════════
+# TEST 4: Switch back to Full Item mode
+# ══════════════════════════════════════════
+
+- tapOn:
+    id: "dynamic-controls-button"
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn:
+    id: "dynamic-drag-mode-full"
+- waitForAnimationToEnd:
+    timeout: 1000
+- assertVisible:
+    text: ".*Hold and drag anywhere.*"
+
+# ══════════════════════════════════════════
+# TEST 5: Add a single item
+# ══════════════════════════════════════════
+
+- tapOn:
+    id: "dynamic-add-single"
+- waitForAnimationToEnd:
+    timeout: 1000
+
+# Close controls
+- tapOn: "\u2715"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Scroll to top - new item appears at top with "New" label
+- scrollUntilVisible:
+    element: "New"
+    direction: UP
+    timeout: 5000
+- assertVisible: "New"
+
+# ══════════════════════════════════════════
+# TEST 6: Add multiple items (3)
+# ══════════════════════════════════════════
+
+- tapOn:
+    id: "dynamic-controls-button"
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn:
+    id: "dynamic-add-3"
+- waitForAnimationToEnd:
+    timeout: 1000
+
+# Verify stats updated
+- assertVisible:
+    id: "dynamic-stats-total"
+- assertVisible:
+    id: "dynamic-stats-added"
+
+# Close controls
+- tapOn: "\u2715"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# ══════════════════════════════════════════
+# TEST 7: Remove last item via controls
+# ══════════════════════════════════════════
+
+- tapOn:
+    id: "dynamic-controls-button"
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn:
+    id: "dynamic-remove-last"
+- waitForAnimationToEnd:
+    timeout: 1000
+- tapOn: "\u2715"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# ══════════════════════════════════════════
+# TEST 8: Remove a specific item via expand
+# ══════════════════════════════════════════
+
+# Find and expand "Ramen at Fuunji" (item 4)
+- scrollUntilVisible:
+    element: "Ramen at Fuunji"
+    direction: DOWN
+    timeout: 8000
+
+# Expand to reveal remove button
+- tapOn:
+    id: "dynamic-item-4"
+- waitForAnimationToEnd:
+    timeout: 2000
+- assertVisible:
+    id: "dynamic-remove-4"
+
+# Remove it
+- tapOn:
+    id: "dynamic-remove-4"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Verify it's gone
+- assertNotVisible: "Ramen at Fuunji"
+
+# ══════════════════════════════════════════
+# TEST 9: Remove another item to test stability
+# ══════════════════════════════════════════
+
+# Expand "Meiji Shrine" (item 5)
+- scrollUntilVisible:
+    element: "Meiji Shrine"
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: "dynamic-item-5"
+- waitForAnimationToEnd:
+    timeout: 2000
+- assertVisible:
+    id: "dynamic-remove-5"
+
+# Remove it
+- tapOn:
+    id: "dynamic-remove-5"
+- waitForAnimationToEnd:
+    timeout: 2000
+- assertNotVisible: "Meiji Shrine"
+
+# ══════════════════════════════════════════
+# TEST 10: Items still functional after removal
+# ══════════════════════════════════════════
+
+# Expand another item to verify list still works
+- scrollUntilVisible:
+    element: "Shinkansen to Kyoto"
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: "dynamic-item-6"
+- waitForAnimationToEnd:
+    timeout: 2000
+- assertVisible:
+    id: "dynamic-item-6-description"
+
+# Collapse it
+- tapOn:
+    id: "dynamic-item-6"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# ══════════════════════════════════════════
+# TEST 11: Reset all items
+# ══════════════════════════════════════════
+
+- tapOn:
+    id: "dynamic-controls-button"
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn:
+    id: "dynamic-reset"
+- waitForAnimationToEnd:
+    timeout: 1000
+- tapOn: "\u2715"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Verify original items restored
+- scrollUntilVisible:
+    element: "Flight to Tokyo"
+    direction: UP
+    timeout: 5000
+- assertVisible: "Flight to Tokyo"
+
+# Verify previously removed items are back
+- scrollUntilVisible:
+    element: "Ramen at Fuunji"
+    direction: DOWN
+    timeout: 5000
+- assertVisible: "Ramen at Fuunji"
+
+- scrollUntilVisible:
+    element: "Meiji Shrine"
+    direction: DOWN
+    timeout: 5000
+- assertVisible: "Meiji Shrine"
+
+# Scroll to bottom to verify all 12 items
+- scrollUntilVisible:
+    element: "Return Flight"
+    direction: DOWN
+    timeout: 5000
+- assertVisible: "Return Flight"
+
+# ══════════════════════════════════════════
+# TEST 12: Expand + scroll verification
+# ══════════════════════════════════════════
+
+- scrollUntilVisible:
+    element: "Flight to Tokyo"
+    direction: UP
+    timeout: 10000
+- assertVisible: "Flight to Tokyo"
+
+# Navigate back
+- tapOn:
+    id: "header-back-button"
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible: "Sortable"
