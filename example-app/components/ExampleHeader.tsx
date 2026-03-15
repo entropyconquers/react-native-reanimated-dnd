@@ -28,6 +28,7 @@ export function ExampleHeader({ title, onBack }: ExampleHeaderProps) {
       <View style={styles.headerContainer}>
         <View style={styles.headerContent}>
           <TouchableOpacity
+            testID="header-back-button"
             style={styles.backButton}
             onPress={handleBack}
             activeOpacity={0.7}
@@ -37,7 +38,7 @@ export function ExampleHeader({ title, onBack }: ExampleHeaderProps) {
           </TouchableOpacity>
 
           <View style={styles.titleContainer}>
-            <Text style={styles.title} numberOfLines={1}>
+            <Text testID="header-title-text" style={styles.title} numberOfLines={1}>
               {title}
             </Text>
           </View>

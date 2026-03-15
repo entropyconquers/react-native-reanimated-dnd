@@ -8,7 +8,8 @@
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.pr-zkp2p.rn-dnd-test"
+      "bundleIdentifier": "com.pr-zkp2p.rn-dnd-test",
+      "appleTeamId": "95BRK25DD2"
     },
     "android": {
       "adaptiveIcon": {

@@ -21,6 +21,7 @@ import {
   BoundedYAxisExample,
   CapacityExample,
   CustomDraggableExample,
+  DynamicHeightExample,
 } from "@/components/examples";
 import { HorizontalSortableExample } from "@/components/HorizontalSortableExample";
 import { GridSortableExample } from "@/components/GridSortableExample";
@@ -45,6 +46,7 @@ export type RootStackParamList = {
   CustomDraggableExample: undefined;
   HorizontalSortableExample: undefined;
   GridSortableExample: undefined;
+  DynamicHeightExample: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -164,6 +166,12 @@ function GridSortableExampleScreen({
   return <GridSortableExample onBack={() => navigation.goBack()} />;
 }
 
+function DynamicHeightExampleScreen({
+  navigation,
+}: StackScreenProps<RootStackParamList, "DynamicHeightExample">) {
+  return <DynamicHeightExample onBack={() => navigation.goBack()} />;
+}
+
 export function AppNavigator() {
   return (
     <NavigationContainer>
@@ -244,6 +252,10 @@ export function AppNavigator() {
         <Stack.Screen
           name="GridSortableExample"
           component={GridSortableExampleScreen}
+        />
+        <Stack.Screen
+          name="DynamicHeightExample"
+          component={DynamicHeightExampleScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
