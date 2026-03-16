@@ -462,6 +462,28 @@ Vote on features you'd like to see by raising an issue.
 
 **Have an idea?** [Open a feature request](https://github.com/entropyconquers/react-native-reanimated-dnd/issues/new?assignees=&labels=enhancement&template=feature_request.md) and let me know!
 
+## 🤖 AI Integration Skill
+
+Speed up development with the official [agent skill](https://agentskills.io). It teaches AI coding agents (Claude Code, Codex, Cursor, Gemini CLI, Copilot, and 30+ more) the full API so they generate correct code — no hallucinated props.
+
+```bash
+# Install via npx skills (works with all compatible agents)
+npx skills add entropyconquers/react-native-reanimated-dnd
+
+# Or install globally
+npx skills add entropyconquers/react-native-reanimated-dnd -g
+```
+
+Once installed, just describe what you want:
+
+> "Add a sortable list where I can reorder items by dragging"
+
+> "Create a drag and drop interface with drop zones"
+
+> "Make a reorderable 3-column grid"
+
+Your agent will generate complete, working implementations with correct imports, props, and state management. See the [AI Integration Skill docs](https://reanimated-dnd-docs.vercel.app/docs/getting-started/ai-skill) for all installation options.
+
 ## 🤝 Contributing
 
 Contributions are always welcome! We believe in building this library together with the community.

@@ -1,0 +1,6 @@
+{
+  "name": "reanimated-dnd",
+  "version": "2.0.0",
+  "description": "Claude Code skill for integrating react-native-reanimated-dnd — drag-and-drop, sortable lists, sortable grids, and drop zones for React Native apps",
+  "skills": ["skills/reanimated-dnd"]
+}
