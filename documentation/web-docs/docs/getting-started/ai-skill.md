@@ -24,13 +24,11 @@ Your agent will generate code using the correct components, hooks, props, and ty
 
 ### Option 1: `npx skills add` (Recommended)
 
-The fastest way to install via [Vercel's skills CLI](https://skills.sh). Works with all compatible agents:
+The fastest way to install via [Vercel's skills CLI](https://skills.sh). It auto-detects which agents you use and installs to all of them:
 
 ```bash
 npx skills add entropyconquers/react-native-reanimated-dnd
 ```
-
-This installs the skill into your project's `.claude/skills/` directory (the standard location for agent skills).
 
 For global installation (available in all projects):
 
@@ -38,9 +36,14 @@ For global installation (available in all projects):
 npx skills add entropyconquers/react-native-reanimated-dnd -g
 ```
 
-### Option 2: Plugin Marketplace (Claude Code)
+To target a specific agent:
 
-Add the marketplace, then install the plugin:
+```bash
+npx skills add entropyconquers/react-native-reanimated-dnd -a cursor
+npx skills add entropyconquers/react-native-reanimated-dnd -a claude-code
+```
+
+### Option 2: Plugin Marketplace (Claude Code)
 
 ```
 /plugin marketplace add entropyconquers/react-native-reanimated-dnd
@@ -49,21 +52,42 @@ Add the marketplace, then install the plugin:
 
 ### Option 3: Manual Installation
 
-Copy the skill directly into your project:
+Copy the skill into the correct directory for your agent:
 
+**For Claude Code:**
 ```bash
 mkdir -p .claude/skills/reanimated-dnd
 curl -o .claude/skills/reanimated-dnd/SKILL.md \
   https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/main/skills/reanimated-dnd/SKILL.md
 ```
 
-Or clone and copy:
-
+**For Codex, Gemini CLI, Cursor, GitHub Copilot, and others:**
 ```bash
-git clone https://github.com/entropyconquers/react-native-reanimated-dnd.git --depth 1
-cp -r react-native-reanimated-dnd/skills/reanimated-dnd .claude/skills/
-rm -rf react-native-reanimated-dnd
+mkdir -p .agents/skills/reanimated-dnd
+curl -o .agents/skills/reanimated-dnd/SKILL.md \
+  https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/main/skills/reanimated-dnd/SKILL.md
 ```
+
+**For maximum compatibility (all agents):**
+```bash
+mkdir -p .claude/skills/reanimated-dnd .agents/skills/reanimated-dnd
+curl -o .agents/skills/reanimated-dnd/SKILL.md \
+  https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/main/skills/reanimated-dnd/SKILL.md
+cp .agents/skills/reanimated-dnd/SKILL.md .claude/skills/reanimated-dnd/SKILL.md
+```
+
+## Where Each Agent Reads Skills
+
+| Agent | Project-level path | User-level path |
+|-------|-------------------|-----------------|
+| Claude Code | `.claude/skills/` | `~/.claude/skills/` |
+| OpenAI Codex | `.agents/skills/` | `~/.agents/skills/` |
+| Cursor | `.cursor/skills/`, `.agents/skills/`, `.claude/skills/` | `~/.cursor/skills/` |
+| Gemini CLI | `.gemini/skills/`, `.agents/skills/` | `~/.gemini/skills/` |
+| GitHub Copilot | `.github/skills/`, `.agents/skills/`, `.claude/skills/` | `~/.copilot/skills/` |
+| Amp, Roo Code, Cline, etc. | `.agents/skills/` | `~/.agents/skills/` |
+
+This repo ships the skill in both `.claude/skills/` and `.agents/skills/` so it works out of the box for all agents when you clone the repo.
 
 ## Usage Examples
 
@@ -113,13 +137,12 @@ The skill provides your AI agent with:
 
 This skill follows the [Agent Skills open standard](https://agentskills.io) and works with:
 
-- Claude Code
-- OpenAI Codex
-- Cursor
-- Gemini CLI
-- GitHub Copilot
-- VS Code (Copilot)
-- Roo Code
+- **Claude Code** — via `.claude/skills/`
+- **OpenAI Codex** — via `.agents/skills/`
+- **Cursor** — via `.cursor/skills/`, `.agents/skills/`, or `.claude/skills/`
+- **Gemini CLI** — via `.agents/skills/`
+- **GitHub Copilot** — via `.github/skills/`, `.agents/skills/`, or `.claude/skills/`
+- **Amp, Roo Code, Windsurf, Cline, OpenCode** — via `.agents/skills/`
 - And [30+ more](https://agentskills.io)
 
 ## Verifying Installation

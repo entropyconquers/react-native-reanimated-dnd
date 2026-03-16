@@ -467,7 +467,7 @@ Vote on features you'd like to see by raising an issue.
 Speed up development with the official [agent skill](https://agentskills.io). It teaches AI coding agents (Claude Code, Codex, Cursor, Gemini CLI, Copilot, and 30+ more) the full API so they generate correct code — no hallucinated props.
 
 ```bash
-# Install via npx skills (works with all compatible agents)
+# Install via npx skills (auto-detects your agents)
 npx skills add entropyconquers/react-native-reanimated-dnd
 
 # Or install globally
@@ -482,7 +482,9 @@ Once installed, just describe what you want:
 
 > "Make a reorderable 3-column grid"
 
-Your agent will generate complete, working implementations with correct imports, props, and state management. See the [AI Integration Skill docs](https://reanimated-dnd-docs.vercel.app/docs/getting-started/ai-skill) for all installation options.
+Your agent will generate complete, working implementations with correct imports, props, and state management.
+
+The skill ships in both `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex, Cursor, Gemini CLI, Copilot, and others) for universal agent compatibility. See the [AI Integration Skill docs](https://reanimated-dnd-docs.vercel.app/docs/getting-started/ai-skill) for all installation options and the full agent compatibility table.
 
 ## 🤝 Contributing
 
