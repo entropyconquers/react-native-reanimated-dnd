@@ -24,7 +24,7 @@
     "build:clean": "rm -rf lib && npm run build",
     "build:clean:safe": "rm -rf lib && npm run build:safe",
     "minify": "node scripts/build.js",
-    "postinstall": "npm run build:safe",
+    "prepublishOnly": "npm run build:clean",
     "type-check": "tsc --noEmit",
     "type-check:example": "npm run type-check --workspace example-app",
     "doctor:example": "npm run doctor --workspace example-app",
@@ -45,7 +45,7 @@
     "type": "git",
     "url": "git+https://github.com/entropyconquers/react-native-reanimated-dnd.git"
   },
-  "homepage": "https://react-native-reanimated-dnd.netlify.app/",
+  "homepage": "https://reanimated-dnd-docs.vercel.app/",
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-native": ">=0.80.0",
@@ -70,10 +70,5 @@
     "lib/**/*.d.ts",
     "README.md",
     "LICENSE"
-  ],
-  "dependencies": {
-    "expo": "~55.0.5",
-    "react": "19.2.0",
-    "react-native": "0.83.2"
-  }
+  ]
 }

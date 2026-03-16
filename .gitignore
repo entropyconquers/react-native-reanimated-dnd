@@ -97,3 +97,4 @@ example-app/coverage/
 /ios/
 .vercel
 launch-video/
+*.mp4

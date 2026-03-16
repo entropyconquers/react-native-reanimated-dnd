@@ -34,7 +34,7 @@ export {
   calculateGridContentDimensions,
   setGridAutoScroll,
   findItemIdAtIndex,
-} from "./lib/gridCalculations";
+} from "./utils/gridCalculations";
 
 // Hooks
 export { useDraggable } from "./hooks/useDraggable";

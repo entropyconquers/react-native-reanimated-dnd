@@ -18,7 +18,7 @@ import { DropProviderRef } from "../types/context";
 import {
   listToGridObject,
   calculateGridContentDimensions,
-} from "../lib/gridCalculations";
+} from "../utils/gridCalculations";
 
 /**
  * A hook for managing sortable grids with drag-and-drop reordering capabilities.

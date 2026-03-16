@@ -23,7 +23,7 @@ import {
   setGridPosition,
   setGridAutoScroll,
   calculateGridContentDimensions,
-} from "../lib/gridCalculations";
+} from "../utils/gridCalculations";
 
 /**
  * A hook for creating sortable grid items with drag-and-drop reordering capabilities.
