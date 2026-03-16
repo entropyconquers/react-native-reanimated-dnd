@@ -75,19 +75,18 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 **📱 Scan & Play**
 
-<img src="https://github.com/user-attachments/assets/80f923f6-7c5f-42e9-9817-7770ee27a70b" alt="Expo QR Code" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/expo-qr-code.png" alt="Expo QR Code" width="200" height="200" />
 
-_Scan with your camera to open in development build_
+_Scan with Expo Go to try the demo instantly_
 
 </td>
 <td align="center" width="50%">
 
 **🚀 Quick Start**
 
-1. Build the example app with `npx expo run:ios` or `npx expo run:android`
+1. Install [Expo Go](https://expo.dev/go) on your phone (SDK 55)
 2. Scan the QR code with your camera
-3. Open the link in the development build
-4. Explore 18 interactive examples!
+3. Explore 18 interactive examples!
 
 **Or browse the code:**
 [**📂 View Example App →**](./example-app/README.md)
