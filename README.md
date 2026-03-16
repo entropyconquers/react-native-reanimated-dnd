@@ -1,7 +1,9 @@
 # React Native Reanimated DnD 🎯
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/dba6226e-c407-4a12-9feb-e8f588d6c1e3" alt="React Native Reanimated DnD Demo" style="max-width: 100%; width: 100%;" />
+  <a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/launch-video.mp4">
+    <img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/launch-video-thumbnail.jpg" alt="React Native Reanimated DnD Launch Video - Click to Play" style="max-width: 100%; width: 100%;" />
+  </a>
 </p>
 <div align="center">
   
@@ -49,6 +51,8 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 - 📦 **Complete Component Suite** - Draggable, Droppable, Sortable, and more
 - 🎪 **Smart Collision Detection** - Multiple algorithms (center, intersect, contain)
 - 📜 **Vertical & Horizontal Sortable Lists** - Drag and drop to sort lists in any direction with automatic scrolling
+- 🔲 **Sortable Grids** - 2D grid drag-and-drop with flexible layouts, insert and swap modes
+- ↕ **Dynamic Heights** - Sortable lists with variable item heights
 - ⚡ **FlatList Performance** - Optional FlatList rendering for large datasets with virtualization
 - 🎭 **Drag Handles** - Precise control with dedicated drag areas
 - 🎬 **Custom Animations** - Spring, timing, or bring your own animation functions
@@ -59,7 +63,7 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 ## 📱 Interactive Examples
 
-**See it in action!** A comprehensive example app with **15 interactive demos** showcasing every feature and use case.
+**See it in action!** A comprehensive example app with **18 interactive demos** showcasing every feature and use case.
 
 <div align="center">
 
@@ -83,7 +87,7 @@ _Scan with your camera to open in development build_
 1. Build the example app with `npx expo run:ios` or `npx expo run:android`
 2. Scan the QR code with your camera
 3. Open the link in the development build
-4. Explore 15 interactive examples!
+4. Explore 18 interactive examples!
 
 **Or browse the code:**
 [**📂 View Example App →**](./example-app/README.md)
@@ -104,90 +108,92 @@ _Comprehensive guides, API reference, and interactive examples_
 
 The example app includes:
 
-- 🎵 **Sortable Music Queue** - Complete list reordering with handles
-- 🎯 **Collision Detection** - Different algorithms in action
-- 🎬 **Custom Animations** - Spring, timing, and easing variations
+- 🎵 **Sortable Music Queue** - Complete list reordering with drag handles
+- ⇌ **Horizontal Sortable** - Reorderable horizontal scrolling list
+- 🔲 **Sortable Grid** - 2D grid reordering with insert/swap modes
+- ↕ **Dynamic Heights** - Sortable list with variable item heights
+- 🎯 **Basic Drag & Drop** - Drag items to drop zones with pre-drag delay
+- 🎪 **Drag Handles** - Dedicated drag regions for precise control
+- 🎬 **Custom Animations** - Spring, timing, bounce & easing curves
+- ✨ **Active Drop Styles** - Visual feedback on hover
+- 📐 **Alignment & Offset** - Precise drop positioning with offsets
 - 📦 **Boundary Constraints** - Axis-locked and bounded dragging
-- ✨ **Visual Feedback** - Active styles and state management
-- ⚙️ **Advanced Patterns** - Custom implementations and hooks
+- 🎯 **Collision Detection** - Center, intersect & contain algorithms
+- 🗺️ **Dropped Items Map** - Track items across multiple zones
+- ⚡ **Drag State** - State enum & onStateChange lifecycle
+- ⚙️ **Custom Draggable** - useDraggable hook implementation
 
-## 🎬 Video Showcase
-
-**See the library in action** with these demos showcasing some of the key features and use cases.
+## 🎬 Demo Showcase
 
 <div align="center">
 
 <table>
 <tr>
-<td align="center" width="50%">
-
-### 📋 Sortable Lists
-
-_Drag and drop to reorder items with smooth animations_
-
-https://github.com/user-attachments/assets/1cd1929c-724b-4dda-a916-f3e69f917f7b
-
-**Features:** Auto-scrolling • Drag handles • Smooth transitions
-
+<td align="center" width="33%">
+<strong>Sortable Music Queue</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/sortable-music-queue.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/sortable-music-queue.jpg" alt="Sortable Music Queue" width="240" /></a><br/>
+<sub>Vertical list reordering with drag handles</sub>
 </td>
-<td align="center" width="50%">
-
-### 🎯 Collision Detection
-
-_Multiple algorithms for precise drop targeting_
-
-https://github.com/user-attachments/assets/379040d7-8489-430b-bae4-3fcbde34264e
-
-**Algorithms:** Center • Intersect • Contain
-
+<td align="center" width="33%">
+<strong>Horizontal Sortable</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/horizontal-sortable.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/horizontal-sortable.jpg" alt="Horizontal Sortable" width="240" /></a><br/>
+<sub>Reorderable horizontal scrolling list</sub>
+</td>
+<td align="center" width="33%">
+<strong>Grid Sortable</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/grid-sortable.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/grid-sortable.jpg" alt="Grid Sortable" width="240" /></a><br/>
+<sub>2D grid reordering with insert & swap</sub>
 </td>
 </tr>
 <tr>
-<td align="center" width="50%">
-
-### 🎪 Drag Handles
-
-_Precise control with dedicated drag areas_
-
-https://github.com/user-attachments/assets/ec051d5b-8ba0-41b7-86ae-379de26a97dd
-
-**Features:** Touch-friendly • Visual feedback • Accessibility
-
+<td align="center" width="33%">
+<strong>Dynamic Heights</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/dynamic-heights.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/dynamic-heights.jpg" alt="Dynamic Heights" width="240" /></a><br/>
+<sub>Sortable list with variable item heights</sub>
 </td>
-<td align="center" width="50%">
-
-### 📦 Bounded Dragging
-
-_Constrain movement within specific boundaries_
-
-https://github.com/user-attachments/assets/7bd5045b-47c4-4d9b-a0c5-eb89122ec9c0
-
-**Constraints:** Axis-locked • Container bounds • Custom limits
-
+<td align="center" width="33%">
+<strong>Basic Drag & Drop</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/basic-drag-drop.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/basic-drag-drop.jpg" alt="Basic Drag & Drop" width="240" /></a><br/>
+<sub>Drag items to drop zones</sub>
+</td>
+<td align="center" width="33%">
+<strong>Drag Handles</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/drag-handles.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/drag-handles.jpg" alt="Drag Handles" width="240" /></a><br/>
+<sub>Dedicated regions for drag control</sub>
 </td>
 </tr>
 <tr>
-<td align="center" width="50%">
-
-### ✨ Active Drop Styles
-
-_Visual feedback during drag operations_
-
-https://github.com/user-attachments/assets/3b8a3d00-38ad-4532-bd42-173037ea61b9
-
-**Feedback:** Hover states • Drop zones • Visual cues
-
+<td align="center" width="33%">
+<strong>Active Drop Styles</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/active-drop-styles.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/active-drop-styles.jpg" alt="Active Drop Styles" width="240" /></a><br/>
+<sub>Visual hover effects on drop zones</sub>
 </td>
-<td align="center" width="50%">
-
-### 🔄 State Management
-
-_Complete lifecycle tracking and callbacks_
-
-https://github.com/user-attachments/assets/da5e526f-f2d2-4dc5-96b5-3fecc4faf57a
-
-**States:** Idle • Dragging • Animating • Dropped
-
+<td align="center" width="33%">
+<strong>Alignment & Offset</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/alignment-offset.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/alignment-offset.jpg" alt="Alignment & Offset" width="240" /></a><br/>
+<sub>Precise drop positioning with offsets</sub>
+</td>
+<td align="center" width="33%">
+<strong>Bounded Dragging</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/bounded-dragging.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/bounded-dragging.jpg" alt="Bounded Dragging" width="240" /></a><br/>
+<sub>Constrain movement within boundaries</sub>
+</td>
+</tr>
+<tr>
+<td align="center" width="33%">
+<strong>Collision Detection</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/collision-detection.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/collision-detection.jpg" alt="Collision Detection" width="240" /></a><br/>
+<sub>Center, intersect & contain algorithms</sub>
+</td>
+<td align="center" width="33%">
+<strong>Dropped Items Map</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/dropped-items-map.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/dropped-items-map.jpg" alt="Dropped Items Map" width="240" /></a><br/>
+<sub>Track items across multiple zones</sub>
+</td>
+<td align="center" width="33%">
+<strong>Drag State</strong><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/drag-state.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/drag-state.jpg" alt="Drag State" width="240" /></a><br/>
+<sub>State lifecycle tracking & callbacks</sub>
 </td>
 </tr>
 </table>
@@ -407,7 +413,7 @@ npx expo run:android --cwd example-app
 
 **Note:** Reanimated 4 requires the New Architecture, so you must use a development build (`npx expo run:ios` / `npx expo run:android`), not Expo Go.
 
-The example app includes all 15 interactive examples showcasing every feature of the library.
+The example app includes all 18 interactive examples showcasing every feature of the library.
 
 ## 🗺️ Project Roadmap
 
@@ -424,6 +430,8 @@ I am constantly working to improve React Native Reanimated DnD. Here's what's co
 - ⚡ **Improved Scheduling** - Uses `scheduleOnRN`/`scheduleOnUI` for better worklet-to-JS communication
 - 🎯 **Pre-drag Delay** - New `preDragDelay` prop for distinguishing taps from drags
 - 📐 **npm Workspaces** - Example app now uses workspace-based development setup
+- 🔲 **Sortable Grids** - 2D grid drag-and-drop with flexible layouts and insert/swap modes
+- ↕ **Dynamic Heights** - Sortable list support for variable item heights
 
 ### 🎯 Next Release
 
@@ -435,13 +443,6 @@ I am constantly working to improve React Native Reanimated DnD. Here's what's co
   - Performance optimizations
   - Gesture handling improvements
   - API Improvements
-
-- 📐 **Sortable Grids**
-
-  - 2D grid drag-and-drop support
-  - Flexible grid layouts (2x2, 3x3, custom)
-  - Smart auto-positioning and gap management
-  - Responsive grid behavior
 
 - 🪆 **Nested Sortable Lists**
 
