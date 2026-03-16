@@ -1,8 +1,8 @@
 # React Native Reanimated DnD 🎯
 
 <p align="center">
-  <a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/launch-video.mp4">
-    <img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/launch-video-thumbnail.jpg" alt="React Native Reanimated DnD Launch Video - Click to Play" style="max-width: 100%; width: 100%;" />
+  <a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/launch-video.mp4">
+    <img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/launch-video-thumbnail.jpg" alt="React Native Reanimated DnD Launch Video - Click to Play" style="max-width: 100%; width: 100%;" />
   </a>
 </p>
 <div align="center">
@@ -131,68 +131,68 @@ The example app includes:
 <tr>
 <td align="center" width="33%">
 <strong>Sortable Music Queue</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/sortable-music-queue.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/sortable-music-queue.jpg" alt="Sortable Music Queue" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/sortable-music-queue.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/sortable-music-queue.jpg" alt="Sortable Music Queue" width="240" /></a><br/>
 <sub>Vertical list reordering with drag handles</sub>
 </td>
 <td align="center" width="33%">
 <strong>Horizontal Sortable</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/horizontal-sortable.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/horizontal-sortable.jpg" alt="Horizontal Sortable" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/horizontal-sortable.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/horizontal-sortable.jpg" alt="Horizontal Sortable" width="240" /></a><br/>
 <sub>Reorderable horizontal scrolling list</sub>
 </td>
 <td align="center" width="33%">
 <strong>Grid Sortable</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/grid-sortable.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/grid-sortable.jpg" alt="Grid Sortable" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/grid-sortable.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/grid-sortable.jpg" alt="Grid Sortable" width="240" /></a><br/>
 <sub>2D grid reordering with insert & swap</sub>
 </td>
 </tr>
 <tr>
 <td align="center" width="33%">
 <strong>Dynamic Heights</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/dynamic-heights.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/dynamic-heights.jpg" alt="Dynamic Heights" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/dynamic-heights.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/dynamic-heights.jpg" alt="Dynamic Heights" width="240" /></a><br/>
 <sub>Sortable list with variable item heights</sub>
 </td>
 <td align="center" width="33%">
 <strong>Basic Drag & Drop</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/basic-drag-drop.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/basic-drag-drop.jpg" alt="Basic Drag & Drop" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/basic-drag-drop.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/basic-drag-drop.jpg" alt="Basic Drag & Drop" width="240" /></a><br/>
 <sub>Drag items to drop zones</sub>
 </td>
 <td align="center" width="33%">
 <strong>Drag Handles</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/drag-handles.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/drag-handles.jpg" alt="Drag Handles" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/drag-handles.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/drag-handles.jpg" alt="Drag Handles" width="240" /></a><br/>
 <sub>Dedicated regions for drag control</sub>
 </td>
 </tr>
 <tr>
 <td align="center" width="33%">
 <strong>Active Drop Styles</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/active-drop-styles.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/active-drop-styles.jpg" alt="Active Drop Styles" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/active-drop-styles.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/active-drop-styles.jpg" alt="Active Drop Styles" width="240" /></a><br/>
 <sub>Visual hover effects on drop zones</sub>
 </td>
 <td align="center" width="33%">
 <strong>Alignment & Offset</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/alignment-offset.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/alignment-offset.jpg" alt="Alignment & Offset" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/alignment-offset.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/alignment-offset.jpg" alt="Alignment & Offset" width="240" /></a><br/>
 <sub>Precise drop positioning with offsets</sub>
 </td>
 <td align="center" width="33%">
 <strong>Bounded Dragging</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/bounded-dragging.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/bounded-dragging.jpg" alt="Bounded Dragging" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/bounded-dragging.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/bounded-dragging.jpg" alt="Bounded Dragging" width="240" /></a><br/>
 <sub>Constrain movement within boundaries</sub>
 </td>
 </tr>
 <tr>
 <td align="center" width="33%">
 <strong>Collision Detection</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/collision-detection.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/collision-detection.jpg" alt="Collision Detection" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/collision-detection.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/collision-detection.jpg" alt="Collision Detection" width="240" /></a><br/>
 <sub>Center, intersect & contain algorithms</sub>
 </td>
 <td align="center" width="33%">
 <strong>Dropped Items Map</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/dropped-items-map.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/dropped-items-map.jpg" alt="Dropped Items Map" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/dropped-items-map.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/dropped-items-map.jpg" alt="Dropped Items Map" width="240" /></a><br/>
 <sub>Track items across multiple zones</sub>
 </td>
 <td align="center" width="33%">
 <strong>Drag State</strong><br/>
-<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/HEAD/documentation/videos/drag-state.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/HEAD/documentation/images/demos/drag-state.jpg" alt="Drag State" width="240" /></a><br/>
+<a href="https://github.com/entropyconquers/react-native-reanimated-dnd/blob/v2.0-rc/documentation/videos/drag-state.mp4"><img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/demos/drag-state.jpg" alt="Drag State" width="240" /></a><br/>
 <sub>State lifecycle tracking & callbacks</sub>
 </td>
 </tr>
