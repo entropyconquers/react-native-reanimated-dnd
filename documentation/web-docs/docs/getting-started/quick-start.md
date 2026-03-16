@@ -280,9 +280,20 @@ The library includes many advanced features you can explore:
 - **Custom Animations**: Define your own animation functions
 - **Auto-scrolling**: Automatic scrolling in sortable lists
 
+## AI Integration Skill
+
+Want AI coding agents to write correct integration code for you? Install the official [agent skill](https://agentskills.io) — it works with Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, and 30+ more:
+
+```bash
+npx skills add entropyconquers/react-native-reanimated-dnd
+```
+
+Once installed, just describe what you want in natural language and your agent will generate working code with correct imports, props, and state management. See the [AI Integration Skill](./ai-skill) page for all installation options.
+
 ## What's Next?
 
 - [Basic Concepts](./basic-concepts) - Understand the core concepts and architecture
 - [Setup Provider](./setup-provider) - Learn about provider configuration and callbacks
+- [AI Integration Skill](./ai-skill) - Use AI agents to generate integration code
 - [Components Overview](../components/draggable) - Explore all available components
 - [Examples](../examples/basic-drag-drop) - See more detailed examples

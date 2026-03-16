@@ -217,6 +217,16 @@ React Native Reanimated DnD is perfect for:
 - Memory leak prevention
 - Cross-platform consistency
 
+## AI Integration Skill
+
+Use AI coding agents to generate correct integration code instantly. Install the official [agent skill](https://agentskills.io) — works with Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, and 30+ more:
+
+```bash
+npx skills add entropyconquers/react-native-reanimated-dnd
+```
+
+Then just describe what you need: *"Add a sortable list with drag handles"* — your agent will generate working code with correct imports, props, and patterns. [Learn more](./getting-started/ai-skill).
+
 ## Getting Started
 
 Ready to add drag-and-drop to your app? Start with our quick setup guide:
@@ -224,7 +234,8 @@ Ready to add drag-and-drop to your app? Start with our quick setup guide:
 1. **[Installation](./getting-started/installation)** - Install the library and dependencies
 2. **[Quick Start](./getting-started/quick-start)** - Build your first drag-and-drop interface
 3. **[Basic Concepts](./getting-started/basic-concepts)** - Understand the core concepts
-4. **[API Reference](./api/overview)** - Explore all available components and hooks
+4. **[AI Integration Skill](./getting-started/ai-skill)** - Use AI agents to generate integration code
+5. **[API Reference](./api/overview)** - Explore all available components and hooks
 
 ## Community
 
