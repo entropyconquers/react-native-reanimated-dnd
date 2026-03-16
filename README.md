@@ -1,7 +1,9 @@
 # React Native Reanimated DnD 🎯
 
 <p align="center">
-  <video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/launch-video.mp4" controls width="100%"></video>
+
+https://github.com/user-attachments/assets/023c0a9c-194a-45a9-bb88-ac8f16f5ffd5
+
 </p>
 <div align="center">
   
@@ -128,70 +130,142 @@ The example app includes:
 <table>
 <tr>
 <td align="center" width="33%">
-<strong>Sortable Music Queue</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/sortable-music-queue.mp4" controls width="240"></video><br/>
-<sub>Vertical list reordering with drag handles</sub>
+
+### 🎵 Sortable Music Queue
+
+_Vertical list reordering with drag handles_
+
+https://github.com/user-attachments/assets/6493c05f-571c-416d-b81d-90bee98738b4
+
+**Features:** Auto-scrolling • Drag handles • Smooth transitions
+
 </td>
 <td align="center" width="33%">
-<strong>Horizontal Sortable</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/horizontal-sortable.mp4" controls width="240"></video><br/>
-<sub>Reorderable horizontal scrolling list</sub>
+
+### ⇌ Horizontal Sortable
+
+_Reorderable horizontal scrolling list_
+
+https://github.com/user-attachments/assets/909c687e-146d-4233-a6e9-4bc3e7b69a35
+
+**Features:** Horizontal scroll • Handle & full item modes
+
 </td>
 <td align="center" width="33%">
-<strong>Grid Sortable</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/grid-sortable.mp4" controls width="240"></video><br/>
-<sub>2D grid reordering with insert & swap</sub>
-</td>
-</tr>
-<tr>
-<td align="center" width="33%">
-<strong>Dynamic Heights</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/dynamic-heights.mp4" controls width="240"></video><br/>
-<sub>Sortable list with variable item heights</sub>
-</td>
-<td align="center" width="33%">
-<strong>Basic Drag & Drop</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/basic-drag-drop.mp4" controls width="240"></video><br/>
-<sub>Drag items to drop zones</sub>
-</td>
-<td align="center" width="33%">
-<strong>Drag Handles</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/drag-handles.mp4" controls width="240"></video><br/>
-<sub>Dedicated regions for drag control</sub>
-</td>
-</tr>
-<tr>
-<td align="center" width="33%">
-<strong>Active Drop Styles</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/active-drop-styles.mp4" controls width="240"></video><br/>
-<sub>Visual hover effects on drop zones</sub>
-</td>
-<td align="center" width="33%">
-<strong>Alignment & Offset</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/alignment-offset.mp4" controls width="240"></video><br/>
-<sub>Precise drop positioning with offsets</sub>
-</td>
-<td align="center" width="33%">
-<strong>Bounded Dragging</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/bounded-dragging.mp4" controls width="240"></video><br/>
-<sub>Constrain movement within boundaries</sub>
+
+### 🔲 Grid Sortable
+
+_2D grid reordering with insert & swap_
+
+https://github.com/user-attachments/assets/9647af01-098c-485f-92ba-cfc39d1bba0c
+
+**Features:** Grid layout • Insert & swap modes
+
 </td>
 </tr>
 <tr>
 <td align="center" width="33%">
-<strong>Collision Detection</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/collision-detection.mp4" controls width="240"></video><br/>
-<sub>Center, intersect & contain algorithms</sub>
+
+### ↕ Dynamic Heights
+
+_Sortable list with variable item heights_
+
+https://github.com/user-attachments/assets/b53078ca-51ab-4675-9389-e8fe69492370
+
+**Features:** Variable heights • Expand/collapse • Auto-scroll
+
 </td>
 <td align="center" width="33%">
-<strong>Dropped Items Map</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/dropped-items-map.mp4" controls width="240"></video><br/>
-<sub>Track items across multiple zones</sub>
+
+### 🎯 Basic Drag & Drop
+
+_Drag items to drop zones_
+
+https://github.com/user-attachments/assets/05859d25-6749-41b7-ae7e-cad5f864a268
+
+**Features:** Drop zones • Pre-drag delay • Visual feedback
+
 </td>
 <td align="center" width="33%">
-<strong>Drag State</strong><br/>
-<video src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/videos/drag-state.mp4" controls width="240"></video><br/>
-<sub>State lifecycle tracking & callbacks</sub>
+
+### 🎭 Drag Handles
+
+_Dedicated regions for drag control_
+
+https://github.com/user-attachments/assets/f8be7bea-0f24-4446-83be-06ede43fa02a
+
+**Features:** Full handle • Bar handle • Header handle
+
+</td>
+</tr>
+<tr>
+<td align="center" width="33%">
+
+### ✨ Active Drop Styles
+
+_Visual hover effects on drop zones_
+
+https://github.com/user-attachments/assets/d4124110-6eb7-4a15-8f97-3e58b392d62e
+
+**Feedback:** Pulse effect • Glow effect • Hover states
+
+</td>
+<td align="center" width="33%">
+
+### 📐 Alignment & Offset
+
+_Precise drop positioning with offsets_
+
+https://github.com/user-attachments/assets/07fd39d0-a0d8-471c-86be-b73d70027163
+
+**Features:** 9-point alignment • X/Y offset controls
+
+</td>
+<td align="center" width="33%">
+
+### 📦 Bounded Dragging
+
+_Constrain movement within boundaries_
+
+https://github.com/user-attachments/assets/ce43a226-ec42-49c1-b528-df6599d294e1
+
+**Constraints:** Container bounds • Axis-locked • Custom limits
+
+</td>
+</tr>
+<tr>
+<td align="center" width="33%">
+
+### 🎪 Collision Detection
+
+_Center, intersect & contain algorithms_
+
+https://github.com/user-attachments/assets/1ac1860a-acc1-469a-ae3e-644a22393b86
+
+**Algorithms:** Center • Intersect • Contain
+
+</td>
+<td align="center" width="33%">
+
+### 🗺️ Dropped Items Map
+
+_Track items across multiple zones_
+
+https://github.com/user-attachments/assets/e4effc88-7161-4c5c-af6e-c06152cfbd09
+
+**Features:** Multi-zone tracking • Real-time mapping
+
+</td>
+<td align="center" width="33%">
+
+### ⚡ Drag State
+
+_State lifecycle tracking & callbacks_
+
+https://github.com/user-attachments/assets/bceb9e7c-8f29-4630-81b0-945a7bcf29c5
+
+**States:** Idle • Dragging • Dropped
+
 </td>
 </tr>
 </table>
