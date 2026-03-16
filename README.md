@@ -75,7 +75,7 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 **📱 Scan & Play**
 
-<img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/expo-qr-code.png" alt="Expo QR Code" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/main/documentation/images/expo-qr-code.png" alt="Expo QR Code" width="200" height="200" />
 
 _Scan with Expo Go to try the demo instantly_
 
