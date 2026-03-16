@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#08090E"
+        "backgroundColor": "#000000"
       },
       "package": "com.przkp2p.rndndtest"
     },
@@ -25,7 +25,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#08090E",
+          "backgroundColor": "#000000",
           "image": "./assets/splash-icon.png",
           "imageWidth": 280
         }
