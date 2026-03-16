@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "Draggable"
 ---
-
-# Draggable
 
 The `Draggable` component makes any React Native component draggable with smooth animations, collision detection, and advanced features like handles, constraints, and custom animations.
 
@@ -19,7 +17,7 @@ function MyDraggable() {
   return (
     <Draggable data={{ id: "1", name: "Item 1", type: "task" }}>
       <View style={styles.item}>
-        <Text>📋 Drag me!</Text>
+        <Text>Drag me!</Text>
       </View>
     </Draggable>
   );

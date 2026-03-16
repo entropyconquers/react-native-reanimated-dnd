@@ -1,14 +1,12 @@
 ---
-sidebar_position: 1
+title: "API Overview"
 ---
-
-# API Overview
 
 Complete API reference for React Native Reanimated DnD library. This section provides detailed documentation for all components, hooks, types, and utilities.
 
 ## Quick Navigation
 
-### 🧩 [Components](./components/draggable)
+### [Components](./components/draggable)
 
 High-level React components for implementing drag-and-drop functionality:
 
@@ -16,8 +14,10 @@ High-level React components for implementing drag-and-drop functionality:
 - **[Droppable](./components/droppable)** - Create drop zones for draggable items
 - **[Sortable](./components/sortable)** - High-level sortable list component
 - **[SortableItem](./components/sortable-item)** - Individual items in sortable lists (includes `SortableItem.Handle`)
+- **[SortableGrid](./components/sortable-grid)** - High-level sortable grid component
+- **[SortableGridItem](./components/sortable-grid-item)** - Individual items in sortable grids (includes `SortableGridItem.Handle`)
 
-### 🪝 [Hooks](./hooks/useDraggable)
+### [Hooks](./hooks/useDraggable)
 
 Low-level hooks for custom implementations:
 
@@ -25,25 +25,28 @@ Low-level hooks for custom implementations:
 - **[useDroppable](./hooks/useDroppable)** - Core droppable functionality
 - **[useSortable](./hooks/useSortable)** - Individual sortable item logic
 - **[useSortableList](./hooks/useSortableList)** - Sortable list management
+- **[useGridSortable](./hooks/useGridSortable)** - Individual grid sortable item logic
+- **[useGridSortableList](./hooks/useGridSortableList)** - Grid sortable list management
 
-### 🏗️ [Context & Providers](./context/DropProvider)
+### [Context & Providers](./context/DropProvider)
 
 Context providers and their APIs:
 
 - **[DropProvider](./context/DropProvider)** - Main context provider for drag-and-drop
 - **[DragDropContext](./context/DragDropContext)** - Context value and methods
 
-### 📝 [Types & Interfaces](./types/draggable-types)
+### [Types & Interfaces](./types/draggable-types)
 
 Complete TypeScript definitions:
 
 - **[Draggable Types](./types/draggable-types)** - Types for draggable functionality
 - **[Droppable Types](./types/droppable-types)** - Types for droppable functionality
 - **[Sortable Types](./types/sortable-types)** - Types for sortable functionality
+- **[Grid Types](./types/grid-types)** - Types for sortable grid functionality
 - **[Context Types](./types/context-types)** - Types for context and providers
 - **[Enums](./types/enums)** - Enumeration definitions
 
-### 🛠️ [Utilities](./utilities/collision-algorithms)
+### [Utilities](./utilities/collision-algorithms)
 
 Helper functions and algorithms:
 
@@ -61,7 +64,8 @@ The library is built around several key concepts:
 2. **Draggable**: Items that can be picked up and moved
 3. **Droppable**: Areas where draggable items can be dropped
 4. **Sortable**: Special case for reorderable lists
-5. **Handles**: Optional components that restrict where dragging can be initiated
+5. **SortableGrid**: 2D grid sorting with insert and swap strategies
+6. **Handles**: Optional components that restrict where dragging can be initiated
 
 ### Component Hierarchy
 
@@ -70,9 +74,12 @@ DropProvider
 ├── Draggable
 │   └── DragHandle (optional)
 ├── Droppable
-└── Sortable
-    └── SortableItem
-        └── SortableHandle (optional)
+├── Sortable
+│   └── SortableItem
+│       └── SortableHandle (optional)
+└── SortableGrid
+    └── SortableGridItem
+        └── SortableGridHandle (optional)
 ```
 
 ### Data Flow

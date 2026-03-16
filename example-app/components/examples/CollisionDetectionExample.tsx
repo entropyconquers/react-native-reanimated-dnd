@@ -1,19 +1,13 @@
-import React, { useRef, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  SafeAreaView,
-  Platform,
-} from "react-native";
+import React, { useRef } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/external-lib";
-import { Droppable } from "@/external-lib";
-import { Draggable } from "@/external-lib";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
+import { useToast } from "@/components/toast";
 
 interface DraggableItemData {
   id: string;
@@ -30,10 +24,11 @@ export function CollisionDetectionExample({
   onBack,
 }: CollisionDetectionExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
+  const { showToast } = useToast();
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <ExampleHeader title="Collision Detection" onBack={onBack} />
 
         <DropProvider ref={dropProviderRef}>
@@ -42,183 +37,184 @@ export function CollisionDetectionExample({
             contentContainerStyle={styles.scrollContent}
             scrollEventThrottle={16}
           >
-            <View style={styles.section}>
-              <Text style={styles.sectionDescription}>
-                Try dragging the items over the drop zones. Note how 'center',
-                'intersect' (default), and 'contain' behave differently.
-              </Text>
+            <Text style={styles.description}>
+              Three collision modes. Drag each card over the zones.
+            </Text>
 
-              <View
-                style={[
-                  styles.dropZoneArea,
-                  { minHeight: 150, justifyContent: "space-between" },
-                ]}
+            <View style={styles.zoneArea}>
+              <Droppable<DraggableItemData>
+                droppableId="narrow-zone"
+                style={[styles.dropZone, styles.dropZoneBlue, { flex: 0.4 }]}
+                onDrop={(data) =>
+                  showToast({
+                    title: "Hit!",
+                    subtitle: `Landed on Narrow Zone using ${data.collisionText}`,
+                    autodismiss: true,
+                  })
+                }
               >
-                <Droppable<DraggableItemData>
-                  droppableId="narrow-zone"
-                  style={[
-                    styles.dropZone,
-                    styles.dropZoneBlue,
-                    { width: "35%", height: 120, minWidth: 100, padding: 10 },
-                  ]} // Narrow zone
-                  onDrop={(data) =>
-                    Alert.alert(
-                      "Drop!",
-                      `Item "${data.label}" with ${data.collisionText} dropped on Narrow Zone!`
-                    )
-                  }
-                >
-                  <Text style={styles.dropZoneText}>Narrow Zone</Text>
-                  <Text style={styles.dZoneSubText}>
-                    (Good for Center/{"\n"}Intersect Demo)
-                  </Text>
-                </Droppable>
+                <Text style={styles.zoneLabel}>Narrow Zone</Text>
+                <Text style={styles.zoneSublabel}>Center / Intersect</Text>
+              </Droppable>
 
-                <Droppable<DraggableItemData>
-                  droppableId="contain-zone"
-                  style={[
-                    styles.dropZone,
-                    styles.dropZoneGreen,
-                    { width: "45%", height: 150, minWidth: 150 },
-                  ]} // Wider, taller zone
-                  onDrop={(data) =>
-                    Alert.alert(
-                      "Drop!",
-                      `Item "${data.label}" with ${data.collisionText} dropped on Contain Zone!`
-                    )
-                  }
-                >
-                  <Text style={styles.dropZoneText}>Contain Zone</Text>
-                  <Text style={styles.dZoneSubText}>
-                    (Good for Contain Demo)
-                  </Text>
-                </Droppable>
-              </View>
+              <Droppable<DraggableItemData>
+                droppableId="contain-zone"
+                style={[styles.dropZone, styles.dropZoneGreen, { flex: 0.6 }]}
+                onDrop={(data) =>
+                  showToast({
+                    title: "Hit!",
+                    subtitle: `Landed on Contain Zone using ${data.collisionText}`,
+                    autodismiss: true,
+                  })
+                }
+              >
+                <Text style={styles.zoneLabel}>Contain Zone</Text>
+                <Text style={styles.zoneSublabel}>Contain Demo</Text>
+              </Droppable>
+            </View>
 
-              <View style={[styles.draggableItemsArea, { minHeight: 240 }]}>
-                {/* Draggable with 'center' collision */}
-                <Draggable<DraggableItemData>
-                  key="D-Collision-Center"
-                  data={{
-                    id: "D-Col-Center",
-                    label: "Center Collision Draggable",
-                    backgroundColor: "#ffca3a",
-                    collisionText: "'center' collision",
-                  }}
-                  collisionAlgorithm="center"
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>ALGORITHMS</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            <View style={styles.cardsArea}>
+              {/* Center collision */}
+              <Draggable<DraggableItemData>
+                key="D-Collision-Center"
+                data={{
+                  id: "D-Col-Center",
+                  label: "Center Collision Draggable",
+                  backgroundColor: "#ffca3a",
+                  collisionText: "'center' collision",
+                }}
+                collisionAlgorithm="center"
+                style={styles.cardOuter}
+              >
+                <View
                   style={[
-                    styles.draggable,
-                    {
-                      top: 0,
-                      left: "5%",
-                      width: "90%", // Wide item
-                      backgroundColor: "#ffca3a",
-                      borderRadius: 12,
-                      zIndex: 20,
-                    },
+                    styles.card,
+                    { borderColor: "rgba(255, 202, 58, 0.35)" },
                   ]}
                 >
-                  <View style={[styles.cardContent, { width: "100%" }]}>
+                  <View
+                    style={[
+                      styles.badge,
+                      { backgroundColor: "rgba(255, 202, 58, 0.15)" },
+                    ]}
+                  >
+                    <Text style={[styles.badgeText, { color: "#ffca3a" }]}>
+                      CENTER
+                    </Text>
+                  </View>
+                  <View style={styles.cardTextArea}>
                     <Text style={styles.cardLabel}>Center</Text>
-                    <Text style={styles.cardHint}>(Wide)</Text>
+                    <Text style={styles.cardHint}>
+                      Triggers at draggable center
+                    </Text>
                   </View>
-                </Draggable>
+                </View>
+              </Draggable>
 
-                {/* Draggable with default 'intersect' collision */}
-                <Draggable<DraggableItemData>
-                  key="D-Collision-Intersect"
-                  data={{
-                    id: "D-Col-Intersect",
-                    label: "Intersect Collision Draggable (Default)",
-                    backgroundColor: "#8ac926",
-                    collisionText: "'intersect' collision (default)",
-                  }}
+              {/* Intersect collision (default) */}
+              <Draggable<DraggableItemData>
+                key="D-Collision-Intersect"
+                data={{
+                  id: "D-Col-Intersect",
+                  label: "Intersect Collision Draggable (Default)",
+                  backgroundColor: "#8ac926",
+                  collisionText: "'intersect' collision (default)",
+                }}
+                style={styles.cardOuter}
+              >
+                <View
                   style={[
-                    styles.draggable,
-                    {
-                      top: 80,
-                      left: "5%",
-                      width: "90%", // Wide item
-                      backgroundColor: "#8ac926",
-                      borderRadius: 12,
-                      zIndex: 10,
-                    },
+                    styles.card,
+                    { borderColor: "rgba(138, 201, 38, 0.35)" },
                   ]}
                 >
-                  <View style={[styles.cardContent, { width: "100%" }]}>
+                  <View
+                    style={[
+                      styles.badge,
+                      { backgroundColor: "rgba(138, 201, 38, 0.15)" },
+                    ]}
+                  >
+                    <Text style={[styles.badgeText, { color: "#8ac926" }]}>
+                      INTERSECT
+                    </Text>
+                  </View>
+                  <View style={styles.cardTextArea}>
                     <Text style={styles.cardLabel}>Intersect</Text>
-                    <Text style={styles.cardHint}>(Default, Wide)</Text>
+                    <Text style={styles.cardHint}>Any overlap triggers (default)</Text>
                   </View>
-                </Draggable>
+                </View>
+              </Draggable>
 
-                {/* Draggable with 'contain' collision */}
-                <Draggable<DraggableItemData>
-                  key="D-Collision-Contain"
-                  data={{
-                    id: "D-Col-Contain",
-                    label: "Contain Collision Draggable",
-                    backgroundColor: "#1982c4",
-                    collisionText: "'contain' collision",
-                  }}
-                  collisionAlgorithm="contain"
+              {/* Contain collision */}
+              <Draggable<DraggableItemData>
+                key="D-Collision-Contain"
+                data={{
+                  id: "D-Col-Contain",
+                  label: "Contain Collision Draggable",
+                  backgroundColor: "#1982c4",
+                  collisionText: "'contain' collision",
+                }}
+                collisionAlgorithm="contain"
+                style={styles.cardOuterSmall}
+              >
+                <View
                   style={[
-                    styles.draggable,
-                    {
-                      top: 160,
-                      left: "25%",
-                      width: 120,
-                      backgroundColor: "#1982c4",
-                      borderRadius: 12,
-                    },
+                    styles.cardSmall,
+                    { borderColor: "rgba(25, 130, 196, 0.35)" },
                   ]}
                 >
-                  <View style={[styles.cardContent, { width: "100%" }]}>
-                    <Text style={styles.cardLabel}>Contain</Text>
-                    <Text style={styles.cardHint}>(Smaller)</Text>
+                  <View
+                    style={[
+                      styles.badge,
+                      { backgroundColor: "rgba(25, 130, 196, 0.15)" },
+                    ]}
+                  >
+                    <Text style={[styles.badgeText, { color: "#1982c4" }]}>
+                      CONTAIN
+                    </Text>
                   </View>
-                </Draggable>
-              </View>
+                  <Text style={styles.cardLabel}>Contain</Text>
+                  <Text style={styles.cardHintSmall}>Must fit inside zone</Text>
+                </View>
+              </Draggable>
+            </View>
 
-              <View style={styles.algorithmInfo}>
-                <View style={styles.algorithmItem}>
-                  <View
-                    style={[
-                      styles.algorithmIndicator,
-                      { backgroundColor: "#ffca3a" },
-                    ]}
-                  />
-                  <Text style={styles.algorithmText}>
-                    CENTER: Triggers when draggable center is over the drop zone
-                  </Text>
-                </View>
-                <View style={styles.algorithmItem}>
-                  <View
-                    style={[
-                      styles.algorithmIndicator,
-                      { backgroundColor: "#8ac926" },
-                    ]}
-                  />
-                  <Text style={styles.algorithmText}>
-                    INTERSECT: Triggers when any part overlaps (default)
-                  </Text>
-                </View>
-                <View style={styles.algorithmItem}>
-                  <View
-                    style={[
-                      styles.algorithmIndicator,
-                      { backgroundColor: "#1982c4" },
-                    ]}
-                  />
-                  <Text style={styles.algorithmText}>
-                    CONTAIN: Triggers when entire draggable is inside drop zone
-                  </Text>
-                </View>
+            <View style={styles.legend}>
+              <View style={styles.legendRow}>
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#ffca3a" }]}
+                />
+                <Text style={styles.legendText}>
+                  CENTER: Triggers when draggable center is over the drop zone
+                </Text>
+              </View>
+              <View style={styles.legendRow}>
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#8ac926" }]}
+                />
+                <Text style={styles.legendText}>
+                  INTERSECT: Triggers when any part overlaps (default)
+                </Text>
+              </View>
+              <View style={styles.legendRow}>
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#1982c4" }]}
+                />
+                <Text style={styles.legendText}>
+                  CONTAIN: Triggers when entire draggable is inside drop zone
+                </Text>
               </View>
             </View>
           </ScrollView>
         </DropProvider>
         <Footer />
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 }
@@ -226,37 +222,37 @@ export function CollisionDetectionExample({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 10,
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
-  section: {
-    padding: 24,
-    backgroundColor: "#000000",
-    marginBottom: 20,
+  description: {
+    fontSize: 14,
+    fontFamily: "Outfit_400Regular",
+    color: "#94A3B8",
+    lineHeight: 20,
+    marginBottom: 16,
   },
-  sectionDescription: {
-    fontSize: 15,
-    color: "#8E8E93",
-    marginBottom: 24,
-    lineHeight: 22,
-  },
-  dropZoneArea: {
+  zoneArea: {
+    flex: 1,
     flexDirection: "row",
-    justifyContent: "space-around",
-    minHeight: 120,
-    marginBottom: 32,
+    gap: 12,
+    marginBottom: 20,
+    minHeight: 140,
   },
   dropZone: {
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderStyle: "dashed",
+    borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 16,
     padding: 8,
   },
   dropZoneBlue: {
@@ -267,80 +263,115 @@ const styles = StyleSheet.create({
     borderColor: "#3fb950",
     backgroundColor: "rgba(63, 185, 80, 0.08)",
   },
-  dropZoneText: {
-    textAlign: "center",
-    fontSize: Platform.OS === "web" ? 12 : 14,
-    fontWeight: "600",
+  zoneLabel: {
+    fontSize: 15,
+    fontFamily: "Outfit_600SemiBold",
     color: "#FFFFFF",
-    letterSpacing: 0.2,
-  },
-  dZoneSubText: {
-    fontSize: Platform.OS === "web" ? 10 : 12,
-    color: "#8E8E93",
-    marginTop: 6,
-    letterSpacing: 0.1,
     textAlign: "center",
   },
-  draggableItemsArea: {
-    minHeight: 100,
-    position: "relative",
-    marginTop: 16,
+  zoneSublabel: {
+    fontSize: 12,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    marginTop: 2,
+    textAlign: "center",
+  },
+  divider: {
     flexDirection: "row",
-    flexWrap: "wrap",
+    alignItems: "center",
+    marginBottom: 14,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#1E2028",
+  },
+  dividerText: {
+    fontSize: 11,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#475569",
+    letterSpacing: 1.5,
+    marginHorizontal: 12,
+  },
+  cardsArea: {
+    gap: 10,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  cardOuter: {
     width: "100%",
   },
-  draggable: {
-    position: "absolute",
+  cardOuterSmall: {
+    width: 160,
+    alignSelf: "center",
   },
-  cardContent: {
-    width: 120,
-    height: 72,
-    padding: 12,
-    borderRadius: 12,
-    justifyContent: "center",
+  cardSmall: {
     alignItems: "center",
-    backgroundColor: "#1C1C1E",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: "#151823",
+    borderWidth: 1.5,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    gap: 6,
+  },
+  cardHintSmall: {
+    fontSize: 11,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    textAlign: "center",
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#151823",
+    borderWidth: 1.5,
+    borderRadius: 12,
+    padding: 14,
+  },
+  badge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginRight: 12,
+  },
+  badgeText: {
+    fontSize: 11,
+    fontFamily: "Outfit_700Bold",
+    letterSpacing: 0.5,
+  },
+  cardTextArea: {
+    flex: 1,
   },
   cardLabel: {
     fontSize: 15,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
-    textAlign: "center",
+    fontFamily: "Outfit_600SemiBold",
+    color: "#F1F5F9",
   },
   cardHint: {
     fontSize: 13,
-    marginTop: 6,
-    color: "#8E8E93",
-    letterSpacing: 0.1,
-    textAlign: "center",
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    marginTop: 2,
   },
-  algorithmInfo: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
+  legend: {
+    marginBottom: 8,
   },
-  algorithmItem: {
+  legendRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: 8,
   },
-  algorithmIndicator: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    marginRight: 12,
+  legendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 10,
   },
-  algorithmText: {
-    fontSize: 14,
-    color: "#FFFFFF",
+  legendText: {
+    fontSize: 12,
+    fontFamily: "Outfit_400Regular",
+    color: "#64748B",
     flex: 1,
-    lineHeight: 20,
+    lineHeight: 16,
   },
 });

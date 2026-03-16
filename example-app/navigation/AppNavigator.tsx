@@ -21,8 +21,11 @@ import {
   BoundedYAxisExample,
   CapacityExample,
   CustomDraggableExample,
+  DynamicHeightExample,
 } from "@/components/examples";
 import { HorizontalSortableExample } from "@/components/HorizontalSortableExample";
+import { GridSortableExample } from "@/components/GridSortableExample";
+import { colors } from "@/theme";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -42,6 +45,8 @@ export type RootStackParamList = {
   CapacityExample: undefined;
   CustomDraggableExample: undefined;
   HorizontalSortableExample: undefined;
+  GridSortableExample: undefined;
+  DynamicHeightExample: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -155,6 +160,18 @@ function HorizontalSortableExampleScreen({
   return <HorizontalSortableExample onBack={() => navigation.goBack()} />;
 }
 
+function GridSortableExampleScreen({
+  navigation,
+}: StackScreenProps<RootStackParamList, "GridSortableExample">) {
+  return <GridSortableExample onBack={() => navigation.goBack()} />;
+}
+
+function DynamicHeightExampleScreen({
+  navigation,
+}: StackScreenProps<RootStackParamList, "DynamicHeightExample">) {
+  return <DynamicHeightExample onBack={() => navigation.goBack()} />;
+}
+
 export function AppNavigator() {
   return (
     <NavigationContainer>
@@ -162,7 +179,7 @@ export function AppNavigator() {
         initialRouteName="Home"
         screenOptions={{
           headerShown: false, // We'll use our custom headers
-          cardStyle: { backgroundColor: "#000000" },
+          cardStyle: { backgroundColor: colors.bg },
           gestureEnabled: true,
           gestureDirection: "horizontal",
         }}
@@ -231,6 +248,14 @@ export function AppNavigator() {
         <Stack.Screen
           name="HorizontalSortableExample"
           component={HorizontalSortableExampleScreen}
+        />
+        <Stack.Screen
+          name="GridSortableExample"
+          component={GridSortableExampleScreen}
+        />
+        <Stack.Screen
+          name="DynamicHeightExample"
+          component={DynamicHeightExampleScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

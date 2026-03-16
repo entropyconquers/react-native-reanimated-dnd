@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "useSortable"
 ---
-
-# useSortable
 
 The `useSortable` hook provides the core functionality for individual items within a sortable list, handling drag gestures, position animations, auto-scrolling, and reordering logic.
 
@@ -14,7 +12,7 @@ This hook works in conjunction with `useSortableList` to provide a complete sort
 
 ```tsx
 import { useSortable } from "react-native-reanimated-dnd";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { GestureDetector } from "react-native-gesture-handler";
 
 function SortableTaskItem({ task, positions, ...sortableProps }) {
   const { animatedStyle, panGestureHandler, isMoving } = useSortable({
@@ -28,13 +26,13 @@ function SortableTaskItem({ task, positions, ...sortableProps }) {
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.taskItem, animatedStyle]}>
         <Text style={[styles.taskText, isMoving && styles.dragging]}>
           {task.title}
         </Text>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -56,8 +54,6 @@ function SortableTaskItem({ task, positions, ...sortableProps }) {
 | `onDragStart`         | `(id: string, position: number) => void`                              | -            | Callback when dragging starts           |
 | `onDrop`              | `(id: string, position: number) => void`                              | -            | Callback when dragging ends             |
 | `onDragging`          | `(id: string, overItemId: string \| null, yPosition: number) => void` | -            | Callback during dragging                |
-| `children`            | `ReactNode`                                                           | -            | Children for handle detection           |
-| `handleComponent`     | `ComponentType<any>`                                                  | -            | Handle component type                   |
 
 ### ScrollDirection Enum
 
@@ -76,9 +72,10 @@ enum ScrollDirection {
 | Property            | Type                   | Description                                 |
 | ------------------- | ---------------------- | ------------------------------------------- |
 | `animatedStyle`     | `StyleProp<ViewStyle>` | Animated styles for position and transforms |
-| `panGestureHandler` | `object`               | Pan gesture handler props                   |
+| `panGestureHandler` | `GestureType`          | Pan gesture to pass to GestureDetector      |
 | `isMoving`          | `boolean`              | Whether the item is currently being dragged |
 | `hasHandle`         | `boolean`              | Whether the item has a drag handle          |
+| `registerHandle`   | `(registered: boolean) => void` | Callback for handle registration  |
 
 ## Examples
 
@@ -142,7 +139,7 @@ function TaskItem({ task, positions, ...sortableProps }) {
   });
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.taskItem, animatedStyle]}>
         <View
           style={[
@@ -164,7 +161,7 @@ function TaskItem({ task, positions, ...sortableProps }) {
           )}
         </View>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 
@@ -245,29 +242,11 @@ function TaskWithHandle({ task, positions, ...sortableProps }) {
       id: task.id,
       positions,
       ...sortableProps,
-      children: (
-        <View style={styles.taskContent}>
-          <View style={styles.taskInfo}>
-            <Text style={styles.taskTitle}>{task.title}</Text>
-            <Text style={styles.taskSubtitle}>{task.subtitle}</Text>
-          </View>
-          <SortableHandle style={styles.dragHandle}>
-            <View style={styles.handleIcon}>
-              <View style={styles.handleDot} />
-              <View style={styles.handleDot} />
-              <View style={styles.handleDot} />
-              <View style={styles.handleDot} />
-              <View style={styles.handleDot} />
-              <View style={styles.handleDot} />
-            </View>
-          </SortableHandle>
-        </View>
-      ),
     }
   );
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.taskContainer, animatedStyle]}>
         <View style={[styles.taskContent, isMoving && styles.movingTask]}>
           <View style={styles.taskInfo}>
@@ -288,7 +267,7 @@ function TaskWithHandle({ task, positions, ...sortableProps }) {
           </SortableHandle>
         </View>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 
@@ -466,7 +445,7 @@ function AdvancedSortableItem({ item, positions, ...sortableProps }) {
   }, [animatedStyle, localState, isMoving, item.priority]);
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={itemStyle}>
         <View style={styles.itemContent}>
           <View style={styles.itemHeader}>
@@ -492,7 +471,7 @@ function AdvancedSortableItem({ item, positions, ...sortableProps }) {
           </View>
         </View>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -554,7 +533,7 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
   };
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View style={[styles.fileItem, animatedStyle]}>
         <Pressable
           style={[
@@ -602,7 +581,7 @@ function SortableFileItem({ file, positions, ...sortableProps }) {
           <FilePreview file={file} onClose={() => setShowPreview(false)} />
         )}
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 
@@ -706,7 +685,7 @@ function AnimatedSortableItem({ item, positions, ...sortableProps }) {
   }));
 
   return (
-    <PanGestureHandler {...panGestureHandler}>
+    <GestureDetector gesture={panGestureHandler}>
       <Animated.View
         style={[styles.animatedItem, animatedStyle, customAnimatedStyle]}
       >
@@ -720,7 +699,7 @@ function AnimatedSortableItem({ item, positions, ...sortableProps }) {
           )}
         </View>
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 }
 ```
@@ -736,7 +715,7 @@ The hook automatically handles scrolling when dragging items near the edges:
 
 ## Handle Detection
 
-The hook automatically detects if a handle component is present:
+Handle detection uses a registration pattern. When a `SortableItem.Handle` component mounts inside a sortable item, it calls `registerHandle(true)`, which sets `hasHandle` to `true`. When the handle unmounts, it calls `registerHandle(false)`.
 
 ```tsx
 // Without handle - entire item is draggable
@@ -746,20 +725,17 @@ const { hasHandle } = useSortable({
 });
 // hasHandle will be false
 
-// With handle - only handle is draggable
-const { hasHandle } = useSortable({
-  id: item.id,
-  children: (
-    <View>
-      <Text>Content</Text>
-      <SortableHandle>
-        <Icon name="drag" />
-      </SortableHandle>
-    </View>
-  ),
-  // ... other props
-});
-// hasHandle will be true
+// With handle - the handle registers itself on mount
+// Inside SortableItem, simply include SortableItem.Handle as a child:
+<SortableItem {...props}>
+  <View>
+    <Text>Content</Text>
+    <SortableItem.Handle>
+      <Icon name="drag" />
+    </SortableItem.Handle>
+  </View>
+</SortableItem>
+// hasHandle will be true (set automatically via registerHandle)
 ```
 
 ## Performance Tips

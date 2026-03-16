@@ -1,18 +1,17 @@
 import React, { useRef, useCallback, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  SafeAreaView,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef, DroppedItemsMap } from "@/external-lib";
-import { Droppable } from "@/external-lib";
+import {
+  DropProvider,
+  DropProviderRef,
+  DroppedItemsMap,
+} from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
-import { Draggable } from "@/external-lib";
+import { Draggable } from "react-native-reanimated-dnd";
 import { Footer } from "@/components/Footer";
+import { useToast } from "@/components/toast";
 
 interface DraggableItemData {
   id: string;
@@ -28,6 +27,7 @@ export function DroppedItemsMapExample({
   onBack,
 }: DroppedItemsMapExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
+  const { showToast } = useToast();
   const [droppedItemsMap, setDroppedItemsMap] = useState<DroppedItemsMap>({});
 
   const handleDroppedItemsUpdate = useCallback((items: DroppedItemsMap) => {
@@ -40,7 +40,7 @@ export function DroppedItemsMapExample({
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <ExampleHeader title="Dropped Items Map" onBack={onBack} />
 
         <DropProvider
@@ -52,119 +52,123 @@ export function DroppedItemsMapExample({
             contentContainerStyle={styles.scrollContent}
             scrollEventThrottle={16}
           >
-            <View style={styles.section}>
-              <Text style={styles.sectionDescription}>
-                This example demonstrates tracking which draggables are
-                currently dropped on which droppables. Try dragging the items
-                between zones.
-              </Text>
+            <Text style={styles.description}>
+              Drag items between zones. Mapping updates in real-time.
+            </Text>
 
-              <View style={styles.dropZoneArea}>
-                <Droppable<DraggableItemData>
-                  droppableId="drop-zone-1"
-                  style={[styles.dropZone, styles.dropZoneBlue]}
-                  onDrop={(data) => {
-                    Alert.alert(
-                      "Item Dropped",
-                      `Item "${data.label}" dropped on Zone 1`
-                    );
-                  }}
-                >
-                  <Text style={styles.dropZoneText}>Zone 1</Text>
-                  <Text style={styles.dZoneSubText}>(ID: drop-zone-1)</Text>
-                </Droppable>
+            <View style={styles.zoneArea}>
+              <Droppable<DraggableItemData>
+                droppableId="drop-zone-1"
+                style={[styles.dropZone, styles.dropZoneBlue]}
+                onDrop={(data) => {
+                  showToast({
+                    title: "Placed!",
+                    subtitle: "Moved to Zone 1",
+                    autodismiss: true,
+                  });
+                }}
+              >
+                <Text style={styles.zoneLabel}>Zone 1</Text>
+                <Text style={styles.zoneSublabel}>ID: drop-zone-1</Text>
+              </Droppable>
 
-                <Droppable<DraggableItemData>
-                  droppableId="drop-zone-2"
-                  style={[styles.dropZone, styles.dropZoneGreen]}
-                  onDrop={(data) => {
-                    Alert.alert(
-                      "Item Dropped",
-                      `Item "${data.label}" dropped on Zone 2`
-                    );
-                  }}
-                >
-                  <Text style={styles.dropZoneText}>Zone 2</Text>
-                  <Text style={styles.dZoneSubText}>(ID: drop-zone-2)</Text>
-                </Droppable>
-              </View>
+              <Droppable<DraggableItemData>
+                droppableId="drop-zone-2"
+                style={[styles.dropZone, styles.dropZoneGreen]}
+                onDrop={(data) => {
+                  showToast({
+                    title: "Placed!",
+                    subtitle: "Moved to Zone 2",
+                    autodismiss: true,
+                  });
+                }}
+              >
+                <Text style={styles.zoneLabel}>Zone 2</Text>
+                <Text style={styles.zoneSublabel}>ID: drop-zone-2</Text>
+              </Droppable>
+            </View>
 
-              <View style={styles.draggableItemsArea}>
-                <Draggable<DraggableItemData>
-                  key="map-item-1"
-                  draggableId="map-item-1"
-                  data={{
-                    id: "map-item-1",
-                    label: "Item Alpha",
-                    backgroundColor: "#f94144",
-                  }}
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>ITEMS</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            <View style={styles.itemsRow}>
+              <Draggable<DraggableItemData>
+                key="map-item-1"
+                draggableId="map-item-1"
+                data={{
+                  id: "map-item-1",
+                  label: "Item Alpha",
+                  backgroundColor: "#f94144",
+                }}
+                style={styles.draggableOuter}
+              >
+                <View
                   style={[
-                    styles.draggable,
-                    {
-                      top: 0,
-                      left: 20,
-                      backgroundColor: "#f94144",
-                      borderRadius: 12,
-                    },
+                    styles.card,
+                    { borderColor: "rgba(249, 65, 68, 0.35)" },
                   ]}
                 >
-                  <View style={styles.cardContent}>
-                    <Text style={styles.cardLabel}>Item Alpha</Text>
-                    <Text style={styles.cardHint}>ID: map-item-1</Text>
-                  </View>
-                </Draggable>
+                  <Text style={styles.cardLabel}>Alpha</Text>
+                  <Text style={styles.cardHint}>map-item-1</Text>
+                </View>
+              </Draggable>
 
-                <Draggable<DraggableItemData>
-                  key="map-item-2"
-                  draggableId="map-item-2"
-                  data={{
-                    id: "map-item-2",
-                    label: "Item Beta",
-                    backgroundColor: "#f3722c",
-                  }}
+              <Draggable<DraggableItemData>
+                key="map-item-2"
+                draggableId="map-item-2"
+                data={{
+                  id: "map-item-2",
+                  label: "Item Beta",
+                  backgroundColor: "#f3722c",
+                }}
+                style={styles.draggableOuter}
+              >
+                <View
                   style={[
-                    styles.draggable,
-                    {
-                      top: 0,
-                      left: 160,
-                      backgroundColor: "#f3722c",
-                      borderRadius: 12,
-                    },
+                    styles.card,
+                    { borderColor: "rgba(243, 114, 44, 0.35)" },
                   ]}
                 >
-                  <View style={styles.cardContent}>
-                    <Text style={styles.cardLabel}>Item Beta</Text>
-                    <Text style={styles.cardHint}>ID: map-item-2</Text>
-                  </View>
-                </Draggable>
-              </View>
+                  <Text style={styles.cardLabel}>Beta</Text>
+                  <Text style={styles.cardHint}>map-item-2</Text>
+                </View>
+              </Draggable>
+            </View>
 
-              {/* Display the current mapping */}
-              <View style={styles.mappingContainer}>
-                <Text style={styles.mappingTitle}>Current Dropped Items:</Text>
-                {Object.keys(droppedItemsMap).length === 0 ? (
-                  <Text style={styles.mappingEmpty}>
-                    No items currently dropped
-                  </Text>
-                ) : (
-                  Object.entries(droppedItemsMap).map(([draggableId, info]) => (
-                    <View key={draggableId} style={styles.mappingItem}>
-                      <Text style={styles.mappingText}>
-                        <Text style={styles.mappingLabel}>{draggableId}</Text>{" "}
-                        is dropped on zone{" "}
-                        <Text style={styles.mappingValue}>
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>TRACKING</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            <View style={styles.trackingArea}>
+              {Object.keys(droppedItemsMap).length === 0 ? (
+                <Text style={styles.emptyText}>No items placed yet</Text>
+              ) : (
+                Object.entries(droppedItemsMap).map(
+                  ([draggableId, info]) => (
+                    <View key={draggableId} style={styles.trackingPill}>
+                      <Text style={styles.trackingText}>
+                        <Text style={styles.trackingDraggable}>
+                          {draggableId}
+                        </Text>
+                        {" is dropped on "}
+                        <Text style={styles.trackingDroppable}>
                           {info.droppableId}
                         </Text>
                       </Text>
                     </View>
-                  ))
-                )}
-              </View>
+                  )
+                )
+              )}
             </View>
           </ScrollView>
         </DropProvider>
         <Footer />
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 }
@@ -172,39 +176,38 @@ export function DroppedItemsMapExample({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
-  section: {
-    padding: 24,
-    backgroundColor: "#000000",
-    marginBottom: 20,
+  description: {
+    fontSize: 14,
+    fontFamily: "Outfit_400Regular",
+    color: "#94A3B8",
+    lineHeight: 20,
+    marginBottom: 16,
   },
-  sectionDescription: {
-    fontSize: 15,
-    color: "#8E8E93",
-    marginBottom: 24,
-    lineHeight: 22,
-  },
-  dropZoneArea: {
+  zoneArea: {
+    flex: 1,
     flexDirection: "row",
-    justifyContent: "space-around",
-    minHeight: 120,
-    marginBottom: 32,
+    gap: 12,
+    marginBottom: 20,
+    minHeight: 140,
   },
   dropZone: {
-    width: "45%",
-    height: 100,
-    borderWidth: 2,
+    flex: 1,
+    borderWidth: 1.5,
     borderStyle: "dashed",
+    borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 16,
     padding: 8,
   },
   dropZoneBlue: {
@@ -215,91 +218,96 @@ const styles = StyleSheet.create({
     borderColor: "#3fb950",
     backgroundColor: "rgba(63, 185, 80, 0.08)",
   },
-  dropZoneText: {
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "600",
+  zoneLabel: {
+    fontSize: 17,
+    fontFamily: "Outfit_600SemiBold",
     color: "#FFFFFF",
-    letterSpacing: 0.2,
+    textAlign: "center",
   },
-  dZoneSubText: {
-    fontSize: 12,
-    color: "#8E8E93",
-    marginTop: 6,
-    letterSpacing: 0.1,
+  zoneSublabel: {
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    marginTop: 2,
+    textAlign: "center",
   },
-  draggableItemsArea: {
-    minHeight: 100,
-    position: "relative",
-    marginTop: 16,
+  divider: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    width: "100%",
+    alignItems: "center",
+    marginBottom: 14,
   },
-  draggable: {
-    position: "absolute",
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#1E2028",
   },
-  cardContent: {
-    width: 120,
-    height: 72,
-    padding: 12,
+  dividerText: {
+    fontSize: 11,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#475569",
+    letterSpacing: 1.5,
+    marginHorizontal: 12,
+  },
+  itemsRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 12,
+    marginBottom: 20,
+  },
+  draggableOuter: {},
+  card: {
+    width: 130,
+    paddingVertical: 18,
+    backgroundColor: "#151823",
+    borderWidth: 1.5,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1C1C1E",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
   },
   cardLabel: {
     fontSize: 15,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#F1F5F9",
     textAlign: "center",
   },
   cardHint: {
     fontSize: 13,
-    marginTop: 6,
-    color: "#8E8E93",
-    letterSpacing: 0.1,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    marginTop: 2,
     textAlign: "center",
   },
-  mappingContainer: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
+  trackingArea: {
+    gap: 6,
+    marginBottom: 8,
   },
-  mappingTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 12,
+  trackingPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#111318",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#1A1C26",
+  },
+  trackingText: {
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
     color: "#FFFFFF",
   },
-  mappingItem: {
-    padding: 10,
-    marginVertical: 4,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 8,
-  },
-  mappingText: {
-    fontSize: 14,
-    color: "#FFFFFF",
-  },
-  mappingEmpty: {
-    fontSize: 14,
-    color: "#8E8E93",
-    fontStyle: "italic",
-  },
-  mappingLabel: {
+  trackingDraggable: {
     fontWeight: "600",
     color: "#58a6ff",
   },
-  mappingValue: {
+  trackingDroppable: {
     fontWeight: "600",
     color: "#3fb950",
+  },
+  emptyText: {
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    fontStyle: "italic",
   },
 });

@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "Sortable Types"
 ---
-
-# Sortable Types
 
 Complete type definitions for sortable components and hooks.
 
@@ -67,8 +65,6 @@ interface UseSortableOptions<T> {
     overItemId: string | null,
     yPosition: number
   ) => void;
-  children?: React.ReactNode;
-  handleComponent?: React.ComponentType<any>;
 }
 ```
 
@@ -203,9 +199,10 @@ Return value from the useSortable hook.
 ```tsx
 interface UseSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
   isMoving: boolean;
   hasHandle: boolean;
+  registerHandle: (registered: boolean) => void;
 }
 ```
 
@@ -218,8 +215,8 @@ interface UseSortableReturn {
 
 ##### panGestureHandler
 
-- **Type**: `any`
-- **Description**: Pan gesture handler for drag interactions. Attach this to a PanGestureHandler to enable dragging.
+- **Type**: `GestureType`
+- **Description**: Pan gesture definition for drag interactions. Attach this to a GestureDetector to enable dragging.
 
 ##### isMoving
 
@@ -230,6 +227,11 @@ interface UseSortableReturn {
 
 - **Type**: `boolean`
 - **Description**: Whether this sortable item has a handle component. When true, only the handle can initiate dragging. When false, the entire item is draggable.
+
+##### registerHandle
+
+- **Type**: `(registered: boolean) => void`
+- **Description**: Function to register or unregister a handle component. Called by the SortableHandle component to notify the sortable item that a handle is present.
 
 ### UseSortableListOptions\<TData\>
 
@@ -293,7 +295,7 @@ interface UseSortableListReturn<TData> {
   scrollY: any;
   autoScroll: any;
   scrollViewRef: any;
-  dropProviderRef: React.RefObject<DropProviderRef>;
+  dropProviderRef: React.RefObject<DropProviderRef | null>;
   handleScroll: any;
   handleScrollEnd: () => void;
   contentHeight: number;
@@ -334,7 +336,7 @@ interface UseSortableListReturn<TData> {
 
 ##### dropProviderRef
 
-- **Type**: `React.RefObject<DropProviderRef>`
+- **Type**: `React.RefObject<DropProviderRef | null>`
 - **Description**: Ref for the drop provider context. Used for triggering position updates after scroll events.
 
 ##### handleScroll
@@ -625,7 +627,8 @@ Context value for sortable components (used internally).
 
 ```tsx
 interface SortableContextValue {
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
+  registerHandle: (registered: boolean) => void;
 }
 ```
 
@@ -957,8 +960,6 @@ interface UseHorizontalSortableOptions<T> {
     overItemId: string | null,
     xPosition: number
   ) => void;
-  children?: React.ReactNode;
-  handleComponent?: React.ComponentType<any>;
 }
 ```
 
@@ -979,9 +980,10 @@ Return value from the useHorizontalSortable hook.
 ```tsx
 interface UseHorizontalSortableReturn {
   animatedStyle: StyleProp<ViewStyle>;
-  panGestureHandler: any;
+  panGestureHandler: GestureType;
   isMoving: boolean;
   hasHandle: boolean;
+  registerHandle: (registered: boolean) => void;
 }
 ```
 
@@ -1009,7 +1011,7 @@ interface UseHorizontalSortableListReturn<TData> {
   scrollX: SharedValue<number>;
   autoScroll: SharedValue<HorizontalScrollDirection>;
   scrollViewRef: React.RefObject<Animated.ScrollView>;
-  dropProviderRef: React.RefObject<DropProviderRef>;
+  dropProviderRef: React.RefObject<DropProviderRef | null>;
   handleScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
   handleScrollEnd: () => void;
   contentWidth: number;

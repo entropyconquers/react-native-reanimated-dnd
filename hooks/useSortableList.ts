@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useMemo, useState, useEffect } from "react";
 import {
   scrollTo,
   useAnimatedReaction,
@@ -6,13 +6,19 @@ import {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
-import { listToObject } from "../components/sortableUtils";
+import {
+  listToObject,
+  resolveItemHeight,
+} from "../components/sortableUtils";
 import { ScrollDirection } from "../types/sortable";
 import { DropProviderRef } from "../types/context";
 
 export interface UseSortableListOptions<TData> {
   data: TData[];
-  itemHeight: number;
+  itemHeight?: number | number[] | ((item: TData, index: number) => number);
+  enableDynamicHeights?: boolean;
+  estimatedItemHeight?: number;
+  onHeightsMeasured?: (heights: { [id: string]: number }) => void;
   itemKeyExtractor?: (item: TData, index: number) => string;
 }
 
@@ -21,10 +27,13 @@ export interface UseSortableListReturn<TData> {
   scrollY: any;
   autoScroll: any;
   scrollViewRef: any;
-  dropProviderRef: React.RefObject<DropProviderRef>;
+  dropProviderRef: React.RefObject<DropProviderRef | null>;
   handleScroll: any;
   handleScrollEnd: () => void;
   contentHeight: number;
+  isDynamicHeight: boolean;
+  itemHeights: any;
+  scheduleHeightUpdate?: (id: string, height: number) => void;
   getItemProps: (
     item: TData,
     index: number
@@ -34,7 +43,11 @@ export interface UseSortableListReturn<TData> {
     lowerBound: any;
     autoScrollDirection: any;
     itemsCount: number;
-    itemHeight: number;
+    itemHeight?: number;
+    isDynamicHeight: boolean;
+    estimatedItemHeight: number;
+    itemHeights?: any;
+    scheduleHeightUpdate?: (id: string, height: number) => void;
   };
 }
 
@@ -45,158 +58,42 @@ export interface UseSortableListReturn<TData> {
  * sortable lists. It handles position tracking, scroll synchronization, auto-scrolling,
  * and provides helper functions for individual sortable items.
  *
+ * Supports dynamic item heights via `enableDynamicHeights` or by providing an array/function
+ * for `itemHeight`.
+ *
  * @template TData - The type of data items in the sortable list (must extend `{ id: string }`)
  * @param options - Configuration options for the sortable list
  * @returns Object containing shared values, refs, handlers, and utilities for the sortable list
  *
- * @example
- * Basic sortable list setup:
- * ```typescript
- * import { useSortableList } from './hooks/useSortableList';
- * import { SortableItem } from './components/SortableItem';
- *
- * interface Task {
- *   id: string;
- *   title: string;
- *   completed: boolean;
- * }
- *
- * function TaskList() {
- *   const [tasks, setTasks] = useState<Task[]>([
- *     { id: '1', title: 'Learn React Native', completed: false },
- *     { id: '2', title: 'Build an app', completed: false },
- *     { id: '3', title: 'Deploy to store', completed: false }
- *   ]);
- *
- *   const {
- *     scrollViewRef,
- *     dropProviderRef,
- *     handleScroll,
- *     handleScrollEnd,
- *     contentHeight,
- *     getItemProps,
- *   } = useSortableList({
- *     data: tasks,
- *     itemHeight: 60,
- *   });
- *
- *   return (
- *     <GestureHandlerRootView style={styles.container}>
- *       <DropProvider ref={dropProviderRef}>
- *         <Animated.ScrollView
- *           ref={scrollViewRef}
- *           onScroll={handleScroll}
- *           scrollEventThrottle={16}
- *           style={styles.scrollView}
- *           contentContainerStyle={{ height: contentHeight }}
- *           onScrollEndDrag={handleScrollEnd}
- *           onMomentumScrollEnd={handleScrollEnd}
- *         >
- *           {tasks.map((task, index) => {
- *             const itemProps = getItemProps(task, index);
- *             return (
- *               <SortableItem key={task.id} {...itemProps}>
- *                 <View style={styles.taskItem}>
- *                   <Text>{task.title}</Text>
- *                 </View>
- *               </SortableItem>
- *             );
- *           })}
- *         </Animated.ScrollView>
- *       </DropProvider>
- *     </GestureHandlerRootView>
- *   );
- * }
- * ```
- *
- * @example
- * Sortable list with custom key extractor:
- * ```typescript
- * interface CustomItem {
- *   uuid: string;
- *   name: string;
- *   order: number;
- * }
- *
- * function CustomSortableList() {
- *   const [items, setItems] = useState<CustomItem[]>(data);
- *
- *   const sortableListProps = useSortableList({
- *     data: items,
- *     itemHeight: 50,
- *     itemKeyExtractor: (item) => item.uuid, // Use uuid instead of id
- *   });
- *
- *   const { getItemProps, ...otherProps } = sortableListProps;
- *
- *   return (
- *     <SortableListContainer {...otherProps}>
- *       {items.map((item, index) => {
- *         const itemProps = getItemProps(item, index);
- *         return (
- *           <SortableItem key={item.uuid} {...itemProps}>
- *             <View style={styles.customItem}>
- *               <Text>{item.name}</Text>
- *               <Text>Order: {item.order}</Text>
- *             </View>
- *           </SortableItem>
- *         );
- *       })}
- *     </SortableListContainer>
- *   );
- * }
- * ```
- *
- * @example
- * Sortable list with reordering logic:
- * ```typescript
- * function ReorderableTaskList() {
- *   const [tasks, setTasks] = useState(initialTasks);
- *
- *   const handleReorder = useCallback((id: string, from: number, to: number) => {
- *     setTasks(prevTasks => {
- *       const newTasks = [...prevTasks];
- *       const [movedTask] = newTasks.splice(from, 1);
- *       newTasks.splice(to, 0, movedTask);
- *       return newTasks;
- *     });
- *   }, []);
- *
- *   const sortableProps = useSortableList({
- *     data: tasks,
- *     itemHeight: 80,
- *   });
- *
- *   return (
- *     <SortableListContainer {...sortableProps}>
- *       {tasks.map((task, index) => {
- *         const itemProps = sortableProps.getItemProps(task, index);
- *         return (
- *           <SortableItem
- *             key={task.id}
- *             {...itemProps}
- *             onMove={handleReorder}
- *           >
- *             <TaskCard task={task} />
- *           </SortableItem>
- *         );
- *       })}
- *     </SortableListContainer>
- *   );
- * }
- * ```
- *
  * @see {@link UseSortableListOptions} for configuration options
  * @see {@link UseSortableListReturn} for return value details
  * @see {@link useSortable} for individual item management
- * @see {@link SortableItem} for component implementation
- * @see {@link Sortable} for high-level sortable list component
- * @see {@link DropProvider} for drag-and-drop context
  */
 export function useSortableList<TData extends { id: string }>(
   options: UseSortableListOptions<TData>
 ): UseSortableListReturn<TData> {
-  const { data, itemHeight, itemKeyExtractor = (item) => item.id } = options;
+  const {
+    data,
+    itemHeight,
+    enableDynamicHeights = false,
+    estimatedItemHeight = 60,
+    onHeightsMeasured,
+    itemKeyExtractor = (item) => item.id,
+  } = options;
+
+  // Determine if we're in dynamic height mode:
+  // - explicitly enabled, OR
+  // - itemHeight is an array/function (non-uniform heights), OR
+  // - itemHeight is undefined (needs measurement)
+  const isDynamicHeight = useMemo(() => {
+    if (enableDynamicHeights) return true;
+    if (typeof itemHeight === "number") return false;
+    if (itemHeight === undefined) return false; // No itemHeight and no dynamic = error (validated below)
+    return true; // Array or function
+  }, [enableDynamicHeights, itemHeight]);
+
+  // Whether onLayout measurement is needed (vs pre-computed heights)
+  const needsMeasurement = enableDynamicHeights;
 
   // Runtime validation in development mode
   if (__DEV__) {
@@ -209,6 +106,13 @@ export function useSortableList<TData extends { id: string }>(
         );
       }
     });
+
+    if (!isDynamicHeight && itemHeight === undefined) {
+      console.error(
+        "[react-native-reanimated-dnd] itemHeight is required when not using dynamic heights. " +
+          "Either provide itemHeight or set enableDynamicHeights to true."
+      );
+    }
   }
 
   // Set up shared values
@@ -216,7 +120,93 @@ export function useSortableList<TData extends { id: string }>(
   const scrollY = useSharedValue(0);
   const autoScroll = useSharedValue(ScrollDirection.None);
   const scrollViewRef = useAnimatedRef();
-  const dropProviderRef = useRef<DropProviderRef>(null);
+  const dropProviderRef = useRef<DropProviderRef | null>(null);
+
+  // Dynamic height shared values — initialized with estimated heights
+  // so items are positioned correctly from the first frame.
+  const initialHeights = useMemo(() => {
+    if (!isDynamicHeight) return {};
+    const heights: { [id: string]: number } = {};
+    data.forEach((item, index) => {
+      const id = itemKeyExtractor(item, index);
+      heights[id] = resolveItemHeight(itemHeight, item, index, estimatedItemHeight);
+    });
+    return heights;
+  }, []);
+
+  const itemHeightsSV = useSharedValue<{ [id: string]: number }>(initialHeights);
+
+  // Content height state — updated on JS thread for use in styles
+  const fixedContentHeight =
+    typeof itemHeight === "number" ? data.length * itemHeight : null;
+  const [dynamicContentHeight, setDynamicContentHeight] = useState(() => {
+    if (!isDynamicHeight && fixedContentHeight !== null) return fixedContentHeight;
+    // Estimate from data
+    let total = 0;
+    data.forEach((item, index) => {
+      total += resolveItemHeight(itemHeight, item, index, estimatedItemHeight);
+    });
+    return total;
+  });
+
+  // Initialize heights when data changes (for array/function mode)
+  useEffect(() => {
+    if (!isDynamicHeight) return;
+
+    const newHeights: { [id: string]: number } = {};
+    data.forEach((item, index) => {
+      const id = itemKeyExtractor(item, index);
+      // If we have pre-computed heights (array/function), use them
+      // If measurement mode, keep existing measured heights or use estimate
+      if (!needsMeasurement) {
+        newHeights[id] = resolveItemHeight(
+          itemHeight,
+          item,
+          index,
+          estimatedItemHeight
+        );
+      } else {
+        // Preserve previously measured heights, use estimate for new items
+        const existing = itemHeightsSV.value[id];
+        newHeights[id] = existing ?? estimatedItemHeight;
+      }
+    });
+
+    itemHeightsSV.value = newHeights;
+
+    // Compute total content height
+    let total = 0;
+    data.forEach((item, index) => {
+      const id = itemKeyExtractor(item, index);
+      total += newHeights[id] ?? estimatedItemHeight;
+    });
+    setDynamicContentHeight(total);
+  }, [data, isDynamicHeight, needsMeasurement, itemHeight, estimatedItemHeight, itemKeyExtractor]);
+
+  // Height update function called from onLayout on JS thread
+  const scheduleHeightUpdate = useCallback(
+    (id: string, height: number) => {
+      const rounded = Math.round(height);
+      const prev = itemHeightsSV.value[id];
+      if (prev !== undefined && Math.abs(prev - rounded) < 1) return;
+
+      const newHeights = { ...itemHeightsSV.value, [id]: rounded };
+      itemHeightsSV.value = newHeights;
+
+      // Recalculate total content height on JS thread
+      let total = 0;
+      data.forEach((item, index) => {
+        const itemId = itemKeyExtractor(item, index);
+        total += newHeights[itemId] ?? estimatedItemHeight;
+      });
+      setDynamicContentHeight(total);
+
+      if (onHeightsMeasured) {
+        onHeightsMeasured(newHeights);
+      }
+    },
+    [data, itemKeyExtractor, estimatedItemHeight, onHeightsMeasured]
+  );
 
   // Scrolling synchronization
   useAnimatedReaction(
@@ -242,7 +232,10 @@ export function useSortableList<TData extends { id: string }>(
   }, []);
 
   // Calculate content height
-  const contentHeight = data.length * itemHeight;
+  const contentHeight =
+    !isDynamicHeight && fixedContentHeight !== null
+      ? fixedContentHeight
+      : dynamicContentHeight;
 
   // Helper to get props for each sortable item
   const getItemProps = useCallback(
@@ -254,10 +247,26 @@ export function useSortableList<TData extends { id: string }>(
         lowerBound: scrollY,
         autoScrollDirection: autoScroll,
         itemsCount: data.length,
-        itemHeight,
+        itemHeight: typeof itemHeight === "number" ? itemHeight : undefined,
+        isDynamicHeight,
+        estimatedItemHeight,
+        itemHeights: isDynamicHeight ? itemHeightsSV : undefined,
+        scheduleHeightUpdate: needsMeasurement ? scheduleHeightUpdate : undefined,
       };
     },
-    [data.length, itemHeight, itemKeyExtractor, positions, scrollY, autoScroll]
+    [
+      data.length,
+      itemHeight,
+      isDynamicHeight,
+      estimatedItemHeight,
+      needsMeasurement,
+      itemKeyExtractor,
+      positions,
+      scrollY,
+      autoScroll,
+      itemHeightsSV,
+      scheduleHeightUpdate,
+    ]
   );
 
   return {
@@ -269,6 +278,9 @@ export function useSortableList<TData extends { id: string }>(
     handleScroll,
     handleScrollEnd,
     contentHeight,
+    isDynamicHeight,
+    itemHeights: itemHeightsSV,
+    scheduleHeightUpdate: needsMeasurement ? scheduleHeightUpdate : undefined,
     getItemProps,
   };
 }

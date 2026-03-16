@@ -1,0 +1,8 @@
+.expo/
+external-lib/
+ios/
+android/
+build/
+dist/
+lib/
+coverage/

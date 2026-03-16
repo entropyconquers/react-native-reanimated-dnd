@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "Sortable"
 ---
-
-# Sortable
 
 The `Sortable` component creates reorderable lists with smooth animations, auto-scrolling, and gesture handling for intuitive drag-and-drop reordering. Supports both **vertical and horizontal** directions with FlatList virtualization for optimal performance.
 
@@ -300,7 +298,7 @@ function BasicTaskList() {
           <Text style={styles.taskPriority}>{item.priority}</Text>
         </View>
         <View style={styles.taskStatus}>
-          <Text>{item.completed ? "✅" : "⏳"}</Text>
+          <Text>{item.completed ? "Done" : "Pending"}</Text>
         </View>
       </View>
     </SortableItem>

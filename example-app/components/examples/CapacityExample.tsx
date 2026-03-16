@@ -1,18 +1,17 @@
 import React, { useRef, useCallback, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  SafeAreaView,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef, DroppedItemsMap } from "@/external-lib";
-import { Droppable } from "@/external-lib";
-import { Draggable } from "@/external-lib";
+import {
+  DropProvider,
+  DropProviderRef,
+  DroppedItemsMap,
+} from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
+import { useToast } from "@/components/toast";
 
 interface DraggableItemData {
   id: string;
@@ -26,6 +25,7 @@ interface CapacityExampleProps {
 
 export function CapacityExample({ onBack }: CapacityExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
+  const { showToast } = useToast();
   const [droppedItemsMap, setDroppedItemsMap] = useState<DroppedItemsMap>({});
 
   const handleDroppedItemsUpdate = useCallback((items: DroppedItemsMap) => {
@@ -34,7 +34,7 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <ExampleHeader title="Drop Zone Capacity" onBack={onBack} />
 
         <DropProvider
@@ -46,163 +46,143 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
             contentContainerStyle={styles.scrollContent}
             scrollEventThrottle={16}
           >
-            <View style={styles.section}>
-              <Text style={styles.sectionDescription}>
-                This example demonstrates droppable zones with different
-                capacities. Try dropping multiple items on each zone to see how
-                capacity limits work.
-              </Text>
+            <Text style={styles.description}>
+              Each zone has a capacity limit. Try filling them up.
+            </Text>
 
-              <View style={styles.dropZoneArea}>
-                <View style={styles.dropZoneColumn}>
-                  <Text style={styles.customStyleLabel}>
-                    Capacity: 1 (Default)
-                  </Text>
+            <View style={styles.zoneGrid}>
+              <View style={styles.zoneRow}>
+                <View style={styles.zoneCol}>
                   <Droppable<DraggableItemData>
                     droppableId="capacity-1"
-                    style={[styles.dropZone, styles.customDropZone]}
+                    style={styles.dropZone}
                     onDrop={(data) =>
-                      Alert.alert(
-                        "Dropped!",
-                        `${data.label} on capacity-1 zone`
-                      )
+                      showToast({
+                        title: "Placed!",
+                        subtitle: "Added to the single-item zone",
+                        autodismiss: true,
+                      })
                     }
-                    // Default capacity is 1
                   >
-                    <Text style={styles.dropZoneText}>Single Item</Text>
-                    <Text style={styles.dZoneSubText}>(Max: 1 Item)</Text>
+                    <Text style={styles.zoneTitle}>Single Item</Text>
+                    <Text style={styles.zoneSublabel}>Cap: 1</Text>
                   </Droppable>
                 </View>
 
-                <View style={styles.dropZoneColumn}>
-                  <Text style={styles.customStyleLabel}>Capacity: 2</Text>
+                <View style={styles.zoneCol}>
                   <Droppable<DraggableItemData>
                     droppableId="capacity-2"
                     capacity={2}
-                    style={[styles.dropZone, styles.customDropZone]}
+                    style={styles.dropZone}
                     onDrop={(data) =>
-                      Alert.alert(
-                        "Dropped!",
-                        `${data.label} on capacity-2 zone`
-                      )
+                      showToast({
+                        title: "Placed!",
+                        subtitle: "Added to the double-item zone",
+                        autodismiss: true,
+                      })
                     }
                   >
-                    <Text style={styles.dropZoneText}>Multi Item</Text>
-                    <Text style={styles.dZoneSubText}>(Max: 2 Items)</Text>
+                    <Text style={styles.zoneTitle}>Multi Item</Text>
+                    <Text style={styles.zoneSublabel}>Cap: 2</Text>
                   </Droppable>
                 </View>
               </View>
 
-              <View style={styles.dropZoneArea}>
-                <View style={styles.dropZoneColumn}>
-                  <Text style={styles.customStyleLabel}>Capacity: 3</Text>
+              <View style={styles.zoneRow}>
+                <View style={styles.zoneCol}>
                   <Droppable<DraggableItemData>
                     droppableId="capacity-3"
                     capacity={3}
-                    style={[
-                      styles.dropZone,
-                      styles.customDropZone,
-                      { height: 140 },
-                    ]}
+                    style={styles.dropZone}
                     onDrop={(data) =>
-                      Alert.alert(
-                        "Dropped!",
-                        `${data.label} on capacity-3 zone`
-                      )
+                      showToast({
+                        title: "Placed!",
+                        subtitle: "Added to the triple-item zone",
+                        autodismiss: true,
+                      })
                     }
                   >
-                    <Text style={styles.dropZoneText}>Large Capacity</Text>
-                    <Text style={styles.dZoneSubText}>(Max: 3 Items)</Text>
+                    <Text style={styles.zoneTitle}>Large Capacity</Text>
+                    <Text style={styles.zoneSublabel}>Cap: 3</Text>
                   </Droppable>
                 </View>
 
-                <View style={styles.dropZoneColumn}>
-                  <Text style={styles.customStyleLabel}>
-                    Capacity: Unlimited
-                  </Text>
+                <View style={styles.zoneCol}>
                   <Droppable<DraggableItemData>
                     droppableId="capacity-unlimited"
                     capacity={Infinity}
-                    style={[
-                      styles.dropZone,
-                      styles.customDropZone,
-                      { height: 140 },
-                    ]}
+                    style={styles.dropZone}
                     onDrop={(data) =>
-                      Alert.alert(
-                        "Dropped!",
-                        `${data.label} on unlimited capacity zone`
-                      )
+                      showToast({
+                        title: "Placed!",
+                        subtitle: "Added to the unlimited zone",
+                        autodismiss: true,
+                      })
                     }
                   >
-                    <Text style={styles.dropZoneText}>Unlimited</Text>
-                    <Text style={styles.dZoneSubText}>(No Limit)</Text>
+                    <Text style={styles.zoneTitle}>Unlimited</Text>
+                    <Text style={styles.zoneSublabel}>{`Cap: \u221E`}</Text>
                   </Droppable>
                 </View>
               </View>
+            </View>
 
-              <View style={[styles.draggableItemsArea, { minHeight: 200 }]}>
-                {/* Create 5 draggable items to test capacity */}
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <Draggable<DraggableItemData>
-                    key={`capacity-demo-item-${index}`}
-                    draggableId={`capacity-demo-item-${index}`}
-                    data={{
-                      id: `capacity-item-${index}`,
-                      label: `Item ${index + 1}`,
-                      backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
-                    }}
-                    style={[
-                      styles.draggable,
-                      {
-                        backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
-                        borderRadius: 12,
-                        zIndex: 100 - index,
-                        top: Math.floor(index / 3) * 80,
-                        left: (index % 3) * 110 + 20,
-                      },
-                    ]}
-                  >
-                    <View style={styles.cardContent}>
-                      <Text style={styles.cardLabel}>{`Item ${
-                        index + 1
-                      }`}</Text>
-                    </View>
-                  </Draggable>
-                ))}
-              </View>
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>ITEMS</Text>
+              <View style={styles.dividerLine} />
+            </View>
 
-              {/* Add counter to show items in each drop zone */}
-              <View style={styles.mappingContainer}>
-                <Text style={styles.mappingTitle}>Dropped Items Count:</Text>
-                {Object.entries(
-                  // Group by droppable ID
-                  Object.values(droppedItemsMap).reduce(
-                    (acc, { droppableId }) => {
-                      acc[droppableId] = (acc[droppableId] || 0) + 1;
-                      return acc;
-                    },
-                    {} as Record<string, number>
-                  )
-                ).map(([droppableId, count]) => (
-                  <View key={droppableId} style={styles.mappingItem}>
-                    <Text style={styles.mappingText}>
-                      <Text style={styles.mappingLabel}>{droppableId}</Text>:{" "}
-                      <Text style={styles.mappingValue}>{count}</Text> item
-                      {count !== 1 ? "s" : ""}
-                    </Text>
+            <View style={styles.itemsRow}>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Draggable<DraggableItemData>
+                  key={`capacity-demo-item-${index}`}
+                  draggableId={`capacity-demo-item-${index}`}
+                  data={{
+                    id: `capacity-item-${index}`,
+                    label: `Item ${index + 1}`,
+                    backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
+                  }}
+                  style={{
+                    backgroundColor: `hsl(${index * 40}, 80%, 60%)`,
+                    borderRadius: 10,
+                    borderWidth: 1.5,
+                    borderColor: "rgba(255,255,255, 0.12)",
+                  }}
+                >
+                  <View style={styles.chip}>
+                    <Text style={styles.chipLabel}>{`${index + 1}`}</Text>
                   </View>
-                ))}
-                {Object.keys(droppedItemsMap).length === 0 && (
-                  <Text style={styles.mappingEmpty}>
-                    No items currently dropped
+                </Draggable>
+              ))}
+            </View>
+
+            <View style={styles.counterStrip}>
+              {Object.entries(
+                Object.values(droppedItemsMap).reduce(
+                  (acc, { droppableId }) => {
+                    acc[droppableId] = (acc[droppableId] || 0) + 1;
+                    return acc;
+                  },
+                  {} as Record<string, number>
+                )
+              ).map(([droppableId, count]) => (
+                <View key={droppableId} style={styles.countPill}>
+                  <Text style={styles.countText}>
+                    <Text style={styles.countLabel}>{droppableId}</Text>
+                    {": "}
+                    <Text style={styles.countValue}>{count}</Text>
+                    {` item${count !== 1 ? "s" : ""}`}
                   </Text>
-                )}
-              </View>
+                </View>
+              ))}
+              {Object.keys(droppedItemsMap).length === 0 && (
+                <Text style={styles.emptyText}>No items currently dropped</Text>
+              )}
             </View>
           </ScrollView>
         </DropProvider>
-      </SafeAreaView>
+      </View>
       <Footer />
     </GestureHandlerRootView>
   );
@@ -211,135 +191,130 @@ export function CapacityExample({ onBack }: CapacityExampleProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
-  section: {
-    padding: 24,
-    backgroundColor: "#000000",
-    marginBottom: 20,
-  },
-  sectionDescription: {
-    fontSize: 15,
-    color: "#8E8E93",
-    marginBottom: 24,
-    lineHeight: 22,
-  },
-  dropZoneArea: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    minHeight: 160,
-    marginBottom: 32,
-  },
-  dropZoneColumn: {
-    alignItems: "center",
-    width: "45%",
-  },
-  customStyleLabel: {
+  description: {
     fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 12,
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
+    fontFamily: "Outfit_400Regular",
+    color: "#94A3B8",
+    lineHeight: 20,
+    marginBottom: 16,
   },
-  customDropZone: {
-    borderColor: "#2C2C2E",
-    backgroundColor: "#1C1C1E",
-    height: 120,
-    width: "100%",
-    borderRadius: 16,
+  zoneGrid: {
+    flex: 1,
+    minHeight: 240,
+    marginBottom: 16,
+  },
+  zoneRow: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 12,
+  },
+  zoneCol: {
+    flex: 1,
   },
   dropZone: {
-    borderWidth: 2,
+    flex: 1,
+    borderWidth: 1.5,
     borderStyle: "dashed",
+    borderColor: "#2A2D3A",
+    backgroundColor: "#111318",
+    borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
     padding: 8,
   },
-  dropZoneText: {
-    textAlign: "center",
+  zoneTitle: {
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: "Outfit_600SemiBold",
     color: "#FFFFFF",
-    letterSpacing: 0.2,
-  },
-  dZoneSubText: {
-    fontSize: 12,
-    color: "#8E8E93",
-    marginTop: 6,
-    letterSpacing: 0.1,
     textAlign: "center",
   },
-  draggableItemsArea: {
-    minHeight: 100,
-    position: "relative",
-    marginTop: 16,
+  zoneSublabel: {
+    fontSize: 12,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    marginTop: 2,
+    textAlign: "center",
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 14,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#1E2028",
+  },
+  dividerText: {
+    fontSize: 11,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#475569",
+    letterSpacing: 1.5,
+    marginHorizontal: 12,
+  },
+  itemsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    width: "100%",
+    justifyContent: "center",
+    gap: 8,
+    marginBottom: 16,
   },
-  draggable: {
-    position: "absolute",
-  },
-  cardContent: {
-    width: 100,
-    height: 72,
-    padding: 12,
-    borderRadius: 12,
+  chip: {
+    width: 60,
+    paddingVertical: 14,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1C1C1E",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
   },
-  cardLabel: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
+  chipLabel: {
+    fontSize: 14,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#F1F5F9",
     textAlign: "center",
   },
-  mappingContainer: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
+  counterStrip: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 8,
   },
-  mappingTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 12,
+  countPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    backgroundColor: "#111318",
+    borderWidth: 1,
+    borderColor: "#1E2028",
+  },
+  countText: {
+    fontSize: 12,
+    fontFamily: "Outfit_500Medium",
     color: "#FFFFFF",
   },
-  mappingItem: {
-    padding: 10,
-    marginVertical: 4,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 8,
-  },
-  mappingText: {
-    fontSize: 14,
-    color: "#FFFFFF",
-  },
-  mappingEmpty: {
-    fontSize: 14,
-    color: "#8E8E93",
-    fontStyle: "italic",
-  },
-  mappingLabel: {
+  countLabel: {
     fontWeight: "600",
     color: "#58a6ff",
   },
-  mappingValue: {
+  countValue: {
     fontWeight: "600",
     color: "#3fb950",
+  },
+  emptyText: {
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    fontStyle: "italic",
   },
 });

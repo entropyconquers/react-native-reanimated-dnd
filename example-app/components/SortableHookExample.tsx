@@ -1,11 +1,17 @@
-import React, { useCallback, useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import React, { useCallback, useMemo, useState } from "react";
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
-import { PanGestureHandler } from "react-native-gesture-handler";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider } from "@/external-lib";
-import { useSortable, useSortableList } from "@/external-lib";
-import { SortableItem } from "@/external-lib";
+import {
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+import { DropProvider } from "react-native-reanimated-dnd";
+import {
+  SortableItem,
+  SortableItemProps,
+  useSortable,
+  useSortableList,
+} from "react-native-reanimated-dnd";
 
 interface Item {
   id: string;
@@ -43,7 +49,6 @@ const MOCK_DATA: Item[] = [
 
 // Item height for sortable list
 const ITEM_HEIGHT = 80;
-const windowHeight = Dimensions.get("window").height;
 
 // Custom SortableItem using hooks directly
 function CustomSortableItem({
@@ -55,6 +60,7 @@ function CustomSortableItem({
   itemsCount,
   itemHeight,
 }: any) {
+  const { height: windowHeight } = useWindowDimensions();
   // Use the sortable hook directly
   const { animatedStyle, panGestureHandler } = useSortable({
     id,
@@ -85,19 +91,60 @@ function CustomSortableItem({
 
   return (
     <Animated.View style={animatedStyle}>
-      <PanGestureHandler onGestureEvent={panGestureHandler}>
+      <GestureDetector gesture={panGestureHandler}>
         <Animated.View style={styles.itemContainer}>
           <View style={[styles.item, { backgroundColor: item.color }]}>
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.description}>{item.description}</Text>
           </View>
         </Animated.View>
-      </PanGestureHandler>
+      </GestureDetector>
     </Animated.View>
   );
 }
 
+interface SortableHookLibraryItemProps {
+  containerHeight: number;
+  item: Item;
+  itemProps: Omit<SortableItemProps<Item>, "children" | "data">;
+  onDragStart: (id: string, position: number, item: Item) => void;
+  onDragging: (
+    id: string,
+    overItemId: string | null,
+    yPosition: number
+  ) => void;
+  onDrop: (id: string, position: number) => void;
+}
+
+function SortableHookLibraryItem({
+  containerHeight,
+  item,
+  itemProps,
+  onDragStart,
+  onDragging,
+  onDrop,
+}: SortableHookLibraryItemProps) {
+  return (
+    <SortableItem
+      data={item}
+      {...itemProps}
+      containerHeight={containerHeight}
+      style={styles.itemContainer}
+      onDragStart={(id, position) => onDragStart(id, position, item)}
+      onDrop={onDrop}
+      onDragging={onDragging}
+    >
+      <View style={[styles.item, { backgroundColor: item.color }]}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.description}>{item.description}</Text>
+      </View>
+    </SortableItem>
+  );
+}
+
 export function SortableHookExample() {
+  const { height: windowHeight } = useWindowDimensions();
+
   // State to track drag events for UI display
   const [statusText, setStatusText] = useState("Ready to sort");
   const [draggingInfo, setDraggingInfo] = useState<string | null>(null);
@@ -115,55 +162,65 @@ export function SortableHookExample() {
     itemHeight: ITEM_HEIGHT,
   });
 
-  // Using SortableItem component for the first 2 items with callback event handling
-  const renderSortableItems = () => {
-    return MOCK_DATA.slice(0, 2).map((item, index) => {
-      const itemProps = getItemProps(item, index);
+  const handleLibraryDragStart = useCallback(
+    (id: string, position: number, item: Item) => {
+      setStatusText(`Started dragging: ${item.title}`);
+      console.log(`Started dragging ${id} from position ${position}`);
+    },
+    []
+  );
 
-      return (
-        <SortableItem
+  const handleDrop = useCallback((id: string, position: number) => {
+    setStatusText(`Dropped at position: ${position + 1}`);
+    setDraggingInfo(null);
+    console.log(`Dropped ${id} at position ${position}`);
+  }, []);
+
+  const handleDragging = useCallback(
+    (_id: string, overItemId: string | null, yPosition: number) => {
+      const overItemText = overItemId
+        ? MOCK_DATA.find((item) => item.id === overItemId)?.title ||
+          "unknown item"
+        : "no item";
+
+      setDraggingInfo(`Over: ${overItemText} (y=${Math.round(yPosition)})`);
+    },
+    []
+  );
+
+  const libraryItems = useMemo(
+    () =>
+      MOCK_DATA.slice(0, 2).map((item, index) => (
+        <SortableHookLibraryItem
           key={item.id}
-          data={item}
-          {...itemProps}
           containerHeight={windowHeight * 0.8}
-          style={styles.itemContainer}
-          onDragStart={(id, position) => {
-            setStatusText(`Started dragging: ${item.title}`);
-            console.log(`Started dragging ${id} from position ${position}`);
-          }}
-          onDrop={(id, position) => {
-            setStatusText(`Dropped at position: ${position + 1}`);
-            setDraggingInfo(null);
-            console.log(`Dropped ${id} at position ${position}`);
-          }}
-          onDragging={(id, overItemId, yPosition) => {
-            const overItemText = overItemId
-              ? MOCK_DATA.find((i) => i.id === overItemId)?.title ||
-                "unknown item"
-              : "no item";
-            setDraggingInfo(
-              `Over: ${overItemText} (y=${Math.round(yPosition)})`
-            );
-          }}
-        >
-          <View style={[styles.item, { backgroundColor: item.color }]}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.description}>{item.description}</Text>
-          </View>
-        </SortableItem>
-      );
-    });
-  };
+          item={item}
+          itemProps={getItemProps(item, index)}
+          onDragStart={handleLibraryDragStart}
+          onDragging={handleDragging}
+          onDrop={handleDrop}
+        />
+      )),
+    [
+      getItemProps,
+      handleDragging,
+      handleDrop,
+      handleLibraryDragStart,
+      windowHeight,
+    ]
+  );
 
-  // Using custom implementation for the rest
-  const renderCustomItems = () => {
-    return MOCK_DATA.slice(2).map((item, index) => {
-      const actualIndex = index + 2; // offset for the sliced array
-      const itemProps = getItemProps(item, actualIndex);
-
-      return <CustomSortableItem key={item.id} item={item} {...itemProps} />;
-    });
-  };
+  const customItems = useMemo(
+    () =>
+      MOCK_DATA.slice(2).map((item, index) => (
+        <CustomSortableItem
+          key={item.id}
+          item={item}
+          {...getItemProps(item, index + 2)}
+        />
+      )),
+    [getItemProps]
+  );
 
   return (
     <View style={styles.container}>
@@ -187,11 +244,8 @@ export function SortableHookExample() {
               onScrollEndDrag={handleScrollEnd}
               onMomentumScrollEnd={handleScrollEnd}
             >
-              {/* First 2 items with SortableItem component */}
-              {renderSortableItems()}
-
-              {/* Last 2 items with custom implementation */}
-              {renderCustomItems()}
+              {libraryItems}
+              {customItems}
             </Animated.ScrollView>
           </DropProvider>
         </GestureHandlerRootView>
@@ -266,11 +320,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 8,
     overflow: "hidden",
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
   },
   list: {
     flex: 1,

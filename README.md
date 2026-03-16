@@ -1,7 +1,9 @@
 # React Native Reanimated DnD 🎯
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/dba6226e-c407-4a12-9feb-e8f588d6c1e3" alt="React Native Reanimated DnD Demo" style="max-width: 100%; width: 100%;" />
+
+https://github.com/user-attachments/assets/023c0a9c-194a-45a9-bb88-ac8f16f5ffd5
+
 </p>
 <div align="center">
   
@@ -12,14 +14,14 @@ _Powerful, performant, and built for the modern React Native developer_
 [![npm version](https://badge.fury.io/js/react-native-reanimated-dnd.svg)](https://badge.fury.io/js/react-native-reanimated-dnd)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![React Native](https://img.shields.io/badge/React%20Native-0.60+-green.svg)](https://reactnative.dev/)
+[![React Native](https://img.shields.io/badge/React%20Native-0.80+-green.svg)](https://reactnative.dev/)
 
 <br />
 
 <a href="https://www.npmjs.com/package/react-native-reanimated-dnd" target="_blank">
   <img src="https://img.shields.io/badge/📦%20View%20on%20NPM-cb3837?style=for-the-badge&logo=npm&logoColor=white&labelColor=1e293b&fontSize=24" alt="NPM Package" height="36"/>
 </a>
-<a href="https://react-native-reanimated-dnd.netlify.app/" target="_blank">
+<a href="https://reanimated-dnd-docs.vercel.app/" target="_blank">
   <img src="https://img.shields.io/badge/📖%20Read%20the%20Docs-4f46e5?style=for-the-badge&logo=gitbook&logoColor=white&labelColor=1e293b&color=6366f1&fontSize=24" alt="Documentation"  height="36"/>
 </a>
 <a href="#-interactive-examples" target="_blank">
@@ -38,9 +40,9 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 ## ✨ Features
 
-- 🚀 **High Performance** - Built with Reanimated 3 for buttery-smooth 60fps animations
-- 🏗️ **Full RN Fabric Support** - Works seamlessly with both New Architecture and Old Architecture
-- 📦 **Expo Compatible** - Zero configuration needed, works out of the box with Expo
+- 🚀 **High Performance** - Built with Reanimated 4 and Worklets for buttery-smooth 60fps animations
+- 🏗️ **New Architecture Ready** - Built for the modern React Native architecture used by Expo SDK 55+
+- 📦 **Expo Compatible** - Tested against Expo SDK 55 and React Native 0.83
 - 🪶 **Tiny Bundle Size** - Only 70kb unpacked size, won't bloat your app
 - 🎯 **Flexible API** - From simple drag-and-drop to complex sortable lists
 - 📱 **React Native First** - Designed specifically for mobile, not ported from web
@@ -49,6 +51,8 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 - 📦 **Complete Component Suite** - Draggable, Droppable, Sortable, and more
 - 🎪 **Smart Collision Detection** - Multiple algorithms (center, intersect, contain)
 - 📜 **Vertical & Horizontal Sortable Lists** - Drag and drop to sort lists in any direction with automatic scrolling
+- 🔲 **Sortable Grids** - 2D grid drag-and-drop with flexible layouts, insert and swap modes
+- ↕ **Dynamic Heights** - Sortable lists with variable item heights
 - ⚡ **FlatList Performance** - Optional FlatList rendering for large datasets with virtualization
 - 🎭 **Drag Handles** - Precise control with dedicated drag areas
 - 🎬 **Custom Animations** - Spring, timing, or bring your own animation functions
@@ -59,7 +63,7 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 ## 📱 Interactive Examples
 
-**See it in action!** A comprehensive example app with **15 interactive demos** showcasing every feature and use case.
+**See it in action!** A comprehensive example app with **18 interactive demos** showcasing every feature and use case.
 
 <div align="center">
 
@@ -71,19 +75,18 @@ After countless attempts with drag-and-drop solutions that don't work or are sim
 
 **📱 Scan & Play**
 
-<img src="https://github.com/user-attachments/assets/80f923f6-7c5f-42e9-9817-7770ee27a70b" alt="Expo QR Code" width="200" height="200" />
+<img src="https://raw.githubusercontent.com/entropyconquers/react-native-reanimated-dnd/v2.0-rc/documentation/images/expo-qr-code.png" alt="Expo QR Code" width="200" height="200" />
 
-_Scan with your camera or Expo Go app_
+_Scan with Expo Go to try the demo instantly_
 
 </td>
 <td align="center" width="50%">
 
 **🚀 Quick Start**
 
-1. Install [Expo Go](https://expo.dev/client) on your phone
+1. Install [Expo Go](https://expo.dev/go) on your phone (SDK 55)
 2. Scan the QR code with your camera
-3. Open the link in Expo Go
-4. Explore 15 interactive examples!
+3. Explore 18 interactive examples!
 
 **Or browse the code:**
 [**📂 View Example App →**](./example-app/README.md)
@@ -94,7 +97,7 @@ _Scan with your camera or Expo Go app_
 
 ### 📚 Complete Documentation
 
-<a href="https://react-native-reanimated-dnd.netlify.app/" target="_blank">
+<a href="https://reanimated-dnd-docs.vercel.app/" target="_blank">
   <img src="https://img.shields.io/badge/📖%20Documentation-Visit%20Docs-4f46e5?style=for-the-badge&logo=gitbook&logoColor=white&labelColor=1e293b" alt="Documentation" />
 </a>
 
@@ -104,89 +107,163 @@ _Comprehensive guides, API reference, and interactive examples_
 
 The example app includes:
 
-- 🎵 **Sortable Music Queue** - Complete list reordering with handles
-- 🎯 **Collision Detection** - Different algorithms in action
-- 🎬 **Custom Animations** - Spring, timing, and easing variations
+- 🎵 **Sortable Music Queue** - Complete list reordering with drag handles
+- ⇌ **Horizontal Sortable** - Reorderable horizontal scrolling list
+- 🔲 **Sortable Grid** - 2D grid reordering with insert/swap modes
+- ↕ **Dynamic Heights** - Sortable list with variable item heights
+- 🎯 **Basic Drag & Drop** - Drag items to drop zones with pre-drag delay
+- 🎪 **Drag Handles** - Dedicated drag regions for precise control
+- 🎬 **Custom Animations** - Spring, timing, bounce & easing curves
+- ✨ **Active Drop Styles** - Visual feedback on hover
+- 📐 **Alignment & Offset** - Precise drop positioning with offsets
 - 📦 **Boundary Constraints** - Axis-locked and bounded dragging
-- ✨ **Visual Feedback** - Active styles and state management
-- ⚙️ **Advanced Patterns** - Custom implementations and hooks
+- 🎯 **Collision Detection** - Center, intersect & contain algorithms
+- 🗺️ **Dropped Items Map** - Track items across multiple zones
+- ⚡ **Drag State** - State enum & onStateChange lifecycle
+- ⚙️ **Custom Draggable** - useDraggable hook implementation
 
-## 🎬 Video Showcase
-
-**See the library in action** with these demos showcasing some of the key features and use cases.
+## 🎬 Demo Showcase
 
 <div align="center">
 
 <table>
 <tr>
-<td align="center" width="50%">
+<td align="center" width="33%">
 
-### 📋 Sortable Lists
+### 🎵 Sortable Music Queue
 
-_Drag and drop to reorder items with smooth animations_
+_Vertical list reordering with drag handles_
 
-https://github.com/user-attachments/assets/1cd1929c-724b-4dda-a916-f3e69f917f7b
+https://github.com/user-attachments/assets/6493c05f-571c-416d-b81d-90bee98738b4
 
 **Features:** Auto-scrolling • Drag handles • Smooth transitions
 
 </td>
-<td align="center" width="50%">
+<td align="center" width="33%">
 
-### 🎯 Collision Detection
+### ⇌ Horizontal Sortable
 
-_Multiple algorithms for precise drop targeting_
+_Reorderable horizontal scrolling list_
 
-https://github.com/user-attachments/assets/379040d7-8489-430b-bae4-3fcbde34264e
+https://github.com/user-attachments/assets/909c687e-146d-4233-a6e9-4bc3e7b69a35
+
+**Features:** Horizontal scroll • Handle & full item modes
+
+</td>
+<td align="center" width="33%">
+
+### 🔲 Grid Sortable
+
+_2D grid reordering with insert & swap_
+
+https://github.com/user-attachments/assets/9647af01-098c-485f-92ba-cfc39d1bba0c
+
+**Features:** Grid layout • Insert & swap modes
+
+</td>
+</tr>
+<tr>
+<td align="center" width="33%">
+
+### ↕ Dynamic Heights
+
+_Sortable list with variable item heights_
+
+https://github.com/user-attachments/assets/b53078ca-51ab-4675-9389-e8fe69492370
+
+**Features:** Variable heights • Expand/collapse • Auto-scroll
+
+</td>
+<td align="center" width="33%">
+
+### 🎯 Basic Drag & Drop
+
+_Drag items to drop zones_
+
+https://github.com/user-attachments/assets/05859d25-6749-41b7-ae7e-cad5f864a268
+
+**Features:** Drop zones • Pre-drag delay • Visual feedback
+
+</td>
+<td align="center" width="33%">
+
+### 🎭 Drag Handles
+
+_Dedicated regions for drag control_
+
+https://github.com/user-attachments/assets/f8be7bea-0f24-4446-83be-06ede43fa02a
+
+**Features:** Full handle • Bar handle • Header handle
+
+</td>
+</tr>
+<tr>
+<td align="center" width="33%">
+
+### ✨ Active Drop Styles
+
+_Visual hover effects on drop zones_
+
+https://github.com/user-attachments/assets/d4124110-6eb7-4a15-8f97-3e58b392d62e
+
+**Feedback:** Pulse effect • Glow effect • Hover states
+
+</td>
+<td align="center" width="33%">
+
+### 📐 Alignment & Offset
+
+_Precise drop positioning with offsets_
+
+https://github.com/user-attachments/assets/07fd39d0-a0d8-471c-86be-b73d70027163
+
+**Features:** 9-point alignment • X/Y offset controls
+
+</td>
+<td align="center" width="33%">
+
+### 📦 Bounded Dragging
+
+_Constrain movement within boundaries_
+
+https://github.com/user-attachments/assets/ce43a226-ec42-49c1-b528-df6599d294e1
+
+**Constraints:** Container bounds • Axis-locked • Custom limits
+
+</td>
+</tr>
+<tr>
+<td align="center" width="33%">
+
+### 🎪 Collision Detection
+
+_Center, intersect & contain algorithms_
+
+https://github.com/user-attachments/assets/1ac1860a-acc1-469a-ae3e-644a22393b86
 
 **Algorithms:** Center • Intersect • Contain
 
 </td>
-</tr>
-<tr>
-<td align="center" width="50%">
+<td align="center" width="33%">
 
-### 🎪 Drag Handles
+### 🗺️ Dropped Items Map
 
-_Precise control with dedicated drag areas_
+_Track items across multiple zones_
 
-https://github.com/user-attachments/assets/ec051d5b-8ba0-41b7-86ae-379de26a97dd
+https://github.com/user-attachments/assets/e4effc88-7161-4c5c-af6e-c06152cfbd09
 
-**Features:** Touch-friendly • Visual feedback • Accessibility
+**Features:** Multi-zone tracking • Real-time mapping
 
 </td>
-<td align="center" width="50%">
+<td align="center" width="33%">
 
-### 📦 Bounded Dragging
+### ⚡ Drag State
 
-_Constrain movement within specific boundaries_
+_State lifecycle tracking & callbacks_
 
-https://github.com/user-attachments/assets/7bd5045b-47c4-4d9b-a0c5-eb89122ec9c0
+https://github.com/user-attachments/assets/bceb9e7c-8f29-4630-81b0-945a7bcf29c5
 
-**Constraints:** Axis-locked • Container bounds • Custom limits
-
-</td>
-</tr>
-<tr>
-<td align="center" width="50%">
-
-### ✨ Active Drop Styles
-
-_Visual feedback during drag operations_
-
-https://github.com/user-attachments/assets/3b8a3d00-38ad-4532-bd42-173037ea61b9
-
-**Feedback:** Hover states • Drop zones • Visual cues
-
-</td>
-<td align="center" width="50%">
-
-### 🔄 State Management
-
-_Complete lifecycle tracking and callbacks_
-
-https://github.com/user-attachments/assets/da5e526f-f2d2-4dc5-96b5-3fecc4faf57a
-
-**States:** Idle • Dragging • Animating • Dropped
+**States:** Idle • Dragging • Dropped
 
 </td>
 </tr>
@@ -203,13 +280,16 @@ npm install react-native-reanimated-dnd
 ### Peer Dependencies
 
 ```bash
-npm install react-native-reanimated react-native-gesture-handler
+npm install react-native-reanimated react-native-gesture-handler react-native-worklets
 ```
 
 Follow the setup guides:
 
-- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation)
+- [React Native Worklets](https://docs.swmansion.com/react-native-worklets/docs/getting-started/installation/)
+- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/)
 - [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/docs/installation)
+
+Make sure your Babel config uses `"react-native-worklets/plugin"` as the last plugin and that your app is running on the New Architecture, which is required by Reanimated 4.
 
 ## 📋 Requirements
 
@@ -271,839 +351,109 @@ Programmatic list operations (add, update, delete, reorder items) that work corr
 
 ## 🏃‍♂️ Quick Start
 
-### Basic Draggable
+### Basic Drag & Drop
 
 ```tsx
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Draggable, DropProvider } from "react-native-reanimated-dnd";
+import { Draggable, Droppable, DropProvider } from "react-native-reanimated-dnd";
 
 export default function App() {
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <DropProvider>
-        <View style={styles.content}>
-          <Draggable data={{ id: "1", title: "Drag me!" }}>
-            <View style={styles.draggableItem}>
-              <Text style={styles.itemText}>🎯 Drag me around!</Text>
-            </View>
-          </Draggable>
-        </View>
+        <Droppable onDrop={(data) => console.log("Dropped:", data)}>
+          <View style={styles.dropZone}>
+            <Text>Drop here</Text>
+          </View>
+        </Droppable>
+
+        <Draggable data={{ id: "1", title: "Drag me!" }}>
+          <View style={styles.item}>
+            <Text>Drag me around!</Text>
+          </View>
+        </Draggable>
       </DropProvider>
     </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  draggableItem: {
-    padding: 20,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#3A3A3C",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  itemText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-});
 ```
 
-### Drag & Drop with Multiple Zones
+### Sortable List
 
 ```tsx
-import React from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  Draggable,
-  Droppable,
-  DropProvider,
-} from "react-native-reanimated-dnd";
+import { Sortable, SortableItem, SortableRenderItemProps } from "react-native-reanimated-dnd";
 
-export default function DragDropExample() {
-  const handleDrop = (data: any, zoneId: string) => {
-    Alert.alert("Item Dropped", `"${data.title}" dropped in ${zoneId}`);
-  };
+const tasks = [
+  { id: "1", title: "Learn React Native" },
+  { id: "2", title: "Build an app" },
+  { id: "3", title: "Deploy to store" },
+];
 
-  return (
-    <GestureHandlerRootView style={styles.container}>
-      <DropProvider>
-        <View style={styles.content}>
-          {/* Drop Zones */}
-          <View style={styles.dropZonesSection}>
-            <Text style={styles.sectionTitle}>Drop Zones</Text>
-
-            <Droppable
-              onDrop={(data) => handleDrop(data, "Zone 1")}
-              activeStyle={styles.dropZoneActive}
-              style={styles.droppable}
-            >
-              <View style={[styles.dropZoneBlue, styles.dropZone]}>
-                <Text style={styles.dropZoneText}>🎯 Zone 1</Text>
-                <Text style={styles.dropZoneSubtext}>Drop here</Text>
-              </View>
-            </Droppable>
-
-            <Droppable
-              onDrop={(data) => handleDrop(data, "Zone 2")}
-              activeStyle={styles.dropZoneActive}
-              style={styles.droppable}
-            >
-              <View style={[styles.dropZone, styles.dropZoneGreen]}>
-                <Text style={styles.dropZoneText}>🎯 Zone 2</Text>
-                <Text style={styles.dropZoneSubtext}>Drop here</Text>
-              </View>
-            </Droppable>
-          </View>
-
-          {/* Draggable Item */}
-          <View style={styles.draggableSection}>
-            <Text style={styles.sectionTitle}>Draggable Item</Text>
-            <Draggable data={{ id: "1", title: "Task Item" }}>
-              <View style={styles.draggableItem}>
-                <Text style={styles.itemText}>📦 Drag me to a zone</Text>
-              </View>
-            </Draggable>
-          </View>
-        </View>
-      </DropProvider>
-    </GestureHandlerRootView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "space-between",
-  },
-  sectionTitle: {
-    color: "#FFFFFF",
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  draggableSection: {
-    alignItems: "center",
-    paddingVertical: 40,
-  },
-  draggableItem: {
-    padding: 20,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#3A3A3C",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  itemText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  dropZonesSection: {
-    flex: 1,
-    paddingVertical: 40,
-  },
-  droppable: {
-    marginBottom: 20,
-    overflow: "hidden",
-    borderRadius: 16,
-  },
-  dropZone: {
-    height: 140,
-    borderWidth: 2,
-    borderStyle: "dashed",
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  dropZoneBlue: {
-    borderColor: "#58a6ff",
-    backgroundColor: "rgba(88, 166, 255, 0.08)",
-  },
-  dropZoneGreen: {
-    borderColor: "#3fb950",
-    backgroundColor: "rgba(63, 185, 80, 0.08)",
-  },
-  dropZoneActive: {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderStyle: "solid",
-    transform: [{ scale: 1.02 }],
-  },
-  dropZoneText: {
-    color: "#FFFFFF",
-    fontSize: 18,
-    fontWeight: "600",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  dropZoneSubtext: {
-    color: "#8E8E93",
-    fontSize: 14,
-    textAlign: "center",
-  },
-});
-```
-
-### Vertical Sortable List
-
-```tsx
-import React, { useCallback, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  Sortable,
-  SortableItem,
-  SortableRenderItemProps,
-} from "react-native-reanimated-dnd";
-
-interface Task {
-  id: string;
-  title: string;
-  completed: boolean;
-}
-
-export default function SortableExample() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: "1", title: "Learn React Native", completed: false },
-    { id: "2", title: "Build an app", completed: false },
-    { id: "3", title: "Deploy to store", completed: true },
-    { id: "4", title: "Celebrate success", completed: false },
-  ]);
-
-  const renderTask = useCallback(
-    (props: SortableRenderItemProps<Task>) => {
-      const {
-        item,
-        id,
-        positions,
-        lowerBound,
-        autoScrollDirection,
-        itemsCount,
-        itemHeight,
-      } = props;
-      return (
-        <SortableItem
-          key={id}
-          data={item}
-          id={id}
-          positions={positions}
-          lowerBound={lowerBound}
-          autoScrollDirection={autoScrollDirection}
-          itemsCount={itemsCount}
-          itemHeight={itemHeight}
-          onMove={(itemId, from, to) => {
-            console.log(`Task ${itemId} moved from ${from} to ${to}`);
-            // Only log - do NOT update state here
-          }}
-          onDrop={(itemId, position, allPositions) => {
-            if (allPositions) {
-              console.log("All positions:", allPositions);
-              // Use for tracking, analytics, etc. - NOT for reordering state
-            }
-          }}
-          style={styles.taskItem}
-        >
-          <View style={styles.taskContent}>
-            <View style={styles.taskInfo}>
-              <Text style={styles.taskTitle}>{item.title}</Text>
-              <Text style={styles.taskStatus}>
-                {item.completed ? "✅ Completed" : "⏳ Pending"}
-              </Text>
-            </View>
-
-            {/* Drag Handle */}
-            <SortableItem.Handle style={styles.dragHandle}>
-              <View style={styles.dragIconContainer}>
-                <View style={styles.dragColumn}>
-                  <View style={styles.dragDot} />
-                  <View style={styles.dragDot} />
-                  <View style={styles.dragDot} />
-                </View>
-                <View style={styles.dragColumn}>
-                  <View style={styles.dragDot} />
-                  <View style={styles.dragDot} />
-                  <View style={styles.dragDot} />
-                </View>
-              </View>
-            </SortableItem.Handle>
-          </View>
-        </SortableItem>
-      );
-    },
-    [tasks]
-  );
-
-  return (
-    <GestureHandlerRootView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>📋 My Tasks</Text>
-        <Text style={styles.headerSubtitle}>Drag to reorder</Text>
-      </View>
-
-      <Sortable
-        data={tasks}
-        renderItem={renderTask}
-        itemHeight={80}
-        style={styles.list}
-      />
-    </GestureHandlerRootView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-  },
-  header: {
-    padding: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#2C2C2E",
-  },
-  headerTitle: {
-    color: "#FFFFFF",
-    fontSize: 24,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-  headerSubtitle: {
-    color: "#8E8E93",
-    fontSize: 14,
-  },
-  list: {
-    flex: 1,
-    backgroundColor: "#000000",
-    marginTop: 20,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    overflow: "hidden",
-  },
-  taskItem: {
-    height: 80,
-
-    backgroundColor: "transparent",
-  },
-  taskContent: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    backgroundColor: "#1C1C1E",
-
-    borderWidth: 1,
-    borderColor: "#3A3A3C",
-  },
-  taskInfo: {
-    flex: 1,
-    paddingRight: 16,
-  },
-  taskTitle: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 4,
-  },
-  taskStatus: {
-    color: "#8E8E93",
-    fontSize: 14,
-  },
-  dragHandle: {
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-  },
-  dragIconContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-  },
-  dragColumn: {
-    flexDirection: "column",
-    gap: 2,
-  },
-  dragDot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: "#6D6D70",
-  },
-});
-```
-
-### Horizontal Sortable List
-
-```tsx
-import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  Sortable,
-  SortableItem,
-  SortableRenderItemProps,
-  SortableDirection,
-} from "react-native-reanimated-dnd";
-
-interface Tag {
-  id: string;
-  label: string;
-  color: string;
-}
-
-export default function HorizontalSortableExample() {
-  const [tags, setTags] = useState<Tag[]>([
-    { id: "1", label: "React", color: "#61dafb" },
-    { id: "2", label: "TypeScript", color: "#3178c6" },
-    { id: "3", label: "React Native", color: "#0fa5e9" },
-    { id: "4", label: "JavaScript", color: "#f7df1e" },
-    { id: "5", label: "Node.js", color: "#339933" },
-  ]);
-
-  const renderTag = (props: SortableRenderItemProps<Tag>) => {
-    const {
-      item,
-      id,
-      positions,
-      leftBound,
-      autoScrollHorizontalDirection,
-      itemsCount,
-      itemWidth,
-      gap,
-      paddingHorizontal,
-    } = props;
-
+function TaskList() {
+  const renderItem = useCallback((props: SortableRenderItemProps<typeof tasks[0]>) => {
+    const { item, id, ...rest } = props;
     return (
-      <SortableItem
-        key={id}
-        data={item}
-        id={id}
-        positions={positions}
-        leftBound={leftBound}
-        autoScrollHorizontalDirection={autoScrollHorizontalDirection}
-        itemsCount={itemsCount}
-        direction={SortableDirection.Horizontal}
-        itemWidth={itemWidth}
-        gap={gap}
-        paddingHorizontal={paddingHorizontal}
-        onMove={(itemId, from, to) => {
-          console.log(`Tag ${itemId} moved from ${from} to ${to}`);
-          // Only log - do NOT update state here
-        }}
-        onDrop={(itemId, position, allPositions) => {
-          if (allPositions) {
-            console.log("All positions:", allPositions);
-            // Use for tracking, analytics, etc. - NOT for reordering state
-          }
-        }}
-        style={styles.tagItem}
-      >
-        <View style={[styles.tagContent, { backgroundColor: item.color }]}>
-          <Text style={styles.tagText}>{item.label}</Text>
+      <SortableItem key={id} id={id} data={item} {...rest}>
+        <View style={styles.task}>
+          <Text>{item.title}</Text>
+          <SortableItem.Handle>
+            <Text>⋮⋮</Text>
+          </SortableItem.Handle>
         </View>
       </SortableItem>
     );
-  };
+  }, []);
+
+  return <Sortable data={tasks} renderItem={renderItem} itemHeight={60} />;
+}
+```
+
+### Sortable Grid
+
+```tsx
+import { SortableGrid, SortableGridItem } from "react-native-reanimated-dnd";
+
+const apps = [
+  { id: "1", label: "Photos" },
+  { id: "2", label: "Music" },
+  { id: "3", label: "Settings" },
+  { id: "4", label: "Mail" },
+];
+
+function AppGrid() {
+  const renderItem = useCallback((props) => {
+    const { item, id, ...rest } = props;
+    return (
+      <SortableGridItem key={id} id={id} {...rest}>
+        <View style={styles.gridItem}>
+          <Text>{item.label}</Text>
+        </View>
+      </SortableGridItem>
+    );
+  }, []);
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>🏷️ Tech Tags</Text>
-        <Text style={styles.headerSubtitle}>Drag horizontally to reorder</Text>
-      </View>
-
-      <Sortable
-        data={tags}
-        renderItem={renderTag}
-        direction={SortableDirection.Horizontal}
-        itemWidth={120}
-        gap={12}
-        paddingHorizontal={20}
-        style={styles.horizontalList}
-      />
-    </GestureHandlerRootView>
+    <SortableGrid
+      data={apps}
+      renderItem={renderItem}
+      dimensions={{ columns: 4, itemWidth: 80, itemHeight: 80, rowGap: 12, columnGap: 12 }}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-  },
-  header: {
-    padding: 20,
-    paddingBottom: 16,
-  },
-  headerTitle: {
-    color: "#FFFFFF",
-    fontSize: 24,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-  headerSubtitle: {
-    color: "#8E8E93",
-    fontSize: 14,
-  },
-  horizontalList: {
-    height: 100,
-    marginTop: 20,
-  },
-  tagItem: {
-    width: 120,
-    height: 60,
-  },
-  tagContent: {
-    flex: 1,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 16,
-  },
-  tagText: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-});
 ```
 
-## 📚 API Reference
+> **More examples:** [Quick Start Guide](https://reanimated-dnd-docs.vercel.app/docs/getting-started/quick-start) · [Sortable Lists](https://reanimated-dnd-docs.vercel.app/docs/examples/sortable-lists) · [Sortable Grids](https://reanimated-dnd-docs.vercel.app/docs/api/components/sortable-grid) · [All Examples](https://reanimated-dnd-docs.vercel.app/docs/examples/basic-drag-drop)
 
-### Components
+## 📚 Documentation
 
-#### `<Draggable>`
+Visit **[reanimated-dnd-docs.vercel.app](https://reanimated-dnd-docs.vercel.app/)** for the full documentation:
 
-Makes any component draggable with extensive customization options.
-
-```tsx
-<Draggable
-  data={any}                                    // Data associated with the item
-  onDragStart={(data) => void}                  // Called when dragging starts
-  onDragEnd={(data) => void}                    // Called when dragging ends
-  onDragging={(position) => void}               // Called during dragging
-  onStateChange={(state) => void}               // Called on state changes
-  dragDisabled={boolean}                        // Disable dragging
-  collisionAlgorithm="center|intersect|contain" // Collision detection method
-  dragAxis="x|y|both"                          // Constrain movement axis
-  dragBoundsRef={RefObject}                    // Boundary container reference
-  animationFunction={(toValue) => Animation}    // Custom animation function
-  style={StyleProp<ViewStyle>}                 // Component styling
->
-  {children}
-</Draggable>
-```
-
-#### `<Droppable>`
-
-Creates drop zones with visual feedback and capacity management.
-
-```tsx
-<Droppable
-  onDrop={(data) => void}                      // Called when item is dropped
-  onActiveChange={(isActive) => void}          // Called on hover state change
-  dropDisabled={boolean}                       // Disable drop functionality
-  dropAlignment="top-left|center|bottom-right|..." // Drop positioning
-  dropOffset={{ x: number, y: number }}       // Position offset
-  activeStyle={StyleProp<ViewStyle>}           // Style when active
-  capacity={number}                            // Maximum items allowed
-  droppableId={string}                         // Unique identifier
->
-  {children}
-</Droppable>
-```
-
-#### `<Sortable>`
-
-High-level component for sortable lists with auto-scrolling. Supports both vertical and horizontal directions.
-
-```tsx
-<Sortable
-  data={Array<{ id: string }>} // Array of items to render
-  renderItem={(props) => ReactNode} // Render function for items
-  direction={SortableDirection} // "vertical" | "horizontal" (default: vertical)
-  itemHeight={number} // Height of each item (required for vertical)
-  itemWidth={number} // Width of each item (required for horizontal)
-  gap={number} // Gap between items (horizontal only)
-  paddingHorizontal={number} // Horizontal padding (horizontal only)
-  itemKeyExtractor={(item) => string} // Custom key extractor
-  useFlatList={boolean} // Use FlatList for performance (default: true)
-  style={StyleProp<ViewStyle>} // List container style
-  contentContainerStyle={StyleProp<ViewStyle>} // Content container style
-/>
-```
-
-#### `<SortableItem>`
-
-Individual item within a sortable list with gesture handling.
-
-```tsx
-<SortableItem
-  id={string}                                 // Unique identifier
-  data={any}                                  // Item data
-  positions={SharedValue}                     // Position tracking
-  onMove={(id, from, to) => void}                        // Called when item moves
-  onDragStart={(id, position) => void}                   // Called when dragging starts
-  onDrop={(id, position, allPositions?) => void}        // Called when item is dropped
-  onDragging={(id, overItemId, y) => void}               // Called during dragging
-  style={StyleProp<ViewStyle>}               // Item styling
-  animatedStyle={StyleProp<AnimatedStyle>}   // Animated styling
->
-  {children}
-</SortableItem>
-```
-
-### Hooks
-
-#### `useDraggable(options)`
-
-Core hook for implementing draggable functionality.
-
-#### `useDroppable(options)`
-
-Core hook for implementing droppable functionality.
-
-#### `useSortable(options)`
-
-Hook for individual sortable items with position management.
-
-#### `useSortableList(options)`
-
-Hook for managing entire vertical sortable lists with auto-scrolling.
-
-#### `useHorizontalSortable(options)`
-
-Core hook for implementing horizontal sortable functionality for individual items.
-
-#### `useHorizontalSortableList(options)`
-
-Hook for managing entire horizontal sortable lists with auto-scrolling.
-
-### Context
-
-#### `<DropProvider>`
-
-Required context provider that manages global drag-and-drop state.
-
-```tsx
-<DropProvider>{/* All draggable and droppable components */}</DropProvider>
-```
-
-### Types & Enums
-
-#### `DraggableState`
-
-```tsx
-enum DraggableState {
-  IDLE = "idle",
-  DRAGGING = "dragging",
-  ANIMATING = "animating",
-}
-```
-
-#### `CollisionAlgorithm`
-
-```tsx
-type CollisionAlgorithm = "center" | "intersect" | "contain";
-```
-
-#### `DropAlignment`
-
-```tsx
-type DropAlignment =
-  | "top-left"
-  | "top-center"
-  | "top-right"
-  | "center-left"
-  | "center"
-  | "center-right"
-  | "bottom-left"
-  | "bottom-center"
-  | "bottom-right";
-```
-
-#### `SortableDirection`
-
-```tsx
-enum SortableDirection {
-  Vertical = "vertical",
-  Horizontal = "horizontal",
-}
-```
-
-#### `HorizontalScrollDirection`
-
-```tsx
-enum HorizontalScrollDirection {
-  None = "none",
-  Left = "left",
-  Right = "right",
-}
-```
-
-## 🎨 Advanced Usage
-
-### Custom Animations
-
-```tsx
-import { withTiming, withSpring, Easing } from "react-native-reanimated";
-
-// Smooth timing animation
-const smoothAnimation = (toValue) => {
-  "worklet";
-  return withTiming(toValue, {
-    duration: 300,
-    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-  });
-};
-
-// Spring animation
-const springAnimation = (toValue) => {
-  "worklet";
-  return withSpring(toValue, {
-    damping: 15,
-    stiffness: 150,
-  });
-};
-
-<Draggable animationFunction={springAnimation}>{/* content */}</Draggable>;
-```
-
-### Enhanced onDrop Callback with Positions
-
-The `onDrop` callback now includes an optional third parameter containing all item positions, making it easier to update your state with the new order:
-
-```tsx
-import { SortableItem } from "react-native-reanimated-dnd";
-
-// Enhanced onDrop with allPositions parameter
-const handleDrop = (
-  id: string,
-  position: number,
-  allPositions?: { [id: string]: number }
-) => {
-  console.log(`Item ${id} dropped at position ${position}`);
-
-  if (allPositions) {
-    // allPositions contains all current item positions
-    console.log("All positions:", allPositions);
-
-    // IMPORTANT: Use this ONLY for read-only tracking
-    // DO NOT update your state arrays directly with this data
-    // Use for: analytics, external state synchronization, logging
-  }
-};
-
-<SortableItem id={item.id} onDrop={handleDrop} {...otherProps}>
-  {/* item content */}
-</SortableItem>;
-```
-
-**Backward Compatibility**: The `allPositions` parameter is optional, so existing code continues to work unchanged. The parameter provides additional position data for advanced use cases where you need complete visibility into all item positions.
-
-**Important**: The `allPositions` parameter is for **read-only tracking only**. Do not use it to automatically update your external state arrays, as this will break the internal state management. Programmatic list operations (add, update, delete, reorder) will be added in future releases.
-
-### Collision Detection Strategies
-
-```tsx
-// Precise center-point collision
-<Draggable collisionAlgorithm="center">
-  {/* Requires center point to be over drop zone */}
-</Draggable>
-
-// Forgiving intersection collision (default)
-<Draggable collisionAlgorithm="intersect">
-  {/* Any overlap triggers collision */}
-</Draggable>
-
-// Strict containment collision
-<Draggable collisionAlgorithm="contain">
-  {/* Entire draggable must be within drop zone */}
-</Draggable>
-```
-
-### Drag Handles
-
-```tsx
-<SortableItem id={item.id} {...props}>
-  <View style={styles.itemContainer}>
-    <Text>{item.title}</Text>
-
-    {/* Only this handle area can initiate dragging */}
-    <SortableItem.Handle style={styles.dragHandle}>
-      <View style={styles.handleIcon}>
-        <View style={styles.dot} />
-        <View style={styles.dot} />
-        <View style={styles.dot} />
-      </View>
-    </SortableItem.Handle>
-  </View>
-</SortableItem>
-```
-
-### Bounded Dragging
-
-```tsx
-const containerRef = useRef<View>(null);
-
-<View ref={containerRef} style={styles.container}>
-  <Draggable
-    data={data}
-    dragBoundsRef={containerRef}
-    dragAxis="x" // Constrain to horizontal movement
-  >
-    {/* content */}
-  </Draggable>
-</View>;
-```
-
-### Drop Zone Capacity
-
-```tsx
-<Droppable
-  capacity={3}
-  onDrop={(data) => {
-    if (currentItems.length < 3) {
-      addItem(data);
-    }
-  }}
-  activeStyle={{
-    backgroundColor: currentItems.length < 3 ? "#e8f5e8" : "#ffe8e8",
-  }}
->
-  <Text>Drop Zone ({currentItems.length}/3)</Text>
-</Droppable>
-```
+- **[Getting Started](https://reanimated-dnd-docs.vercel.app/docs/getting-started/installation)** — Installation, setup, and quick start
+- **[Components](https://reanimated-dnd-docs.vercel.app/docs/api/components/draggable)** — Draggable, Droppable, Sortable, SortableGrid, SortableItem
+- **[Hooks](https://reanimated-dnd-docs.vercel.app/docs/api/hooks/useDraggable)** — useDraggable, useDroppable, useSortable, useGridSortable
+- **[Guides](https://reanimated-dnd-docs.vercel.app/docs/guides/animations)** — Animations, collision algorithms, performance, accessibility
+- **[Examples](https://reanimated-dnd-docs.vercel.app/docs/examples/basic-drag-drop)** — Interactive code examples for every feature
+- **[API Reference](https://reanimated-dnd-docs.vercel.app/docs/api/overview)** — Complete types, enums, and utilities
 
 ## 🏃‍♂️ Running the Example App
 
@@ -1114,11 +464,9 @@ git clone https://github.com/entropyconquers/react-native-reanimated-dnd.git
 cd react-native-reanimated-dnd
 ```
 
-2. Install dependencies:
+2. Install dependencies (uses npm workspaces):
 
 ```bash
-npm install
-cd example-app
 npm install
 ```
 
@@ -1126,40 +474,49 @@ npm install
 
 ```bash
 # iOS
-npx expo run:ios
+npm run start --workspace example-app
+# then press 'i' for iOS or 'a' for Android
 
-# Android
-npx expo run:android
+# Or run directly:
+npx expo run:ios --cwd example-app
+npx expo run:android --cwd example-app
 ```
 
-The example app includes all 15 interactive examples showcasing every feature of the library.
+**Note:** Reanimated 4 requires the New Architecture, so you must use a development build (`npx expo run:ios` / `npx expo run:android`), not Expo Go.
+
+The example app includes all 18 interactive examples showcasing every feature of the library.
 
 ## 🗺️ Project Roadmap
 
 I am constantly working to improve React Native Reanimated DnD. Here's what's coming next:
 
-### 🎯 Next Release (v2.0.0)
+### ✅ v2.0.0 (Current)
 
-**Focus: Enhanced Functionality & Bug Fixes**
+**Reanimated 4 + Worklets Migration**
+
+- 🚀 **Reanimated 4 & Worklets** - Migrated from Reanimated 3 to Reanimated 4 with react-native-worklets
+- 🏗️ **New Architecture** - Built for React Native's New Architecture (required by Reanimated 4)
+- 📦 **Expo SDK 55** - Tested and compatible with Expo SDK 55 and React Native 0.83
+- 🔧 **Handle Registration** - Replaced tree-walking handle detection with a registration pattern
+- ⚡ **Improved Scheduling** - Uses `scheduleOnRN`/`scheduleOnUI` for better worklet-to-JS communication
+- 🎯 **Pre-drag Delay** - New `preDragDelay` prop for distinguishing taps from drags
+- 📐 **npm Workspaces** - Example app now uses workspace-based development setup
+- 🔲 **Sortable Grids** - 2D grid drag-and-drop with flexible layouts and insert/swap modes
+- ↕ **Dynamic Heights** - Sortable list support for variable item heights
+
+### 🎯 Next Release
+
+**Focus: Enhanced Functionality & New Features**
 
 - 🐛 **Bug Fixes & Issues Resolution**
+
   - Address existing reported issues
   - Performance optimizations
   - Gesture handling improvements
   - API Improvements
 
-- 📐 **Sortable Grids**
-  - 2D grid drag-and-drop support
-  - Flexible grid layouts (2x2, 3x3, custom)
-  - Smart auto-positioning and gap management
-  - Responsive grid behavior
-
-- ↔️ **Horizontal Sortable Lists**
-  - Full horizontal scrolling support
-  - Auto-scroll for out-of-view items
-  - Customizable scroll behavior
-
 - 🪆 **Nested Sortable Lists**
+
   - Multi-level hierarchy support
   - Collapse/expand functionality
   - Parent-child relationship management
@@ -1176,6 +533,30 @@ I am constantly working to improve React Native Reanimated DnD. Here's what's co
 Vote on features you'd like to see by raising an issue.
 
 **Have an idea?** [Open a feature request](https://github.com/entropyconquers/react-native-reanimated-dnd/issues/new?assignees=&labels=enhancement&template=feature_request.md) and let me know!
+
+## 🤖 AI Integration Skill
+
+Speed up development with the official [agent skill](https://agentskills.io). It teaches AI coding agents (Claude Code, Codex, Cursor, Gemini CLI, Copilot, and 30+ more) the full API so they generate correct code — no hallucinated props.
+
+```bash
+# Install via npx skills (auto-detects your agents)
+npx skills add entropyconquers/react-native-reanimated-dnd
+
+# Or install globally
+npx skills add entropyconquers/react-native-reanimated-dnd -g
+```
+
+Once installed, just describe what you want:
+
+> "Add a sortable list where I can reorder items by dragging"
+
+> "Create a drag and drop interface with drop zones"
+
+> "Make a reorderable 3-column grid"
+
+Your agent will generate complete, working implementations with correct imports, props, and state management.
+
+The skill ships in both `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex, Cursor, Gemini CLI, Copilot, and others) for universal agent compatibility. See the [AI Integration Skill docs](https://reanimated-dnd-docs.vercel.app/docs/getting-started/ai-skill) for all installation options and the full agent compatibility table.
 
 ## 🤝 Contributing
 
@@ -1233,6 +614,6 @@ If this library has helped you build amazing apps, consider supporting its devel
 
 **Made with ❤️ for the React Native community**
 
-[⭐ Star on GitHub](https://github.com/entropyconquers/react-native-reanimated-dnd) • [📱 Try the Demo](https://github.com/entropyconquers/react-native-reanimated-dnd/tree/main/example-app) • [📖 Documentation](https://github.com/entropyconquers/react-native-reanimated-dnd#readme)
+[⭐ Star on GitHub](https://github.com/entropyconquers/react-native-reanimated-dnd) • [📱 Try the Demo](https://github.com/entropyconquers/react-native-reanimated-dnd/tree/main/example-app) • [📖 Documentation](https://reanimated-dnd-docs.vercel.app/)
 
 </div>

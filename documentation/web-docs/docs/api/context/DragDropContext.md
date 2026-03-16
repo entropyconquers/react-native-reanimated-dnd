@@ -1,8 +1,6 @@
 ---
-sidebar_position: 2
+title: "DragDropContext API"
 ---
-
-# DragDropContext API
 
 Complete API reference for the `DragDropContext` (exported as `SlotsContext`).
 

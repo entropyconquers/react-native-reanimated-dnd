@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "Sortable Component"
 ---
-
-# Sortable Component
 
 A high-level component for creating sortable lists with smooth reordering animations and auto-scrolling support.
 

@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "DropProvider"
 ---
-
-# DropProvider
 
 The `DropProvider` component is the foundational context provider that enables drag-and-drop functionality throughout your application. It manages drop zone registration, collision detection, state tracking, and provides the necessary context for all draggable and droppable components.
 

@@ -1,21 +1,20 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   Image,
-  SafeAreaView,
   TouchableOpacity,
-  ActivityIndicator,
   Platform,
   Modal,
+  useWindowDimensions,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Sortable,
   SortableItem,
   SortableRenderItemProps,
-} from "@/external-lib";
+} from "react-native-reanimated-dnd";
 import { Footer } from "./Footer";
 import { BottomSheet } from "./BottomSheet";
 
@@ -294,7 +293,6 @@ const INITIAL_MOCK_DATA: Item[] = MUSIC_DATA_RAW.map((item) => ({
 
 // Item height for sortable list
 const ITEM_HEIGHT = 70;
-const windowHeight = Dimensions.get("window").height;
 
 // Generate random duration
 const generateRandomDuration = (): string => {
@@ -313,20 +311,163 @@ interface SortableExampleProps {
   onBack?: () => void;
 }
 
+interface PlaylistControlsContentProps {
+  data: Item[];
+  isDragHandleMode: boolean;
+  onAddMultipleItems: (count: number) => void;
+  onAddNewItem: () => void;
+  onToggleDragMode: () => void;
+}
+
+function PlaylistControlsContent({
+  data,
+  isDragHandleMode,
+  onAddMultipleItems,
+  onAddNewItem,
+  onToggleDragMode,
+}: PlaylistControlsContentProps) {
+  return (
+    <View style={styles.controlsContainer}>
+      <View style={styles.controlSection}>
+        <Text style={styles.controlSectionTitle}>Drag Mode</Text>
+        <View style={styles.controlRow}>
+          <TouchableOpacity
+            style={[
+              styles.modeButton,
+              !isDragHandleMode && styles.modeButtonActive,
+            ]}
+            onPress={onToggleDragMode}
+            activeOpacity={0.7}
+          >
+            <Text
+              style={[
+                styles.modeButtonText,
+                !isDragHandleMode && styles.modeButtonTextActive,
+              ]}
+            >
+              Full Item
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.modeButton,
+              isDragHandleMode && styles.modeButtonActive,
+            ]}
+            onPress={onToggleDragMode}
+            activeOpacity={0.7}
+          >
+            <Text
+              style={[
+                styles.modeButtonText,
+                isDragHandleMode && styles.modeButtonTextActive,
+              ]}
+            >
+              Handle Only
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.controlDescription}>
+          {isDragHandleMode
+            ? "Drag items using the handle on the right"
+            : "Hold and drag anywhere on the item"}
+        </Text>
+      </View>
+
+      <View style={styles.controlSection}>
+        <Text style={styles.controlSectionTitle}>Add New Items</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={onAddNewItem}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.addButtonText}>+ Add Single Item</Text>
+        </TouchableOpacity>
+
+        <View style={styles.multiAddContainer}>
+          <Text style={styles.multiAddLabel}>Add Multiple:</Text>
+          <View style={styles.multiAddButtons}>
+            {[3, 5, 10].map((count) => (
+              <TouchableOpacity
+                key={count}
+                style={styles.multiAddButton}
+                onPress={() => onAddMultipleItems(count)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.multiAddButtonText}>{count}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        <Text style={styles.controlDescription}>
+          New items will be added to the top of the list with creative names and
+          artists
+        </Text>
+      </View>
+
+      <View style={styles.controlSection}>
+        <Text style={styles.controlSectionTitle}>Playlist Stats</Text>
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <Text style={styles.statNumber}>{data.length}</Text>
+            <Text style={styles.statLabel}>Total Songs</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statNumber}>
+              {data.filter((item) => item.id.startsWith("new-")).length}
+            </Text>
+            <Text style={styles.statLabel}>Added Songs</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+interface SortableTrackRowProps {
+  isDragHandleMode: boolean;
+  item: Item;
+}
+
+function SortableTrackRow({ isDragHandleMode, item }: SortableTrackRowProps) {
+  return (
+    <View style={styles.itemContent}>
+      <Image source={{ uri: item.cover_image_url }} style={styles.coverImage} />
+      <View style={styles.textContainer}>
+        <Text style={styles.songName} numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text style={styles.artistName} numberOfLines={1}>
+          {item.artist}
+        </Text>
+      </View>
+      <Text style={styles.durationText}>{item.duration}</Text>
+      {isDragHandleMode && (
+        <SortableItem.Handle style={styles.dragHandle}>
+          <View style={styles.dragIconContainer}>
+            <View style={styles.dragColumn}>
+              <View style={styles.dragDot} />
+              <View style={styles.dragDot} />
+              <View style={styles.dragDot} />
+            </View>
+            <View style={styles.dragColumn}>
+              <View style={styles.dragDot} />
+              <View style={styles.dragDot} />
+              <View style={styles.dragDot} />
+            </View>
+          </View>
+        </SortableItem.Handle>
+      )}
+    </View>
+  );
+}
+
 export function SortableExample({ onBack }: SortableExampleProps = {}) {
-  const [isDragHandleMode, setIsDragHandleMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const { height: windowHeight } = useWindowDimensions();
+  const [isDragHandleMode, setIsDragHandleMode] = useState(false);
   const [showWebModal, setShowWebModal] = useState(Platform.OS === "web");
   const [showControls, setShowControls] = useState(false);
   const [data, setData] = useState<Item[]>(INITIAL_MOCK_DATA);
-
-  // this is just to defer loading a large list during navigation
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsDragHandleMode(false);
-    }, 500);
-  }, []);
 
   // Memoized callbacks for controls
   const handleToggleDragMode = useCallback(() => {
@@ -393,116 +534,6 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
     setShowControls(true);
   }, []);
 
-  // Memoized controls content
-  const controlsContent = useMemo(
-    () => (
-      <View style={styles.controlsContainer}>
-        {/* Drag Mode Section */}
-        <View style={styles.controlSection}>
-          <Text style={styles.controlSectionTitle}>Drag Mode</Text>
-          <View style={styles.controlRow}>
-            <TouchableOpacity
-              style={[
-                styles.modeButton,
-                !isDragHandleMode && styles.modeButtonActive,
-              ]}
-              onPress={handleToggleDragMode}
-              activeOpacity={0.7}
-            >
-              <Text
-                style={[
-                  styles.modeButtonText,
-                  !isDragHandleMode && styles.modeButtonTextActive,
-                ]}
-              >
-                Full Item
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.modeButton,
-                isDragHandleMode && styles.modeButtonActive,
-              ]}
-              onPress={handleToggleDragMode}
-              activeOpacity={0.7}
-            >
-              <Text
-                style={[
-                  styles.modeButtonText,
-                  isDragHandleMode && styles.modeButtonTextActive,
-                ]}
-              >
-                Handle Only
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.controlDescription}>
-            {isDragHandleMode
-              ? "Drag items using the handle on the right"
-              : "Hold and drag anywhere on the item"}
-          </Text>
-        </View>
-
-        {/* Add Items Section */}
-        <View style={styles.controlSection}>
-          <Text style={styles.controlSectionTitle}>Add New Items</Text>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={handleAddNewItem}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.addButtonText}>+ Add Single Item</Text>
-          </TouchableOpacity>
-
-          <View style={styles.multiAddContainer}>
-            <Text style={styles.multiAddLabel}>Add Multiple:</Text>
-            <View style={styles.multiAddButtons}>
-              {[3, 5, 10].map((count) => (
-                <TouchableOpacity
-                  key={count}
-                  style={styles.multiAddButton}
-                  onPress={() => handleAddMultipleItems(count)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.multiAddButtonText}>{count}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          <Text style={styles.controlDescription}>
-            New items will be added to the top of the list with creative names
-            and artists
-          </Text>
-        </View>
-
-        {/* Stats Section */}
-        <View style={styles.controlSection}>
-          <Text style={styles.controlSectionTitle}>Playlist Stats</Text>
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{data.length}</Text>
-              <Text style={styles.statLabel}>Total Songs</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>
-                {data.filter((item) => item.id.startsWith("new-")).length}
-              </Text>
-              <Text style={styles.statLabel}>Added Songs</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    ),
-    [
-      isDragHandleMode,
-      data.length,
-      handleToggleDragMode,
-      handleAddNewItem,
-      handleAddMultipleItems,
-    ]
-  );
-
   // Render each sortable item
   const renderItem = useCallback(
     (props: SortableRenderItemProps<Item>) => {
@@ -546,47 +577,16 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
             );
           }}
         >
-          <View style={styles.itemContent}>
-            <Image
-              source={{ uri: item.cover_image_url }}
-              style={styles.coverImage}
-            />
-            <View style={styles.textContainer}>
-              <Text style={styles.songName} numberOfLines={1}>
-                {item.name}
-              </Text>
-              <Text style={styles.artistName} numberOfLines={1}>
-                {item.artist}
-              </Text>
-            </View>
-            <Text style={styles.durationText}>{item.duration}</Text>
-            {isDragHandleMode && (
-              <SortableItem.Handle style={styles.dragHandle}>
-                <View style={styles.dragIconContainer}>
-                  <View style={styles.dragColumn}>
-                    <View style={styles.dragDot} />
-                    <View style={styles.dragDot} />
-                    <View style={styles.dragDot} />
-                  </View>
-                  <View style={styles.dragColumn}>
-                    <View style={styles.dragDot} />
-                    <View style={styles.dragDot} />
-                    <View style={styles.dragDot} />
-                  </View>
-                </View>
-              </SortableItem.Handle>
-            )}
-          </View>
+          <SortableTrackRow isDragHandleMode={isDragHandleMode} item={item} />
         </SortableItem>
       );
     },
     [isDragHandleMode]
   );
 
-  const isWeb = Platform.OS === "web";
-
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeHeader} edges={["top"]}>
       <View style={styles.headerContainer}>
         <View style={styles.headerContent}>
           <TouchableOpacity
@@ -608,39 +608,30 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
           </View>
 
           <View style={styles.controlsButtonContainer}>
-            {!isLoading && (
-              <TouchableOpacity
-                style={styles.controlsButton}
-                onPress={handleOpenControls}
-                activeOpacity={0.7}
-              >
-                <View style={styles.controlsIcon}>
-                  <View style={styles.controlsDot} />
-                  <View style={styles.controlsDot} />
-                  <View style={styles.controlsDot} />
-                </View>
-                <Text style={styles.controlsText}>Controls</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={styles.controlsButton}
+              onPress={handleOpenControls}
+              activeOpacity={0.7}
+            >
+              <View style={styles.controlsIcon}>
+                <View style={styles.controlsDot} />
+                <View style={styles.controlsDot} />
+                <View style={styles.controlsDot} />
+              </View>
+              <Text style={styles.controlsText}>Controls</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
-      {isLoading ? (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ActivityIndicator size="large" color="#FF3B30" />
-        </View>
-      ) : (
-        <View style={styles.listContainer}>
-          <Sortable
-            data={data}
-            renderItem={renderItem}
-            itemHeight={ITEM_HEIGHT}
-            style={styles.list}
-          />
-        </View>
-      )}
+      </SafeAreaView>
+      <View style={styles.listContainer}>
+        <Sortable
+          data={data}
+          renderItem={renderItem}
+          itemHeight={ITEM_HEIGHT}
+          style={styles.list}
+        />
+      </View>
       <Footer />
 
       {/* Controls Bottom Sheet */}
@@ -649,7 +640,13 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
         onClose={handleCloseControls}
         title="Playlist Controls"
       >
-        {controlsContent}
+        <PlaylistControlsContent
+          data={data}
+          isDragHandleMode={isDragHandleMode}
+          onAddMultipleItems={handleAddMultipleItems}
+          onAddNewItem={handleAddNewItem}
+          onToggleDragMode={handleToggleDragMode}
+        />
       </BottomSheet>
 
       {/* Web Platform Modal */}
@@ -695,20 +692,22 @@ export function SortableExample({ onBack }: SortableExampleProps = {}) {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  safeHeader: {
+    backgroundColor: "#08090E",
+  },
   container: {
     flex: 1,
-    paddingTop: 10,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   headerContainer: {
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
     borderBottomWidth: 0.5,
-    borderBottomColor: "#2C2C2E",
+    borderBottomColor: "#1A1C26",
     paddingHorizontal: 20,
     paddingTop: 12,
     paddingBottom: 16,
@@ -745,14 +744,15 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: "Syne_700Bold",
     textAlign: "center",
-    color: "#FFFFFF",
+    color: "#F1F5F9",
     marginBottom: 6,
+    letterSpacing: -0.3,
   },
   tipText: {
     fontSize: 13,
-    color: "#8E8E93",
+    color: "#94A3B8",
     fontWeight: "400",
     textAlign: "center",
     lineHeight: 16,
@@ -768,9 +768,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderWidth: 1,
-    borderColor: "#3A3A3C",
+    borderColor: "#1E2028",
     borderRadius: 8,
-    backgroundColor: "#1C1C1E",
+    backgroundColor: "#12141C",
     minWidth: 70,
   },
   controlsIcon: {
@@ -784,7 +784,7 @@ const styles = StyleSheet.create({
     width: 3,
     height: 3,
     borderRadius: 1.5,
-    backgroundColor: "#8E8E93",
+    backgroundColor: "#94A3B8",
   },
   controlsText: {
     fontSize: 11,
@@ -793,24 +793,24 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   list: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   itemContainer: {
     height: ITEM_HEIGHT,
     justifyContent: "center",
     borderBottomWidth: 0.5,
-    borderBottomColor: "#2C2C2E",
-    backgroundColor: "#000000",
+    borderBottomColor: "#1A1C26",
+    backgroundColor: "#08090E",
   },
   itemContent: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
     height: "100%",
   },
   coverImage: {
@@ -818,10 +818,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 6,
     marginRight: 16,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.2)",
   },
   textContainer: {
     flex: 1,
@@ -837,13 +834,13 @@ const styles = StyleSheet.create({
   },
   artistName: {
     fontSize: 14,
-    color: "#8E8E93",
+    color: "#94A3B8",
     fontWeight: "400",
     lineHeight: 18,
   },
   durationText: {
     fontSize: 14,
-    color: "#8E8E93",
+    color: "#94A3B8",
     fontWeight: "500",
     fontVariant: ["tabular-nums"],
     marginRight: 12,
@@ -874,7 +871,7 @@ const styles = StyleSheet.create({
     width: 2.5,
     height: 2.5,
     borderRadius: 1.25,
-    backgroundColor: "#6D6D70",
+    backgroundColor: "#64748B",
   },
   // Controls styles
   controlsContainer: {
@@ -885,7 +882,8 @@ const styles = StyleSheet.create({
   },
   controlSectionTitle: {
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: "Syne_700Bold",
+    letterSpacing: -0.3,
     color: "#FFFFFF",
     marginBottom: 16,
   },
@@ -899,9 +897,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: "#3A3A3C",
+    borderColor: "#1E2028",
     borderRadius: 8,
-    backgroundColor: "#2C2C2E",
+    backgroundColor: "#1A1C26",
     alignItems: "center",
   },
   modeButtonActive: {
@@ -911,14 +909,14 @@ const styles = StyleSheet.create({
   modeButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#8E8E93",
+    color: "#94A3B8",
   },
   modeButtonTextActive: {
     color: "#FFFFFF",
   },
   controlDescription: {
     fontSize: 13,
-    color: "#8E8E93",
+    color: "#94A3B8",
     lineHeight: 18,
   },
   addButton: {
@@ -950,9 +948,9 @@ const styles = StyleSheet.create({
   multiAddButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#2C2C2E",
+    backgroundColor: "#1A1C26",
     borderWidth: 1,
-    borderColor: "#3A3A3C",
+    borderColor: "#1E2028",
     borderRadius: 6,
     alignItems: "center",
     minWidth: 50,
@@ -977,7 +975,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: "#8E8E93",
+    color: "#94A3B8",
     fontWeight: "500",
   },
   modalOverlay: {
@@ -995,16 +993,17 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: "700",
-    color: "#000000",
-    fontFamily: "KumbhSans_700Bold",
+    fontFamily: "Syne_700Bold",
+    letterSpacing: -0.3,
+    color: "#08090E",
+    fontFamily: "Syne_700Bold",
     marginBottom: 10,
     textAlign: "center",
   },
   modalMessage: {
     fontSize: 14,
-    color: "#000000",
-    fontFamily: "KumbhSans_400Regular",
+    color: "#08090E",
+    fontFamily: "Outfit_400Regular",
     marginBottom: 10,
     textAlign: "center",
     lineHeight: 20,

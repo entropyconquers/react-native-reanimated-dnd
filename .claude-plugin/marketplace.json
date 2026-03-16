@@ -1,0 +1,16 @@
+{
+  "name": "reanimated-dnd-skills",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Vishesh Raheja",
+    "url": "https://github.com/entropyconquers"
+  },
+  "description": "Claude Code skills for integrating react-native-reanimated-dnd drag-and-drop library",
+  "plugins": [
+    {
+      "name": "reanimated-dnd",
+      "source": "./plugins/reanimated-dnd",
+      "description": "Drag-and-drop, sortable lists, sortable grids, and drop zones for React Native"
+    }
+  ]
+}

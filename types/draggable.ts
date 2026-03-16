@@ -264,18 +264,6 @@ export interface UseDraggableOptions<TData = unknown> {
    * @see {@link CollisionAlgorithm} for detailed explanation of each algorithm
    */
   collisionAlgorithm?: CollisionAlgorithm;
-
-  /**
-   * Children elements - used internally for handle detection.
-   * @internal
-   */
-  children?: React.ReactNode;
-
-  /**
-   * Handle component type - used internally for handle detection.
-   * @internal
-   */
-  handleComponent?: React.ComponentType<any>;
 }
 
 /**
@@ -315,11 +303,18 @@ export interface UseDraggableReturn {
    * can initiate dragging. When false, the entire component is draggable.
    */
   hasHandle: boolean;
+
+  /**
+   * Callback for handle components to register/unregister themselves.
+   * Called with `true` when a handle mounts, `false` when it unmounts.
+   */
+  registerHandle: (registered: boolean) => void;
 }
 
 export interface DraggableContextValue {
   gesture: any;
   state: DraggableState;
+  registerHandle: (registered: boolean) => void;
 }
 
 /**

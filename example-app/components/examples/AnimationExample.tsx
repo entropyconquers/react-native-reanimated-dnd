@@ -1,24 +1,24 @@
-import React, { useRef, useCallback, useState } from "react";
+import React, { useRef, useCallback, useReducer } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Alert,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
+
 import { withTiming, withSpring, Easing } from "react-native-reanimated";
 import { useSharedValue } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/external-lib";
-import { Droppable } from "@/external-lib";
-import { UseDraggableOptions } from "@/types/draggable";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { UseDraggableOptions } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
-import { Draggable } from "@/external-lib";
+import { Draggable } from "react-native-reanimated-dnd";
 import { Footer } from "@/components/Footer";
 import { BottomSheet } from "@/components/BottomSheet";
 import { BottomSheetOption } from "@/components/BottomSheetOption";
+import { useToast } from "@/components/toast";
 
 interface DraggableItemData {
   id: string;
@@ -33,7 +33,7 @@ interface AnimationExampleProps {
 type AnimationType = "spring" | "timing" | "bounce" | "elastic" | "custom";
 
 const animationTypes: { label: string; value: AnimationType }[] = [
-  { label: "Spring (Default)", value: "spring" },
+  { label: "Spring", value: "spring" },
   { label: "Timing", value: "timing" },
   { label: "Bounce", value: "bounce" },
   { label: "Elastic", value: "elastic" },
@@ -60,20 +60,48 @@ const easingOptions = [
   { label: "Bounce", value: Easing.bounce, key: "bounce" },
 ];
 
+interface AnimationControlsState {
+  selectedAnimation: AnimationType;
+  selectedDuration: number;
+  selectedEasingKey: string;
+  showDurationDropdown: boolean;
+  showEasingDropdown: boolean;
+}
+
+const initialAnimationControlsState: AnimationControlsState = {
+  selectedAnimation: "spring",
+  selectedDuration: 300,
+  selectedEasingKey: "ease-out",
+  showDurationDropdown: false,
+  showEasingDropdown: false,
+};
+
+function mergeAnimationControlsState(
+  state: AnimationControlsState,
+  updates: Partial<AnimationControlsState>
+) {
+  return { ...state, ...updates };
+}
+
 export function AnimationExample({ onBack }: AnimationExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
-  const [selectedAnimation, setSelectedAnimation] =
-    useState<AnimationType>("spring");
-  const [selectedDuration, setSelectedDuration] = useState(300);
-  const [selectedEasingKey, setSelectedEasingKey] = useState("ease-out");
-  const [showAnimationDropdown, setShowAnimationDropdown] = useState(false);
-  const [showDurationDropdown, setShowDurationDropdown] = useState(false);
-  const [showEasingDropdown, setShowEasingDropdown] = useState(false);
+  const { showToast } = useToast();
+  const [controlsState, updateControlsState] = useReducer(
+    mergeAnimationControlsState,
+    initialAnimationControlsState
+  );
+  const {
+    selectedAnimation,
+    selectedDuration,
+    selectedEasingKey,
+    showDurationDropdown,
+    showEasingDropdown,
+  } = controlsState;
 
   // Create animation function based on selected options
   const createAnimationFunction =
     useCallback((): UseDraggableOptions<any>["animationFunction"] => {
-      return (toValue) => {
+      return (toValue: number) => {
         "worklet";
 
         const selectedEasing =
@@ -120,10 +148,6 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
 
   const animationFunction = createAnimationFunction();
 
-  const selectedAnimationLabel =
-    animationTypes.find((option) => option.value === selectedAnimation)
-      ?.label || "Spring (Default)";
-
   const selectedDurationLabel =
     durationOptions.find((option) => option.value === selectedDuration)
       ?.label || "Normal (300ms)";
@@ -132,9 +156,19 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
     easingOptions.find((option) => option.key === selectedEasingKey)?.label ||
     "Ease Out";
 
+  const isTimingBased =
+    selectedAnimation === "timing" ||
+    selectedAnimation === "bounce" ||
+    selectedAnimation === "elastic" ||
+    selectedAnimation === "custom";
+
+  const zoneSubLabel = isTimingBased
+    ? `${selectedAnimation.charAt(0).toUpperCase() + selectedAnimation.slice(1)} \u00B7 ${selectedDuration}ms`
+    : "Spring";
+
   return (
     <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <ExampleHeader title="Custom Animations" onBack={onBack} />
 
         <DropProvider ref={dropProviderRef}>
@@ -143,88 +177,93 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
             contentContainerStyle={styles.scrollContent}
             scrollEventThrottle={16}
           >
-            <View style={styles.section}>
-              <Text style={styles.sectionDescription}>
-                Experiment with different animation types, durations, and easing
-                functions. Drop items to see how the animations behave.
-              </Text>
+            {/* Animation Type Chips */}
+            <View style={styles.chipsRow}>
+              {animationTypes.map((type) => {
+                const isSelected = selectedAnimation === type.value;
+                return (
+                  <TouchableOpacity
+                    key={type.value}
+                    style={[
+                      styles.chip,
+                      isSelected ? styles.chipSelected : styles.chipUnselected,
+                    ]}
+                    onPress={() =>
+                      updateControlsState({ selectedAnimation: type.value })
+                    }
+                  >
+                    <Text
+                      style={[
+                        styles.chipText,
+                        {
+                          color: isSelected ? "#FF3B30" : "#94A3B8",
+                        },
+                      ]}
+                    >
+                      {type.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
 
-              {/* Animation Type Dropdown */}
-              <View style={styles.controlSection}>
-                <Text style={styles.controlTitle}>Animation Type</Text>
+            {/* Duration + Easing row (only for timing-based) */}
+            {isTimingBased && (
+              <View style={styles.dropdownRow}>
                 <TouchableOpacity
-                  style={styles.dropdown}
-                  onPress={() => setShowAnimationDropdown(true)}
-                >
-                  <Text style={styles.dropdownText}>
-                    {selectedAnimationLabel}
-                  </Text>
-                  <Text style={styles.dropdownArrow}>▼</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Duration Dropdown (only for timing-based animations) */}
-              {(selectedAnimation === "timing" ||
-                selectedAnimation === "bounce" ||
-                selectedAnimation === "elastic" ||
-                selectedAnimation === "custom") && (
-                <View style={styles.controlSection}>
-                  <Text style={styles.controlTitle}>Duration</Text>
-                  <TouchableOpacity
-                    style={styles.dropdown}
-                    onPress={() => setShowDurationDropdown(true)}
-                  >
-                    <Text style={styles.dropdownText}>
-                      {selectedDurationLabel}
-                    </Text>
-                    <Text style={styles.dropdownArrow}>▼</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-
-              {/* Easing Dropdown (only for timing animation) */}
-              {selectedAnimation === "timing" && (
-                <View style={styles.controlSection}>
-                  <Text style={styles.controlTitle}>Easing Function</Text>
-                  <TouchableOpacity
-                    style={styles.dropdown}
-                    onPress={() => setShowEasingDropdown(true)}
-                  >
-                    <Text style={styles.dropdownText}>
-                      {selectedEasingLabel}
-                    </Text>
-                    <Text style={styles.dropdownArrow}>▼</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-
-              <View style={styles.dropZoneArea}>
-                <Droppable<DraggableItemData>
-                  droppableId="animation-demo-zone"
-                  style={[styles.dropZone, styles.dropZoneBlue]}
-                  onDrop={(data) =>
-                    Alert.alert(
-                      "Drop!",
-                      `"${data.label}" dropped with ${selectedAnimation} animation`
-                    )
+                  style={styles.compactDropdown}
+                  onPress={() =>
+                    updateControlsState({ showDurationDropdown: true })
                   }
                 >
-                  <Text style={styles.dropZoneText}>Animation Test Zone</Text>
-                  <Text style={styles.dZoneSubText}>
-                    Type: {selectedAnimation}
-                  </Text>
-                  {(selectedAnimation === "timing" ||
-                    selectedAnimation === "bounce" ||
-                    selectedAnimation === "elastic" ||
-                    selectedAnimation === "custom") && (
-                    <Text style={styles.dZoneSubText}>
-                      Duration: {selectedDuration}ms
+                  <Text style={styles.compactDropdownLabel}>Duration</Text>
+                  <View style={styles.compactDropdownRight}>
+                    <Text style={styles.compactDropdownValue}>
+                      {selectedDuration}ms
                     </Text>
-                  )}
-                </Droppable>
-              </View>
+                    <Text style={styles.compactDropdownArrow}>{"\u25BC"}</Text>
+                  </View>
+                </TouchableOpacity>
 
-              <View style={styles.draggableItemsArea}>
+                {selectedAnimation === "timing" && (
+                  <TouchableOpacity
+                    style={styles.compactDropdown}
+                    onPress={() =>
+                      updateControlsState({ showEasingDropdown: true })
+                    }
+                  >
+                    <Text style={styles.compactDropdownLabel}>Easing</Text>
+                    <View style={styles.compactDropdownRight}>
+                      <Text style={styles.compactDropdownValue}>
+                        {selectedEasingLabel}
+                      </Text>
+                      <Text style={styles.compactDropdownArrow}>
+                        {"\u25BC"}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+
+            {/* Demo area - flex: 1 */}
+            <View style={styles.demoArea}>
+              <Droppable<DraggableItemData>
+                droppableId="animation-demo-zone"
+                style={styles.dropZone}
+                onDrop={(data) =>
+                  showToast({
+                    title: "Dropped!",
+                    subtitle: `Returned with ${selectedAnimation} animation`,
+                    autodismiss: true,
+                  })
+                }
+              >
+                <Text style={styles.dropZoneText}>Animation Test Zone</Text>
+                <Text style={styles.dropZoneSubText}>{zoneSubLabel}</Text>
+              </Droppable>
+
+              <View style={styles.draggableArea}>
                 <Draggable<DraggableItemData>
                   key={`animation-item-1-${selectedAnimation}-${selectedDuration}-${selectedEasingKey}`}
                   data={{
@@ -233,12 +272,10 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                     backgroundColor: "#ff9f43",
                   }}
                   animationFunction={animationFunction}
-                  style={[
-                    {
-                      backgroundColor: "#ff9f43",
-                      borderRadius: 12,
-                    },
-                  ]}
+                  style={{
+                    backgroundColor: "#ff9f43",
+                    borderRadius: 12,
+                  }}
                 >
                   <View style={styles.cardContent}>
                     <Text style={styles.cardLabel}>Test 1</Text>
@@ -246,63 +283,44 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
                   </View>
                 </Draggable>
               </View>
+            </View>
 
-              <View style={styles.infoContainer}>
-                <View style={styles.infoItem}>
-                  <View
-                    style={[
-                      styles.infoIndicator,
-                      { backgroundColor: "#ff9f43" },
-                    ]}
-                  />
-                  <Text style={styles.infoText}>
-                    Spring: Natural bouncy animation with damping and stiffness
-                  </Text>
-                </View>
-                <View style={styles.infoItem}>
-                  <View
-                    style={[
-                      styles.infoIndicator,
-                      { backgroundColor: "#10ac84" },
-                    ]}
-                  />
-                  <Text style={styles.infoText}>
-                    Timing: Linear progression with customizable duration and
-                    easing
-                  </Text>
-                </View>
+            {/* Legend */}
+            <View style={styles.legend}>
+              <View style={styles.legendRow}>
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#ff9f43" }]}
+                />
+                <Text style={styles.legendText}>
+                  Spring: Natural bouncy animation with damping and stiffness
+                </Text>
+              </View>
+              <View style={styles.legendRow}>
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#10ac84" }]}
+                />
+                <Text style={styles.legendText}>
+                  Timing: Linear progression with customizable duration and
+                  easing
+                </Text>
               </View>
             </View>
           </ScrollView>
 
-          {/* Animation Type Dropdown Modal */}
-          <BottomSheet
-            isVisible={showAnimationDropdown}
-            onClose={() => setShowAnimationDropdown(false)}
-            title="Select Animation Type"
-          >
-            <BottomSheetOption
-              options={animationTypes}
-              selectedOption={selectedAnimation}
-              onSelect={(option) => {
-                setSelectedAnimation(option.value);
-                setShowAnimationDropdown(false);
-              }}
-            />
-          </BottomSheet>
-
           {/* Duration Dropdown Modal */}
           <BottomSheet
             isVisible={showDurationDropdown}
-            onClose={() => setShowDurationDropdown(false)}
+            onClose={() => updateControlsState({ showDurationDropdown: false })}
             title="Select Duration"
           >
             <BottomSheetOption
               options={durationOptions}
               selectedOption={selectedDuration}
               onSelect={(option) => {
-                setSelectedDuration(option.value);
-                setShowDurationDropdown(false);
+                updateControlsState({
+                  selectedDuration: option.value,
+                  showDurationDropdown: false,
+                });
               }}
             />
           </BottomSheet>
@@ -310,20 +328,22 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
           {/* Easing Dropdown Modal */}
           <BottomSheet
             isVisible={showEasingDropdown}
-            onClose={() => setShowEasingDropdown(false)}
+            onClose={() => updateControlsState({ showEasingDropdown: false })}
             title="Select Easing Function"
           >
             <BottomSheetOption
               options={easingOptions}
               selectedOption={selectedEasingKey}
               onSelect={(option) => {
-                setSelectedEasingKey(option.key || "ease-out");
-                setShowEasingDropdown(false);
+                updateControlsState({
+                  selectedEasingKey: option.key || "ease-out",
+                  showEasingDropdown: false,
+                });
               }}
             />
           </BottomSheet>
         </DropProvider>
-      </SafeAreaView>
+      </View>
       <Footer />
     </GestureHandlerRootView>
   );
@@ -332,149 +352,156 @@ export function AnimationExample({ onBack }: AnimationExampleProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
-  section: {
-    padding: 24,
-    backgroundColor: "#000000",
-    marginBottom: 20,
+  chipsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 16,
   },
-  sectionDescription: {
-    fontSize: 15,
-    color: "#8E8E93",
-    marginBottom: 24,
-    lineHeight: 22,
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1.5,
   },
-  controlSection: {
-    marginBottom: 24,
+  chipSelected: {
+    borderColor: "#FF3B30",
+    backgroundColor: "rgba(255, 59, 48, 0.1)",
   },
-  controlTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    marginBottom: 12,
+  chipUnselected: {
+    borderColor: "#1E2028",
+    backgroundColor: "#111318",
   },
-  dropdown: {
+  chipText: {
+    fontSize: 13,
+    fontFamily: "Outfit_500Medium",
+  },
+  dropdownRow: {
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: 16,
+  },
+  compactDropdown: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 12,
+    padding: 10,
     borderWidth: 1,
-    borderColor: "#2C2C2E",
-    borderRadius: 8,
-    backgroundColor: "#1C1C1E",
+    borderColor: "#1E2028",
+    borderRadius: 10,
+    backgroundColor: "#111318",
   },
-  dropdownText: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    fontWeight: "500",
+  compactDropdownLabel: {
+    fontSize: 13,
+    fontFamily: "Outfit_500Medium",
+    color: "#F1F5F9",
   },
-  dropdownArrow: {
-    fontSize: 12,
-    color: "#8E8E93",
-    fontWeight: "500",
-  },
-  dropZoneArea: {
+  compactDropdownRight: {
     flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  compactDropdownValue: {
+    fontSize: 13,
+    fontFamily: "Outfit_500Medium",
+    color: "#94A3B8",
+  },
+  compactDropdownArrow: {
+    fontSize: 11,
+    color: "#64748B",
+  },
+  demoArea: {
+    flex: 1,
     justifyContent: "center",
-    minHeight: 160,
-    marginBottom: 32,
+    alignItems: "stretch",
+    marginBottom: 20,
+    minHeight: 140,
   },
   dropZone: {
-    width: "80%",
-    height: 140,
-    borderWidth: 2,
+    flex: 1,
+    maxHeight: 200,
+    borderWidth: 1.5,
     borderStyle: "dashed",
+    borderColor: "rgba(88, 166, 255, 0.3)",
+    backgroundColor: "rgba(88, 166, 255, 0.05)",
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 16,
-    padding: 8,
-  },
-  dropZoneBlue: {
-    borderColor: "#58a6ff",
-    backgroundColor: "rgba(88, 166, 255, 0.08)",
   },
   dropZoneText: {
     textAlign: "center",
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 17,
+    fontFamily: "Outfit_600SemiBold",
     color: "#FFFFFF",
     letterSpacing: 0.2,
     marginBottom: 4,
   },
-  dZoneSubText: {
-    fontSize: 12,
-    color: "#8E8E93",
+  dropZoneSubText: {
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#64748B",
     marginTop: 2,
     letterSpacing: 0.1,
     textAlign: "center",
   },
-  draggableItemsArea: {
-    minHeight: 100,
-    position: "relative",
+  draggableArea: {
     marginTop: 16,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+    alignSelf: "center",
   },
-
   cardContent: {
     width: 120,
-    height: 72,
-    padding: 12,
+    paddingVertical: 18,
+    paddingHorizontal: 12,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1C1C1E",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: "#151823",
+    borderWidth: 1.5,
+    borderColor: "rgba(255, 159, 67, 0.35)",
   },
   cardLabel: {
     fontSize: 15,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#F1F5F9",
     textAlign: "center",
   },
   cardHint: {
     fontSize: 13,
-    marginTop: 6,
-    color: "#8E8E93",
-    letterSpacing: 0.1,
+    fontFamily: "Outfit_400Regular",
+    marginTop: 3,
+    color: "#64748B",
     textAlign: "center",
   },
-  infoContainer: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
+  legend: {
+    gap: 6,
+    marginBottom: 4,
   },
-  infoItem: {
+  legendRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
   },
-  infoIndicator: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    marginRight: 12,
+  legendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 10,
   },
-  infoText: {
-    fontSize: 14,
-    color: "#FFFFFF",
+  legendText: {
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
     flex: 1,
-    lineHeight: 20,
   },
 });

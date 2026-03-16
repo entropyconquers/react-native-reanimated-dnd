@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "Draggable Component"
 ---
-
-# Draggable Component
 
 A versatile draggable component with advanced features like collision detection, bounded dragging, axis constraints, and custom animations.
 

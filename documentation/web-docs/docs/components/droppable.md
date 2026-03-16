@@ -1,8 +1,6 @@
 ---
-sidebar_position: 2
+title: "Droppable"
 ---
-
-# Droppable
 
 The `Droppable` component creates drop zones that can receive draggable items with visual feedback, flexible positioning, capacity limits, and custom alignment options.
 
@@ -24,7 +22,7 @@ function MyDropZone() {
   return (
     <Droppable onDrop={handleDrop}>
       <View style={styles.dropZone}>
-        <Text>🎯 Drop items here</Text>
+        <Text>Drop items here</Text>
       </View>
     </Droppable>
   );

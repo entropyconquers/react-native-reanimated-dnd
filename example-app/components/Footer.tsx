@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
+import { colors, fonts } from "../theme";
 
 export function Footer() {
   const handlePress = () => {
@@ -28,13 +29,13 @@ export function Footer() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 24,
+    paddingVertical: 20,
     paddingHorizontal: 16,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#000000",
-    borderTopWidth: 0.5,
-    borderTopColor: "#2C2C2E",
+    backgroundColor: colors.bg,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
   },
   textContainer: {
     flexDirection: "row",
@@ -42,19 +43,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   text: {
-    fontSize: 14,
-    fontFamily: "KumbhSans_700Bold",
-    color: "#8E8E93",
+    fontSize: 13,
+    fontFamily: fonts.bodyMedium,
+    color: colors.textMuted,
   },
   heart: {
-    fontSize: 14,
-    color: "#FF3B30",
+    fontSize: 13,
+    color: colors.accent,
   },
   linkContainer: {},
   link: {
-    fontSize: 14,
-    fontFamily: "KumbhSans_500Medium",
-    color: "#FF3B30",
+    fontSize: 13,
+    fontFamily: fonts.bodySemiBold,
+    color: colors.primary,
     textDecorationLine: "underline",
   },
 });

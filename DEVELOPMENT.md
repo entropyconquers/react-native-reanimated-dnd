@@ -1,74 +1,59 @@
 # Development Guide
 
-This guide covers development-specific tasks and tools for maintainers of react-native-reanimated-dnd.
+This repo uses npm workspaces. Install dependencies once at the repository root and run the library and example app from the same dependency graph.
 
-## 🔄 Syncing External Library
-
-The example app uses a local copy of the library code located in `example-app/external-lib/` to ensure it always tests the latest changes without needing to republish the package.
-
-### Automatic Sync Watcher
-
-To keep the external library in sync with the main library code, use the sync watcher:
+## Workspace Setup
 
 ```bash
-npm run sync:external-lib
+npm install
 ```
 
-This will:
+The example app consumes the local package via `file:..`, and the root `postinstall` builds the library output so Metro resolves a normal package instead of a generated mirror.
 
-- ✅ Perform an initial sync of all library files
-- 👀 Watch for changes in the main library directories (`components/`, `context/`, `hooks/`, `types/`)
-- 🔄 Automatically copy changes to `example-app/external-lib/`
-- 📝 Show detailed logs of what files are being synced
+## Development Workflow
 
-### What Gets Synced
-
-The following directories and files are automatically synchronized:
-
-- `components/` → `example-app/external-lib/components/`
-- `context/` → `example-app/external-lib/context/`
-- `hooks/` → `example-app/external-lib/hooks/`
-- `types/` → `example-app/external-lib/types/`
-- `index.ts` → `example-app/external-lib/index.ts`
-
-### Development Workflow
-
-1. Start the sync watcher in one terminal:
+1. Install once from the repo root:
 
    ```bash
-   npm run sync:external-lib
+   npm install
    ```
 
-2. In another terminal, start the example app:
+2. Start the example app from the workspace:
 
    ```bash
-   cd example-app
-   npm start
+   npm run start --workspace example-app
    ```
 
-3. Make changes to the library code in the root directory
-4. The sync watcher automatically copies changes to `external-lib/`
-5. The example app will hot reload with your changes
+3. Make changes in the root library files.
 
-### Manual Sync
+4. Rebuild the library after source changes:
 
-If you prefer to sync manually, you can run the script once and it will exit after the initial sync:
+   ```bash
+   npm run build:safe
+   ```
 
-```bash
-node scripts/sync-external-lib.js
-```
+   For an active development loop, run:
 
-Then interrupt it with `Ctrl+C` after the initial sync completes.
+   ```bash
+   npm run build:watch
+   ```
 
-## 🛠️ Other Development Commands
+5. Re-run validation as needed:
+
+   ```bash
+   npm run type-check
+   npm run build
+   npm run type-check:example
+   npm run doctor:example
+   ```
+
+## Useful Commands
 
 - `npm run build` - Build the library for production
-- `npm run type-check` - Run TypeScript type checking
+- `npm run build:safe` - Build the library without minification
+- `npm run build:watch` - Rebuild the library continuously while editing
+- `npm run type-check` - Run library TypeScript checks
+- `npm run type-check:example` - Run example-app TypeScript checks
+- `npm run doctor:example` - Run Expo Doctor for the example app
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check code formatting
-
-## 📝 Notes
-
-- The sync watcher uses filesystem watching, so changes are detected in real-time
-- Debouncing prevents excessive copying during rapid file changes
-- The watcher handles graceful shutdown when you stop it with `Ctrl+C`

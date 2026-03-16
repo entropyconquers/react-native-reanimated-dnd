@@ -3,17 +3,21 @@ import {
   View,
   Text,
   StyleSheet,
-  Alert,
   ScrollView,
-  SafeAreaView,
   StyleProp,
   ViewStyle,
 } from "react-native";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Draggable, DropProvider, DropProviderRef } from "@/external-lib";
-import { Droppable } from "@/external-lib";
+import {
+  Draggable,
+  DropProvider,
+  DropProviderRef,
+} from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
+import { useToast } from "@/components/toast";
 
 interface DraggableItemData {
   id: string;
@@ -27,30 +31,25 @@ interface ActiveStylesExampleProps {
 
 export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
+  const { showToast } = useToast();
 
   // Custom active styles for different drop zones
   const pulseActiveStyle: StyleProp<ViewStyle> = {
     borderColor: "#ff6b6b",
     borderWidth: 3,
     transform: [{ scale: 1.05 }],
-    shadowColor: "#ff6b6b",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
+    boxShadow: "0px 0px 10px rgba(255, 107, 107, 0.5)",
   };
 
   const glowActiveStyle: StyleProp<ViewStyle> = {
     borderColor: "#4cc9f0",
     backgroundColor: "rgba(76, 201, 240, 0.2)",
-    shadowColor: "#4cc9f0",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.7,
-    shadowRadius: 12,
+    boxShadow: "0px 0px 12px rgba(76, 201, 240, 0.7)",
   };
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <ExampleHeader title="Active Drop Styles" onBack={onBack} />
 
         <DropProvider ref={dropProviderRef}>
@@ -59,103 +58,89 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
             contentContainerStyle={styles.scrollContent}
             scrollEventThrottle={16}
           >
-            <View style={styles.section}>
-              <Text style={styles.sectionDescription}>
-                This example demonstrates custom visual effects when draggables
-                hover over drop zones. Try dragging the item over each zone to
-                see the different effects.
-              </Text>
+            <Text style={styles.sectionDescription}>
+              Drag the item over each zone to see different hover effects.
+            </Text>
 
-              <View style={styles.dropZoneArea}>
-                <View style={styles.dropZoneColumn}>
-                  <Text style={styles.customStyleLabel}>Pulse Effect</Text>
-                  <Droppable<DraggableItemData>
-                    droppableId="pulse-zone"
-                    style={[styles.dropZone, styles.customDropZone]}
-                    onDrop={(data: DraggableItemData) =>
-                      Alert.alert("Dropped!", `${data.label} on pulse zone`)
-                    }
-                    activeStyle={pulseActiveStyle}
-                  >
-                    <Text style={styles.dropZoneText}>Pulse Zone</Text>
-                    <Text style={styles.dZoneSubText}>
-                      Scales up with red glow
-                    </Text>
-                  </Droppable>
-                </View>
-
-                <View style={styles.dropZoneColumn}>
-                  <Text style={styles.customStyleLabel}>Glow Effect</Text>
-                  <Droppable<DraggableItemData>
-                    droppableId="glow-zone"
-                    style={[styles.dropZone, styles.customDropZone]}
-                    onDrop={(data: DraggableItemData) =>
-                      Alert.alert("Dropped!", `${data.label} on glow zone`)
-                    }
-                    activeStyle={glowActiveStyle}
-                  >
-                    <Text style={styles.dropZoneText}>Glow Zone</Text>
-                    <Text style={styles.dZoneSubText}>
-                      Blue background glow
-                    </Text>
-                  </Droppable>
-                </View>
-              </View>
-
-              <View style={styles.draggableItemsArea}>
-                <Draggable<DraggableItemData>
-                  key="active-styles-item"
-                  data={{
-                    id: "active-styles-item",
-                    label: "Drop me on the custom zones",
-                    backgroundColor: "#c1a1d3",
-                  }}
-                  style={[
-                    {
-                      top: 0,
-                      left: "25%",
-                      backgroundColor: "#c1a1d3",
-                      borderRadius: 12,
-                    },
-                  ]}
+            <View style={styles.dropZoneArea}>
+              <View style={styles.dropZoneColumn}>
+                <Text style={styles.customStyleLabel}>PULSE EFFECT</Text>
+                <Droppable<DraggableItemData>
+                  droppableId="pulse-zone"
+                  style={styles.customDropZone}
+                  onDrop={(data: DraggableItemData) =>
+                    showToast({ title: "Pulse!", subtitle: "Landed on the Pulse Zone", autodismiss: true })
+                  }
+                  activeStyle={pulseActiveStyle}
                 >
-                  <View style={styles.cardContent}>
-                    <Text style={styles.cardLabel}>Try Me</Text>
-                    <Text style={styles.cardHint}>Drag over zones</Text>
-                  </View>
-                </Draggable>
+                  <Text style={styles.dropZoneText}>Pulse Zone</Text>
+                  <Text style={styles.dZoneSubText}>
+                    Scales + red glow
+                  </Text>
+                </Droppable>
               </View>
 
-              <View style={styles.infoContainer}>
-                <View style={styles.infoItem}>
-                  <View
-                    style={[
-                      styles.infoIndicator,
-                      { backgroundColor: "#ff6b6b" },
-                    ]}
-                  />
-                  <Text style={styles.infoText}>
-                    Pulse effect: Scales up with red border and shadow
+              <View style={styles.dropZoneColumn}>
+                <Text style={styles.customStyleLabel}>GLOW EFFECT</Text>
+                <Droppable<DraggableItemData>
+                  droppableId="glow-zone"
+                  style={styles.customDropZone}
+                  onDrop={(data: DraggableItemData) =>
+                    showToast({ title: "Glow!", subtitle: "Landed on the Glow Zone", autodismiss: true })
+                  }
+                  activeStyle={glowActiveStyle}
+                >
+                  <Text style={styles.dropZoneText}>Glow Zone</Text>
+                  <Text style={styles.dZoneSubText}>
+                    Blue background glow
                   </Text>
+                </Droppable>
+              </View>
+            </View>
+
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>DRAG ITEM</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            <View style={styles.draggableItemsArea}>
+              <Draggable<DraggableItemData>
+                key="active-styles-item"
+                data={{
+                  id: "active-styles-item",
+                  label: "Drop me on the custom zones",
+                  backgroundColor: "#c1a1d3",
+                }}
+                style={{
+                  backgroundColor: "#c1a1d3",
+                  borderRadius: 12,
+                  borderWidth: 1.5,
+                  borderColor: "rgba(193, 161, 211, 0.35)",
+                }}
+              >
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardLabel}>Try Me</Text>
+                  <Text style={styles.cardHint}>Drag over zones</Text>
                 </View>
-                <View style={styles.infoItem}>
-                  <View
-                    style={[
-                      styles.infoIndicator,
-                      { backgroundColor: "#4cc9f0" },
-                    ]}
-                  />
-                  <Text style={styles.infoText}>
-                    Glow effect: Blue background with enhanced shadow
-                  </Text>
-                </View>
+              </Draggable>
+            </View>
+
+            <View style={styles.legend}>
+              <View style={styles.legendRow}>
+                <View style={[styles.legendDot, { backgroundColor: "#ff6b6b" }]} />
+                <Text style={styles.legendText}>Pulse: Scale + red border glow</Text>
+              </View>
+              <View style={styles.legendRow}>
+                <View style={[styles.legendDot, { backgroundColor: "#4cc9f0" }]} />
+                <Text style={styles.legendText}>Glow: Blue background illumination</Text>
               </View>
             </View>
           </ScrollView>
         </DropProvider>
 
         <Footer />
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 }
@@ -163,130 +148,129 @@ export function ActiveStylesExample({ onBack }: ActiveStylesExampleProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-  },
-  section: {
-    padding: 24,
-    backgroundColor: "#000000",
-    marginBottom: 20,
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
   sectionDescription: {
-    fontSize: 15,
-    color: "#8E8E93",
-    marginBottom: 24,
-    lineHeight: 22,
+    fontSize: 14,
+    fontFamily: "Outfit_400Regular",
+    color: "#94A3B8",
+    lineHeight: 20,
+    marginBottom: 20,
   },
   dropZoneArea: {
+    flex: 1,
     flexDirection: "row",
-    justifyContent: "space-around",
-    minHeight: 160,
-    marginBottom: 32,
+    gap: 12,
+    marginBottom: 20,
+    minHeight: 200,
   },
   dropZoneColumn: {
-    alignItems: "center",
-    width: "45%",
+    flex: 1,
   },
   customStyleLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 12,
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
+    fontSize: 12,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#64748B",
+    letterSpacing: 1,
+    marginBottom: 8,
+    textAlign: "center",
   },
   customDropZone: {
-    borderColor: "#2C2C2E",
-    backgroundColor: "#1C1C1E",
-    height: 120,
-    width: "100%",
-    borderRadius: 16,
-  },
-  dropZone: {
-    borderWidth: 2,
+    flex: 1,
+    borderColor: "#2A2D3A",
+    backgroundColor: "#111318",
+    borderWidth: 1.5,
     borderStyle: "dashed",
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    padding: 8,
+    padding: 12,
   },
   dropZoneText: {
     textAlign: "center",
-    fontSize: 16,
+    fontSize: 17,
+    fontFamily: "Outfit_600SemiBold",
     fontWeight: "600",
     color: "#FFFFFF",
     letterSpacing: 0.2,
   },
   dZoneSubText: {
-    fontSize: 12,
-    color: "#8E8E93",
-    marginTop: 6,
-    letterSpacing: 0.1,
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
+    marginTop: 4,
     textAlign: "center",
   },
-  draggableItemsArea: {
-    minHeight: 100,
-    position: "relative",
-    marginTop: 16,
+  divider: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    width: "100%",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 16,
   },
-  draggable: {
-    position: "absolute",
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#1A1C26",
+  },
+  dividerText: {
+    fontSize: 11,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#475569",
+    letterSpacing: 1.5,
+  },
+  draggableItemsArea: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
   },
   cardContent: {
     width: 120,
-    height: 72,
-    padding: 12,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1C1C1E",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 8,
+    backgroundColor: "#151823",
   },
   cardLabel: {
     fontSize: 15,
+    fontFamily: "Outfit_600SemiBold",
     fontWeight: "600",
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
+    color: "#F1F5F9",
     textAlign: "center",
   },
   cardHint: {
     fontSize: 13,
-    marginTop: 6,
-    color: "#8E8E93",
-    letterSpacing: 0.1,
+    fontFamily: "Outfit_400Regular",
+    marginTop: 3,
+    color: "#64748B",
     textAlign: "center",
   },
-  infoContainer: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
+  legend: {
+    gap: 8,
   },
-  infoItem: {
+  legendRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
   },
-  infoIndicator: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    marginRight: 12,
+  legendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 10,
   },
-  infoText: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    flex: 1,
-    lineHeight: 20,
+  legendText: {
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
   },
 });

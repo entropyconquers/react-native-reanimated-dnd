@@ -3,8 +3,6 @@ title: useHorizontalSortableList
 description: Hook for managing horizontal sortable lists
 ---
 
-# useHorizontalSortableList
-
 A hook for managing horizontal sortable lists with drag-and-drop reordering capabilities. This hook provides the foundational state management and utilities needed to create horizontal sortable lists, handling position tracking, scroll synchronization, auto-scrolling, gap management, and providing helper functions for individual sortable items.
 
 ## Import
@@ -19,11 +17,11 @@ The hook accepts a single options object with the following properties:
 
 | Parameter           | Type                                     | Required | Default           | Description                                                   |
 | ------------------- | ---------------------------------------- | -------- | ----------------- | ------------------------------------------------------------- |
-| `data`              | `TData[]`                                | ✅       | -                 | Array of data items to render as sortable items               |
-| `itemWidth`         | `number`                                 | ✅       | -                 | Width of each item in pixels (all items must have same width) |
-| `gap`               | `number`                                 | ❌       | `0`               | Gap between items in pixels                                   |
-| `paddingHorizontal` | `number`                                 | ❌       | `0`               | Container horizontal padding in pixels                        |
-| `itemKeyExtractor`  | `(item: TData, index: number) => string` | ❌       | `item => item.id` | Function to extract unique key from each item                 |
+| `data`              | `TData[]`                                | Yes      | -                 | Array of data items to render as sortable items               |
+| `itemWidth`         | `number`                                 | Yes      | -                 | Width of each item in pixels (all items must have same width) |
+| `gap`               | `number`                                 | No       | `0`               | Gap between items in pixels                                   |
+| `paddingHorizontal` | `number`                                 | No       | `0`               | Container horizontal padding in pixels                        |
+| `itemKeyExtractor`  | `(item: TData, index: number) => string` | No       | `item => item.id` | Function to extract unique key from each item                 |
 
 ## Return Value
 

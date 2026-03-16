@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "Collision Algorithms"
 ---
-
-# Collision Algorithms
 
 Collision detection algorithms for determining when a draggable item overlaps with a droppable zone.
 
@@ -38,7 +36,7 @@ The most permissive algorithm that detects collision when any part of the dragga
 ```
 Draggable:     [====]
 Droppable: [----------]
-Result:    ✅ Collision (any overlap)
+Result:    -> Collision (any overlap)
 ```
 
 ### center
@@ -64,11 +62,11 @@ A precise algorithm that detects collision only when the center point of the dra
 ```
 Draggable:     [==•==]  (• = center)
 Droppable: [----------]
-Result:    ✅ Collision (center inside)
+Result:    -> Collision (center inside)
 
 Draggable: [==•==]
 Droppable:     [----------]
-Result:    ❌ No collision (center outside)
+Result:    -> No collision (center outside)
 ```
 
 ### contain
@@ -94,11 +92,11 @@ The most restrictive algorithm that requires the entire draggable to be containe
 ```
 Draggable:   [====]
 Droppable: [----------]
-Result:    ✅ Collision (fully contained)
+Result:    -> Collision (fully contained)
 
 Draggable: [====]
 Droppable:   [------]
-Result:    ❌ No collision (not fully contained)
+Result:    -> No collision (not fully contained)
 ```
 
 ## Algorithm Comparison

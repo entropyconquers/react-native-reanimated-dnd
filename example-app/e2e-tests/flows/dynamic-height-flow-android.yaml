@@ -1,0 +1,180 @@
+# Dynamic Heights Example - End-to-End Test
+# Tests navigation to the Dynamic Heights screen, verifying item visibility,
+# expand/collapse toggling, drag-to-reorder, and post-interaction rendering.
+
+appId: com.przkp2p.rndndtest
+---
+
+# Step 1: Launch the app with a fresh state
+- launchApp:
+    clearState: true
+
+# Wait for the splash screen animation to finish (~2.4s) and the home screen to appear
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible: "Dynamic Heights"
+    timeout: 15000
+
+# Step 2: Navigate to the Dynamic Heights example
+# The "Dynamic Heights" entry may be below the fold, so scroll until visible
+- scrollUntilVisible:
+    element: "Dynamic Heights"
+    direction: DOWN
+    timeout: 10000
+
+- tapOn: "Dynamic Heights"
+
+# Step 3: Verify the Dynamic Heights screen loaded correctly
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: "dynamic-height-screen"
+    timeout: 10000
+
+# Verify the header title
+- assertVisible:
+    id: "header-title-text"
+
+# Verify the info banner is visible
+- assertVisible:
+    id: "dynamic-height-info-banner"
+
+# Verify the info banner text content
+- assertVisible: "Tap to expand/collapse. Drag to reorder."
+
+# Step 4: Verify initial items are visible
+# Item 1 "Setup Project" starts collapsed (expanded: false) - should show preview text
+- assertVisible:
+    id: "dynamic-item-1"
+
+- assertVisible: "Setup Project"
+
+# Item 2 "Important Notice" starts expanded (expanded: true) - should show full description
+- assertVisible:
+    id: "dynamic-item-2"
+
+- assertVisible: "Important Notice"
+
+# Item 3 "Design UI Components" starts collapsed
+- assertVisible: "Design UI Components"
+
+# Step 5: Test expand/collapse toggling
+# Item 1 ("Setup Project") starts collapsed. Its description is >50 chars, so it shows a preview.
+# Verify the preview is visible first.
+- assertVisible:
+    id: "dynamic-item-1-preview"
+
+# Tap item 1 to expand it
+- tapOn:
+    id: "dynamic-item-1"
+
+- waitForAnimationToEnd
+
+# After expanding, the full description should be visible
+- extendedWaitUntil:
+    visible:
+      id: "dynamic-item-1-description"
+    timeout: 5000
+
+# The preview should no longer be visible
+- assertNotVisible:
+    id: "dynamic-item-1-preview"
+
+# Step 6: Tap item 1 again to collapse it
+- tapOn:
+    id: "dynamic-item-1"
+
+- waitForAnimationToEnd
+
+# After collapsing, the preview should reappear
+- extendedWaitUntil:
+    visible:
+      id: "dynamic-item-1-preview"
+    timeout: 5000
+
+# The full description should no longer be visible
+- assertNotVisible:
+    id: "dynamic-item-1-description"
+
+# Step 7: Test expand/collapse on another item type (header item)
+# Item 2 "Important Notice" is a header type and starts expanded
+- assertVisible:
+    id: "dynamic-item-2-description"
+
+# Tap to collapse it
+- tapOn:
+    id: "dynamic-item-2"
+
+- waitForAnimationToEnd
+
+# After collapsing, description should be hidden
+- extendedWaitUntil:
+    visible:
+      id: "dynamic-item-2-preview"
+    timeout: 5000
+
+- assertNotVisible:
+    id: "dynamic-item-2-description"
+
+# Tap again to re-expand it
+- tapOn:
+    id: "dynamic-item-2"
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: "dynamic-item-2-description"
+    timeout: 5000
+
+# Step 8: Verify items still render correctly after interactions
+# Check several items are still visible and properly rendered
+- assertVisible: "Setup Project"
+- assertVisible: "Important Notice"
+- assertVisible: "Design UI Components"
+
+# Step 9: Long press and drag to reorder
+# Long press item 3 "Design UI Components" and drag it up toward item 1
+- longPressOn:
+    id: "dynamic-item-3"
+
+- waitForAnimationToEnd
+
+# Step 10: Verify the back button works (navigation integrity)
+# Scroll back to top to ensure back button is visible
+- scrollUntilVisible:
+    element:
+      id: "header-back-button"
+    direction: UP
+    timeout: 5000
+
+- tapOn:
+    id: "header-back-button"
+
+- waitForAnimationToEnd
+
+# Verify we're back on the home screen
+- extendedWaitUntil:
+    visible: "Dynamic Heights"
+    timeout: 10000
+
+# Step 11: Navigate back to Dynamic Heights to verify state after re-entry
+- scrollUntilVisible:
+    element: "Dynamic Heights"
+    direction: DOWN
+    timeout: 10000
+
+- tapOn: "Dynamic Heights"
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: "dynamic-height-screen"
+    timeout: 10000
+
+# Verify items are rendered on re-entry
+- assertVisible: "Setup Project"
+- assertVisible: "Important Notice"

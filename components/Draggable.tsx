@@ -1,5 +1,5 @@
 // Node Modules
-import React, { useRef, createContext, useContext, useState } from "react";
+import React, { useRef, createContext, useContext, useState, useEffect } from "react";
 import { ViewStyle, StyleProp } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -58,6 +58,13 @@ const DraggableContext = createContext<DraggableContextValue | null>(null);
  */
 const Handle = ({ children, style }: DraggableHandleProps) => {
   const draggableContext = useContext(DraggableContext);
+
+  useEffect(() => {
+    draggableContext?.registerHandle(true);
+    return () => {
+      draggableContext?.registerHandle(false);
+    };
+  }, [draggableContext]);
 
   if (!draggableContext) {
     console.warn("Draggable.Handle must be used within a Draggable component");
@@ -253,18 +260,14 @@ const DraggableComponent = <TData = unknown,>({
   ...useDraggableHookOptions
 }: DraggableProps<TData>) => {
   // Pass the collected useDraggableHookOptions object directly to the hook
-  // Also pass children and Handle component reference for handle detection
-  const { animatedViewProps, gesture, state, hasHandle, animatedViewRef } =
-    useDraggable<TData>({
-      ...useDraggableHookOptions,
-      children,
-      handleComponent: Handle,
-    });
+  const { animatedViewProps, gesture, state, hasHandle, animatedViewRef, registerHandle } =
+    useDraggable<TData>(useDraggableHookOptions);
 
   // Create the context value
   const contextValue: DraggableContextValue = {
     gesture,
     state,
+    registerHandle,
   };
 
   // Render the component

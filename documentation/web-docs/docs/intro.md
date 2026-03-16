@@ -1,16 +1,14 @@
 ---
-sidebar_position: 1
+title: "Introduction"
 ---
 
-# Introduction
-
-Welcome to React Native Reanimated DnD - a powerful, performant drag-and-drop library built on React Native Reanimated 3 and Gesture Handler.
+Welcome to React Native Reanimated DnD - a powerful, performant drag-and-drop library built on React Native Reanimated 4 and Worklets and Gesture Handler.
 
 ## What is React Native Reanimated DnD?
 
 React Native Reanimated DnD is a comprehensive drag-and-drop solution that provides:
 
-- **Smooth 60fps animations** powered by React Native Reanimated 3
+- **Smooth 60fps animations** powered by React Native Reanimated 4 and Worklets
 - **Gesture-based interactions** using React Native Gesture Handler
 - **Flexible collision detection** with multiple algorithms
 - **TypeScript support** with full type safety
@@ -18,27 +16,31 @@ React Native Reanimated DnD is a comprehensive drag-and-drop solution that provi
 
 ## Key Features
 
-### 🎯 **Easy to Use**
+### Easy to Use
 
 Simple API that works out of the box with minimal configuration.
 
-### ⚡ **High Performance**
+### High Performance
 
 All animations run on the UI thread for consistent 60fps performance with FlatList virtualization.
 
-### 📜 **Vertical & Horizontal Sortable Lists**
+### Vertical & Horizontal Sortable Lists
 
 Drag and drop to sort lists in any direction, with automatic scrolling for out-of-view items.
 
-### 🎨 **Highly Customizable**
+### Sortable Grids
+
+2D grid drag-and-drop with insert and swap reordering strategies, 8-directional auto-scroll, and handle support.
+
+### Highly Customizable
 
 Extensive customization options for animations, collision detection, and visual feedback.
 
-### 📱 **Mobile Optimized**
+### Mobile Optimized
 
 Designed specifically for mobile touch interactions with proper gesture handling.
 
-### 🔧 **TypeScript Ready**
+### TypeScript Ready
 
 Full TypeScript support with comprehensive type definitions.
 
@@ -101,6 +103,24 @@ Create drop zones that receive draggable items:
 <Droppable onDrop={(data) => handleDrop(data)}>
   <YourDropZone />
 </Droppable>
+```
+
+### SortableGrid
+
+High-level component for reorderable 2D grids:
+
+```tsx
+<SortableGrid
+  data={items}
+  renderItem={({ item, id, ...props }) => (
+    <SortableGridItem key={id} id={id} data={item} {...props}>
+      <ItemComponent item={item} />
+    </SortableGridItem>
+  )}
+  dimensions={{ columns: 4, itemWidth: 80, itemHeight: 80, rowGap: 12, columnGap: 12 }}
+  orientation={GridOrientation.Vertical}
+  strategy={GridStrategy.Insert}
+/>
 ```
 
 ### Sortable
@@ -178,7 +198,7 @@ React Native Reanimated DnD is perfect for:
 
 ### Performance First
 
-- UI thread animations via Reanimated 3
+- UI thread animations via Reanimated 4 and Worklets
 - Optimized collision detection algorithms
 - Minimal JavaScript bridge communication
 - Smooth interactions even on lower-end devices
@@ -197,6 +217,16 @@ React Native Reanimated DnD is perfect for:
 - Memory leak prevention
 - Cross-platform consistency
 
+## AI Integration Skill
+
+Use AI coding agents to generate correct integration code instantly. Install the official [agent skill](https://agentskills.io) — works with Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, and 30+ more:
+
+```bash
+npx skills add entropyconquers/react-native-reanimated-dnd
+```
+
+Then just describe what you need: *"Add a sortable list with drag handles"* — your agent will generate working code with correct imports, props, and patterns. [Learn more](./getting-started/ai-skill).
+
 ## Getting Started
 
 Ready to add drag-and-drop to your app? Start with our quick setup guide:
@@ -204,14 +234,15 @@ Ready to add drag-and-drop to your app? Start with our quick setup guide:
 1. **[Installation](./getting-started/installation)** - Install the library and dependencies
 2. **[Quick Start](./getting-started/quick-start)** - Build your first drag-and-drop interface
 3. **[Basic Concepts](./getting-started/basic-concepts)** - Understand the core concepts
-4. **[API Reference](./api/overview)** - Explore all available components and hooks
+4. **[AI Integration Skill](./getting-started/ai-skill)** - Use AI agents to generate integration code
+5. **[API Reference](./api/overview)** - Explore all available components and hooks
 
 ## Community
 
-- **GitHub**: [Repository](https://github.com/your-repo/react-native-reanimated-dnd)
-- **Issues**: [Bug Reports & Feature Requests](https://github.com/your-repo/react-native-reanimated-dnd/issues)
-- **Discussions**: [Community Discussions](https://github.com/your-repo/react-native-reanimated-dnd/discussions)
+- **GitHub**: [Repository](https://github.com/entropyconquers/react-native-reanimated-dnd)
+- **Issues**: [Bug Reports & Feature Requests](https://github.com/entropyconquers/react-native-reanimated-dnd/issues)
+- **Discussions**: [Community Discussions](https://github.com/entropyconquers/react-native-reanimated-dnd/discussions)
 
 ## License
 
-MIT License - see the [LICENSE](https://github.com/your-repo/react-native-reanimated-dnd/blob/main/LICENSE) file for details.
+MIT License - see the [LICENSE](https://github.com/entropyconquers/react-native-reanimated-dnd/blob/main/LICENSE) file for details.

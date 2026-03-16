@@ -1,0 +1,11 @@
+{
+  "title": "Types & Interfaces",
+  "pages": [
+    "draggable-types",
+    "droppable-types",
+    "sortable-types",
+    "context-types",
+    "enums",
+    "grid-types"
+  ]
+}

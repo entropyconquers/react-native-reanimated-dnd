@@ -9,12 +9,29 @@ tsconfig.json
 documentation/
 example-app/
 scripts/
+DEVELOPMENT.md
+
+# AI/Agent skill files
+.agents/
+.claude/
+.claude-plugin/
+skills/
+
+# CI/CD
+.github/
+
+# Media
+*.mp4
+launch-video/
 
 # Development tools
 .vscode/
 .git/
 .DS_Store
 *.tgz
+app.json
+.env
+.env.*
 
 # Node modules and logs
 node_modules/

@@ -1,8 +1,6 @@
 ---
-sidebar_position: 3
+title: "Helper Functions"
 ---
-
-# Helper Functions
 
 Utility functions for working with sortable lists, position calculations, and data transformations.
 
@@ -384,12 +382,12 @@ function SmoothScrollController() {
             ? Math.max(0, scrollY.value - scrollSpeed)
             : scrollY.value + scrollSpeed;
 
-        runOnJS(() => {
+        scheduleOnRN(() => {
           scrollViewRef.current?.scrollTo({
             y: newScrollY,
             animated: false,
           });
-        })();
+        });
       }
     }
   );

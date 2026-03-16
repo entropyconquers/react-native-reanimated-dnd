@@ -3,21 +3,21 @@ import {
   View,
   Text,
   StyleSheet,
-  Alert,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
   Platform,
 } from "react-native";
+
 import Slider from "@react-native-community/slider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DropProvider, DropProviderRef } from "@/external-lib";
-import { Droppable } from "@/external-lib";
-import { Draggable } from "@/external-lib";
+import { DropProvider, DropProviderRef } from "react-native-reanimated-dnd";
+import { Droppable } from "react-native-reanimated-dnd";
+import { Draggable } from "react-native-reanimated-dnd";
 import { ExampleHeader } from "@/components/ExampleHeader";
 import { Footer } from "@/components/Footer";
 import { BottomSheet } from "@/components/BottomSheet";
 import { BottomSheetOption } from "@/components/BottomSheetOption";
+import { useToast } from "@/components/toast";
 
 interface DraggableItemData {
   id: string;
@@ -56,6 +56,7 @@ export function AlignmentOffsetExample({
   onBack,
 }: AlignmentOffsetExampleProps) {
   const dropProviderRef = useRef<DropProviderRef>(null);
+  const { showToast } = useToast();
   const [selectedAlignment, setSelectedAlignment] =
     useState<DropAlignment>("center");
   const [offsetX, setOffsetX] = useState(0);
@@ -68,7 +69,7 @@ export function AlignmentOffsetExample({
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <ExampleHeader title="Alignment & Offset" onBack={onBack} />
 
         <DropProvider ref={dropProviderRef}>
@@ -77,100 +78,89 @@ export function AlignmentOffsetExample({
             contentContainerStyle={styles.scrollContent}
             scrollEventThrottle={16}
           >
-            <View style={styles.section}>
-              <Text style={styles.sectionDescription}>
-                Control how dropped items are positioned within drop zones. Try
-                different alignment and offset combinations.
-              </Text>
-
-              {/* Alignment Dropdown */}
-              <View style={styles.controlSection}>
-                <Text style={styles.controlTitle}>Drop Alignment</Text>
-                <TouchableOpacity
-                  style={styles.dropdown}
-                  onPress={() => setShowAlignmentDropdown(true)}
-                >
-                  <Text style={styles.dropdownText}>
-                    {selectedAlignmentLabel}
-                  </Text>
-                  <Text style={styles.dropdownArrow}>▼</Text>
-                </TouchableOpacity>
+            {/* Alignment Dropdown */}
+            <TouchableOpacity
+              style={styles.dropdown}
+              onPress={() => setShowAlignmentDropdown(true)}
+            >
+              <Text style={styles.dropdownLabel}>Alignment</Text>
+              <View style={styles.dropdownRight}>
+                <Text style={styles.dropdownValue}>
+                  {selectedAlignmentLabel}
+                </Text>
+                <Text style={styles.dropdownArrow}>{"\u25BC"}</Text>
               </View>
+            </TouchableOpacity>
 
-              {/* X Offset Slider */}
-              <View style={styles.controlSection}>
-                <Text style={styles.controlTitle}>X Offset: {offsetX}px</Text>
-                <View style={styles.sliderContainer}>
-                  <Text style={styles.sliderLabel}>-30</Text>
-                  <Slider
-                    style={styles.slider}
-                    minimumValue={-30}
-                    maximumValue={30}
-                    onValueChange={setOffsetX}
-                    step={1}
-                    minimumTrackTintColor="#FF3B30"
-                    maximumTrackTintColor="#2C2C2E"
-                    thumbTintColor="#FF3B30"
-                  />
-                  <Text style={styles.sliderLabel}>30</Text>
-                </View>
+            {/* X Offset Slider */}
+            <View style={styles.sliderSection}>
+              <View style={styles.sliderLabelRow}>
+                <Text style={styles.sliderTitle}>X Offset</Text>
+                <Text style={styles.sliderValue}>{offsetX}px</Text>
               </View>
+              <Slider
+                style={styles.slider}
+                minimumValue={-30}
+                maximumValue={30}
+                onValueChange={setOffsetX}
+                step={1}
+                minimumTrackTintColor="#FF3B30"
+                maximumTrackTintColor="#1A1C26"
+                thumbTintColor="#FF3B30"
+              />
+            </View>
 
-              {/* Y Offset Slider */}
-              <View style={styles.controlSection}>
-                <Text style={styles.controlTitle}>Y Offset: {offsetY}px</Text>
-                <View style={styles.sliderContainer}>
-                  <Text style={styles.sliderLabel}>-30</Text>
-                  <Slider
-                    style={styles.slider}
-                    minimumValue={-30}
-                    maximumValue={30}
-                    onValueChange={setOffsetY}
-                    step={1}
-                    minimumTrackTintColor="#FF3B30"
-                    maximumTrackTintColor="#2C2C2E"
-                    thumbTintColor="#FF3B30"
-                  />
-                  <Text style={styles.sliderLabel}>30</Text>
-                </View>
+            {/* Y Offset Slider */}
+            <View style={styles.sliderSection}>
+              <View style={styles.sliderLabelRow}>
+                <Text style={styles.sliderTitle}>Y Offset</Text>
+                <Text style={styles.sliderValue}>{offsetY}px</Text>
               </View>
+              <Slider
+                style={styles.slider}
+                minimumValue={-30}
+                maximumValue={30}
+                onValueChange={setOffsetY}
+                step={1}
+                minimumTrackTintColor="#FF3B30"
+                maximumTrackTintColor="#1A1C26"
+                thumbTintColor="#FF3B30"
+              />
+            </View>
 
-              <View style={styles.dropZoneArea}>
-                <Droppable<DraggableItemData>
-                  droppableId="alignment-demo-zone"
-                  style={[styles.dropZone, styles.dropZoneBlue]}
-                  dropAlignment={selectedAlignment}
-                  dropOffset={{ x: offsetX, y: offsetY }}
-                  onDrop={(data) =>
-                    Alert.alert(
-                      "Drop!",
-                      `"${data.label}" dropped with alignment: ${selectedAlignment}, offset: (${offsetX}, ${offsetY})`
-                    )
-                  }
-                >
-                  <Text style={styles.dropZoneText}>Demo Zone</Text>
-                  <Text style={styles.dZoneSubText}>
-                    Alignment: {selectedAlignment}
-                  </Text>
-                  <Text style={styles.dZoneSubText}>
-                    Offset: ({offsetX}, {offsetY})
-                  </Text>
-                </Droppable>
-              </View>
+            {/* Demo area - flex: 1 */}
+            <View style={styles.demoArea}>
+              <Droppable<DraggableItemData>
+                droppableId="alignment-demo-zone"
+                style={styles.dropZone}
+                dropAlignment={selectedAlignment}
+                dropOffset={{ x: offsetX, y: offsetY }}
+                onDrop={(data) =>
+                  showToast({
+                    title: "Placed!",
+                    subtitle: `Aligned to ${selectedAlignment} with offset (${offsetX}, ${offsetY})`,
+                    autodismiss: true,
+                  })
+                }
+              >
+                <Text style={styles.dropZoneText}>Demo Zone</Text>
+                <Text style={styles.dropZoneSubText}>
+                  Alignment: {selectedAlignment} {"\u00B7"} Offset: ({offsetX},{" "}
+                  {offsetY})
+                </Text>
+              </Droppable>
 
-              <View style={styles.draggableItemsArea}>
+              <View style={styles.draggableArea}>
                 <Draggable<DraggableItemData>
                   data={{
                     id: "alignment-item-1",
                     label: "Test Item 1",
                     backgroundColor: "#ff6b6b",
                   }}
-                  style={[
-                    {
-                      backgroundColor: "#ff6b6b",
-                      borderRadius: 12,
-                    },
-                  ]}
+                  style={{
+                    backgroundColor: "#ff6b6b",
+                    borderRadius: 12,
+                  }}
                 >
                   <View style={styles.cardContent}>
                     <Text style={styles.cardLabel}>Test</Text>
@@ -180,32 +170,27 @@ export function AlignmentOffsetExample({
                   </View>
                 </Draggable>
               </View>
+            </View>
 
-              <View style={styles.infoContainer}>
-                <View style={styles.infoItem}>
-                  <View
-                    style={[
-                      styles.infoIndicator,
-                      { backgroundColor: "#FF3B30" },
-                    ]}
-                  />
-                  <Text style={styles.infoText}>
-                    Alignment controls where items are positioned within the
-                    drop zone
-                  </Text>
-                </View>
-                <View style={styles.infoItem}>
-                  <View
-                    style={[
-                      styles.infoIndicator,
-                      { backgroundColor: "#58a6ff" },
-                    ]}
-                  />
-                  <Text style={styles.infoText}>
-                    Offset adds additional pixel displacement from the alignment
-                    point
-                  </Text>
-                </View>
+            {/* Legend */}
+            <View style={styles.legend}>
+              <View style={styles.legendRow}>
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#FF3B30" }]}
+                />
+                <Text style={styles.legendText}>
+                  Alignment controls where items are positioned within the drop
+                  zone
+                </Text>
+              </View>
+              <View style={styles.legendRow}>
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#58a6ff" }]}
+                />
+                <Text style={styles.legendText}>
+                  Offset adds additional pixel displacement from the alignment
+                  point
+                </Text>
               </View>
             </View>
           </ScrollView>
@@ -228,7 +213,7 @@ export function AlignmentOffsetExample({
         </DropProvider>
 
         <Footer />
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 }
@@ -236,160 +221,149 @@ export function AlignmentOffsetExample({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#08090E",
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
-  },
-  section: {
-    padding: 24,
-    backgroundColor: "#000000",
-    marginBottom: 20,
-  },
-  sectionDescription: {
-    fontSize: 15,
-    color: "#8E8E93",
-    marginBottom: 24,
-    lineHeight: 22,
-  },
-  controlSection: {
-    marginBottom: 24,
-  },
-  controlTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    marginBottom: 12,
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
   dropdown: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 12,
+    padding: 10,
     borderWidth: 1,
-    borderColor: "#2C2C2E",
-    borderRadius: 8,
-    backgroundColor: "#1C1C1E",
+    borderColor: "#1E2028",
+    borderRadius: 10,
+    backgroundColor: "#111318",
+    marginBottom: 12,
   },
-  dropdownText: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    fontWeight: "500",
+  dropdownLabel: {
+    fontSize: 13,
+    fontFamily: "Outfit_500Medium",
+    color: "#F1F5F9",
+  },
+  dropdownRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  dropdownValue: {
+    fontSize: 13,
+    fontFamily: "Outfit_500Medium",
+    color: "#94A3B8",
   },
   dropdownArrow: {
-    fontSize: 12,
-    color: "#8E8E93",
-    fontWeight: "500",
-    marginLeft: 4,
+    fontSize: 11,
+    color: "#64748B",
   },
-  dropZoneArea: {
+  sliderSection: {
+    marginBottom: 10,
+  },
+  sliderLabelRow: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  sliderTitle: {
+    fontSize: 13,
+    fontFamily: "Outfit_500Medium",
+    color: "#F1F5F9",
+  },
+  sliderValue: {
+    fontSize: 13,
+    fontFamily: "Outfit_500Medium",
+    color: "#FF3B30",
+  },
+  slider: {
+    width: "100%",
+    height: 32,
+  },
+  demoArea: {
+    flex: 1,
     justifyContent: "center",
-    minHeight: 160,
-    marginBottom: 32,
+    alignItems: "stretch",
+    marginBottom: 16,
+    minHeight: 120,
   },
   dropZone: {
-    width: "80%",
-    height: 140,
-    borderWidth: 2,
+    flex: 1,
+    maxHeight: 200,
+    borderWidth: 1.5,
     borderStyle: "dashed",
+    borderColor: "rgba(88, 166, 255, 0.3)",
+    backgroundColor: "rgba(88, 166, 255, 0.05)",
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 16,
-    padding: 8,
-  },
-  dropZoneBlue: {
-    borderColor: "#58a6ff",
-    backgroundColor: "rgba(88, 166, 255, 0.08)",
   },
   dropZoneText: {
     textAlign: "center",
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 17,
+    fontFamily: "Outfit_600SemiBold",
     color: "#FFFFFF",
     letterSpacing: 0.2,
     marginBottom: 4,
   },
-  dZoneSubText: {
-    fontSize: 12,
-    color: "#8E8E93",
+  dropZoneSubText: {
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#64748B",
     marginTop: 2,
     letterSpacing: 0.1,
     textAlign: "center",
   },
-  draggableItemsArea: {
-    minHeight: 100,
-    position: "relative",
+  draggableArea: {
     marginTop: 16,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+    alignSelf: "center",
   },
   cardContent: {
     width: 120,
-    padding: 12,
+    paddingVertical: 18,
+    paddingHorizontal: 12,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1C1C1E",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: "#151823",
+    borderWidth: 1.5,
+    borderColor: "rgba(255, 107, 107, 0.35)",
   },
   cardLabel: {
     fontSize: 15,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    letterSpacing: 0.2,
+    fontFamily: "Outfit_600SemiBold",
+    color: "#F1F5F9",
     textAlign: "center",
   },
   cardHint: {
-    fontSize: 12,
-    marginTop: 6,
-    color: "#8E8E93",
-    letterSpacing: 0.1,
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    marginTop: 3,
+    color: "#64748B",
     textAlign: "center",
   },
-  infoContainer: {
-    marginTop: 24,
-    padding: 16,
-    backgroundColor: "#1C1C1E",
-    borderRadius: 12,
+  legend: {
+    gap: 6,
+    marginBottom: 4,
   },
-  infoItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  infoIndicator: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  infoText: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    flex: 1,
-    lineHeight: 20,
-  },
-  sliderContainer: {
+  legendRow: {
     flexDirection: "row",
     alignItems: "center",
   },
-  sliderLabel: {
-    fontSize: 12,
-    color: "#8E8E93",
-    marginHorizontal: 8,
+  legendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 10,
   },
-  slider: {
+  legendText: {
+    fontSize: 13,
+    fontFamily: "Outfit_400Regular",
+    color: "#475569",
     flex: 1,
   },
 });

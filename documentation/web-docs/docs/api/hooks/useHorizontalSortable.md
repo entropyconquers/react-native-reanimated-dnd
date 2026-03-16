@@ -3,8 +3,6 @@ title: useHorizontalSortable
 description: API reference for the useHorizontalSortable hook
 ---
 
-# useHorizontalSortable
-
 Hook for creating individual horizontal sortable items with drag-and-drop reordering capabilities.
 
 ## Import
@@ -27,21 +25,19 @@ function useHorizontalSortable<T>(
 
 | Property              | Type                                                                  | Required | Default | Description                                       |
 | --------------------- | --------------------------------------------------------------------- | -------- | ------- | ------------------------------------------------- |
-| `id`                  | `string`                                                              | ✅       | -       | Unique identifier for this sortable item          |
-| `positions`           | `SharedValue<{[id: string]: number}>`                                 | ✅       | -       | Shared value containing positions of all items    |
-| `leftBound`           | `SharedValue<number>`                                                 | ✅       | -       | Current horizontal scroll position                |
-| `autoScrollDirection` | `SharedValue<HorizontalScrollDirection>`                              | ✅       | -       | Auto-scroll direction state                       |
-| `itemsCount`          | `number`                                                              | ✅       | -       | Total number of items in the list                 |
-| `itemWidth`           | `number`                                                              | ✅       | -       | Width of each item in pixels                      |
-| `gap`                 | `number`                                                              | ❌       | `0`     | Gap between items in pixels                       |
-| `paddingHorizontal`   | `number`                                                              | ❌       | `0`     | Container horizontal padding                      |
-| `containerWidth`      | `number`                                                              | ❌       | `500`   | Container width for auto-scroll calculations      |
-| `onMove`              | `(id: string, from: number, to: number) => void`                      | ❌       | -       | Callback when item position changes               |
-| `onDragStart`         | `(id: string, position: number) => void`                              | ❌       | -       | Callback when dragging starts                     |
-| `onDrop`              | `(id: string, position: number) => void`                              | ❌       | -       | Callback when dragging ends                       |
-| `onDragging`          | `(id: string, overItemId: string \| null, xPosition: number) => void` | ❌       | -       | Callback during dragging                          |
-| `children`            | `React.ReactNode`                                                     | ❌       | -       | Children elements (used for handle detection)     |
-| `handleComponent`     | `React.ComponentType<any>`                                            | ❌       | -       | Handle component type (used for handle detection) |
+| `id`                  | `string`                                                              | Yes      | -       | Unique identifier for this sortable item          |
+| `positions`           | `SharedValue<{[id: string]: number}>`                                 | Yes      | -       | Shared value containing positions of all items    |
+| `leftBound`           | `SharedValue<number>`                                                 | Yes      | -       | Current horizontal scroll position                |
+| `autoScrollDirection` | `SharedValue<HorizontalScrollDirection>`                              | Yes      | -       | Auto-scroll direction state                       |
+| `itemsCount`          | `number`                                                              | Yes      | -       | Total number of items in the list                 |
+| `itemWidth`           | `number`                                                              | Yes      | -       | Width of each item in pixels                      |
+| `gap`                 | `number`                                                              | No       | `0`     | Gap between items in pixels                       |
+| `paddingHorizontal`   | `number`                                                              | No       | `0`     | Container horizontal padding                      |
+| `containerWidth`      | `number`                                                              | No       | `500`   | Container width for auto-scroll calculations      |
+| `onMove`              | `(id: string, from: number, to: number) => void`                      | No       | -       | Callback when item position changes               |
+| `onDragStart`         | `(id: string, position: number) => void`                              | No       | -       | Callback when dragging starts                     |
+| `onDrop`              | `(id: string, position: number) => void`                              | No       | -       | Callback when dragging ends                       |
+| `onDragging`          | `(id: string, overItemId: string \| null, xPosition: number) => void` | No       | -       | Callback during dragging                          |
 
 ## Return Value
 
@@ -50,7 +46,8 @@ function useHorizontalSortable<T>(
 | Property            | Type                   | Description                                  |
 | ------------------- | ---------------------- | -------------------------------------------- |
 | `animatedStyle`     | `StyleProp<ViewStyle>` | Animated style for the sortable item         |
-| `panGestureHandler` | `any`                  | Pan gesture handler for drag interactions    |
+| `panGestureHandler` | `GestureType`          | Pan gesture to pass to GestureDetector       |
+| `registerHandle`   | `(registered: boolean) => void` | Callback for handle registration   |
 | `isMoving`          | `boolean`              | Whether the item is currently being dragged  |
 | `hasHandle`         | `boolean`              | Whether the item has a drag handle component |
 

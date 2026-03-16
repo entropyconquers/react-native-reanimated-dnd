@@ -1,8 +1,6 @@
 ---
-sidebar_position: 1
+title: "useDraggable Hook"
 ---
-
-# useDraggable Hook
 
 A powerful hook for creating draggable components with advanced features like collision detection, bounded dragging, axis constraints, and custom animations.
 
@@ -50,6 +48,19 @@ const { animatedViewProps, gesture } = useDraggable({
 const { animatedViewProps, gesture } = useDraggable({
   data: taskData,
   dragDisabled: !user.canDrag,
+});
+```
+
+##### preDragDelay
+
+- **Type**: `number`
+- **Default**: `0`
+- **Description**: Delay in milliseconds before dragging starts. Useful for preventing accidental drags or distinguishing between taps and drags.
+
+```tsx
+const { animatedViewProps, gesture } = useDraggable({
+  data: taskData,
+  preDragDelay: 200, // 200ms delay before drag activates
 });
 ```
 
@@ -198,17 +209,6 @@ const { animatedViewProps, gesture } = useDraggable({
 });
 ```
 
-##### children
-
-- **Type**: `React.ReactNode`
-- **Required**: No
-- **Description**: Used internally for handle detection. Not typically used directly.
-
-##### handleComponent
-
-- **Type**: `React.ComponentType<any>`
-- **Required**: No
-- **Description**: Used internally for handle detection. Not typically used directly.
 
 ## Return Value
 
@@ -268,6 +268,11 @@ return (
 
 - **Type**: `boolean`
 - **Description**: Whether this draggable has a handle component. When true, only the handle can initiate dragging. When false, the entire component is draggable.
+
+#### registerHandle
+
+- **Type**: `(registered: boolean) => void`
+- **Description**: Callback for handle components to register/unregister themselves. Called with `true` when a handle mounts, `false` when it unmounts.
 
 ## Usage Examples
 
@@ -625,27 +630,17 @@ function TypedDraggable() {
 
 ```tsx
 function DragHandlePattern() {
-  const { animatedViewProps, gesture, hasHandle } = useDraggable({
-    data: { id: "1" },
-    children: <DragHandle />, // Pass handle as children for detection
-    handleComponent: DragHandle,
-  });
-
   return (
-    <Animated.View {...animatedViewProps}>
-      {hasHandle ? (
-        // Handle controls dragging
-        <View>
-          <Text>Content (not draggable)</Text>
-          <DragHandle />
-        </View>
-      ) : (
-        // Entire component is draggable
-        <GestureDetector gesture={gesture}>
-          <Text>Entire component draggable</Text>
-        </GestureDetector>
-      )}
-    </Animated.View>
+    <Draggable data={{ id: "1" }}>
+      <View>
+        <Text>Content (not draggable)</Text>
+        <Draggable.Handle>
+          <View style={styles.handle}>
+            <Text>Drag here</Text>
+          </View>
+        </Draggable.Handle>
+      </View>
+    </Draggable>
   );
 }
 ```

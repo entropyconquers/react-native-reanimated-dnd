@@ -1,9 +1,11 @@
-import React, { useRef, createContext, useContext } from "react";
+import React, { useRef, createContext, useContext, useEffect } from "react";
 import { ViewStyle, StyleProp } from "react-native";
 import Animated from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
-import { useDraggable } from "@/external-lib";
-import { UseDraggableOptions, DraggableState } from "@/types/draggable";
+import {
+  useDraggable,
+  type UseDraggableOptions,
+} from "react-native-reanimated-dnd";
 
 export interface CustomDraggableProps<TData = unknown>
   extends UseDraggableOptions<TData> {
@@ -11,9 +13,15 @@ export interface CustomDraggableProps<TData = unknown>
   children: React.ReactNode;
 }
 
+type CustomDraggableHookOptions<TData> = UseDraggableOptions<TData> & {
+  children: React.ReactNode;
+  handleComponent: React.ComponentType<any>;
+};
+
 // Create a context for CustomDraggable
 interface CustomDraggableContextValue {
   gesture: any;
+  registerHandle: (registered: boolean) => void;
 }
 
 const CustomDraggableContext =
@@ -30,6 +38,13 @@ const CustomDraggableHandle = ({
   style,
 }: CustomDraggableHandleProps) => {
   const draggableContext = useContext(CustomDraggableContext);
+
+  useEffect(() => {
+    draggableContext?.registerHandle(true);
+    return () => {
+      draggableContext?.registerHandle(false);
+    };
+  }, [draggableContext]);
 
   if (!draggableContext) {
     console.warn(
@@ -53,18 +68,20 @@ const CustomDraggableComponent = <TData = unknown,>({
   initialStyle,
   ...draggableOptions
 }: CustomDraggableProps<TData>) => {
-  const { animatedViewProps, gesture, hasHandle, animatedViewRef } =
+  const dragOptions = draggableOptions as UseDraggableOptions<TData>;
+  const { animatedViewProps, gesture, hasHandle, animatedViewRef, registerHandle } =
     useDraggable<TData>({
-      ...draggableOptions,
+      ...dragOptions,
       children,
       handleComponent: CustomDraggableHandle,
-    });
+    } as CustomDraggableHookOptions<TData>);
 
   const combinedStyle = [initialStyle, animatedViewProps.style];
 
   // Create context value
   const contextValue: CustomDraggableContextValue = {
     gesture,
+    registerHandle,
   };
 
   // Render with context

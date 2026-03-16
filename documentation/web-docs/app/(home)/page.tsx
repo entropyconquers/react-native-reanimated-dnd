@@ -1,0 +1,217 @@
+export default function HomePage() {
+  return (
+    <>
+      <div className="hero-banner">
+        <div className="hero-bg" />
+        <div className="hero-content-wrapper">
+          <div className="hero-label">React Native Reanimated DnD</div>
+          <h1 className="hero-title">
+            The drag and drop library that finally works on React Native.
+          </h1>
+          <p className="hero-description">
+            Built with Reanimated 4 and Worklets for buttery-smooth 60fps
+            animations. Simple API, powerful features, works everywhere.
+          </p>
+          <div className="hero-buttons">
+            <a href="/docs/intro" className="hero-btn-primary">
+              Get Started
+            </a>
+            <a
+              href="https://www.npmjs.com/package/react-native-reanimated-dnd"
+              className="hero-btn-secondary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View on NPM
+            </a>
+          </div>
+          <div className="hero-stats">
+            <div className="hero-stat">
+              <div className="stat-value">60fps</div>
+              <div className="stat-label">Smooth animations</div>
+            </div>
+            <div className="hero-stat">
+              <div className="stat-value">2min</div>
+              <div className="stat-label">Setup time</div>
+            </div>
+            <div className="hero-stat">
+              <div className="stat-value">100%</div>
+              <div className="stat-label">Cross-platform</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="features-section">
+        <div className="features-container">
+          <div className="features-header">
+            <h2 className="features-title">
+              Why choose React Native Reanimated DnD
+            </h2>
+            <p className="features-subtitle">
+              {"It's the most performant and developer-friendly drag & drop library for React Native, hands down."}
+            </p>
+          </div>
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-card-header">
+                <div className="feature-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div className="feature-metric">
+                  <div className="metric-number">60fps</div>
+                  <div className="metric-label">animations</div>
+                </div>
+              </div>
+              <h3 className="feature-title">Smooth Performance</h3>
+              <p className="feature-description">
+                Built with Reanimated 4 and Worklets for buttery-smooth
+                animations that run on the UI thread. No more laggy interactions.
+              </p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-card-header">
+                <div className="feature-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M2 17l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div className="feature-metric">
+                  <div className="metric-number">2min</div>
+                  <div className="metric-label">setup</div>
+                </div>
+              </div>
+              <h3 className="feature-title">Simple API</h3>
+              <p className="feature-description">
+                Get started instantly with our intuitive API. Wrap components
+                with <code>Draggable</code> and <code>Droppable</code> —{" "}
+                {"that's"} it.
+              </p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-card-header">
+                <div className="feature-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke="currentColor" strokeWidth="2" />
+                    <line x1="8" y1="21" x2="16" y2="21" stroke="currentColor" strokeWidth="2" />
+                    <line x1="12" y1="17" x2="12" y2="21" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                </div>
+                <div className="feature-metric">
+                  <div className="metric-number">100%</div>
+                  <div className="metric-label">compatible</div>
+                </div>
+              </div>
+              <h3 className="feature-title">Cross-Platform</h3>
+              <p className="feature-description">
+                Works perfectly on iOS and Android with consistent behavior. One
+                codebase, seamless experience.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="try-section">
+        <div className="try-container">
+          <div className="try-header">
+            <h2 className="try-title">Try it yourself</h2>
+            <p className="try-subtitle">
+              Experience the library in action with our interactive example app
+            </p>
+          </div>
+          <div className="try-content">
+            <div className="try-features">
+              <div className="try-feature-item">
+                <div className="try-feature-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                    <path d="M8 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <span>Interactive drag &amp; drop demos</span>
+              </div>
+              <div className="try-feature-item">
+                <div className="try-feature-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                    <path d="M8 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <span>Sortable lists with drag handles support</span>
+              </div>
+              <div className="try-feature-item">
+                <div className="try-feature-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                    <path d="M8 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <span>Custom animations and gestures</span>
+              </div>
+              <div className="try-feature-item">
+                <div className="try-feature-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                    <path d="M8 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <span>
+                  Feature-packed with collision detection, bounded dragging, and
+                  more
+                </span>
+              </div>
+              <div className="try-buttons">
+                <a
+                  href="https://github.com/entropyconquers/react-native-reanimated-dnd/tree/main/example-app"
+                  className="try-btn-primary"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Example App
+                </a>
+                <a
+                  href="https://github.com/entropyconquers/react-native-reanimated-dnd"
+                  className="try-btn-secondary"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub Repository
+                </a>
+              </div>
+            </div>
+            <div className="try-qr">
+              <div className="qr-card">
+                <img
+                  src="/images/example-app.svg"
+                  alt="QR Code for Example App"
+                  className="qr-image"
+                />
+              </div>
+              <div className="try-instructions">
+                <h4 className="instructions-title">How to use</h4>
+                <ol className="instructions-list">
+                  <li>
+                    Build the example app with <code>npx expo run:ios</code> or{" "}
+                    <code>npx expo run:android</code>
+                  </li>
+                  <li>Scan the QR code with your camera</li>
+                  <li>Open the link in the development build</li>
+                  <li>Start exploring the examples</li>
+                </ol>
+                <p className="instructions-note">
+                  Scan the QR code above to try the interactive examples on your
+                  device.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

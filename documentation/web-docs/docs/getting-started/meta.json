@@ -1,0 +1,10 @@
+{
+  "title": "Getting Started",
+  "pages": [
+    "installation",
+    "quick-start",
+    "basic-concepts",
+    "setup-provider",
+    "ai-skill"
+  ]
+}

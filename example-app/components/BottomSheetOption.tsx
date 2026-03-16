@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
     borderWidth: 1,
-    borderColor: "#2C2C2E",
+    borderColor: "#1A1C26",
     borderRadius: 8,
-    backgroundColor: "#1C1C1E",
+    backgroundColor: "#12141C",
     marginBottom: 8,
   },
   selectedOption: {
