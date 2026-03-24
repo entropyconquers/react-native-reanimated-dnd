@@ -201,8 +201,13 @@ export function useSortable<T>(
   const initialTopVal = useMemo(() => {
     const posArr = positions.get();
     const pos = posArr?.[id] ?? 0;
-    // For dynamic heights, use estimated height for initial position.
-    // The animated reaction will correct it once cumulative heights are available.
+    // Use cumulative heights for correct initial positioning in dynamic height mode
+    if (isDynamicHeight && itemHeights) {
+      const hv = itemHeights.get();
+      if (hv && Object.keys(hv).length > 0) {
+        return getItemCumulativeY(id, posArr, hv, estimatedItemHeight);
+      }
+    }
     return pos * effectiveItemHeight;
   }, []);
 
