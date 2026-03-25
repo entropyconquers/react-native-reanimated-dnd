@@ -118,6 +118,7 @@ export function useSortableList<TData extends { id: string }>(
   // Set up shared values
   const positions = useSharedValue(listToObject(data));
   const scrollY = useSharedValue(0);
+  const nativeScrollY = useSharedValue(0);
   const autoScroll = useSharedValue(ScrollDirection.None);
   const scrollViewRef = useAnimatedRef();
   const dropProviderRef = useRef<DropProviderRef | null>(null);
@@ -212,12 +213,17 @@ export function useSortableList<TData extends { id: string }>(
   useAnimatedReaction(
     () => scrollY.value,
     (scrolling) => {
-      scrollTo(scrollViewRef, 0, scrolling, false);
+      // Only take into account changes to the scroll value that were made by the library,
+      // otherwise the native scroll momentum is killed on Android
+      if (scrolling !== nativeScrollY.value) {
+        scrollTo(scrollViewRef, 0, scrolling, false);
+      }
     }
   );
 
   // Handle scroll events
   const handleScroll = useAnimatedScrollHandler((event) => {
+    nativeScrollY.value = event.contentOffset.y;
     scrollY.value = event.contentOffset.y;
   });
 
