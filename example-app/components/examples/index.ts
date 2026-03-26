@@ -13,3 +13,4 @@ export { BoundedYAxisExample } from "./BoundedYAxisExample";
 export { CapacityExample } from "./CapacityExample";
 export { CustomDraggableExample } from "./CustomDraggableExample";
 export { DynamicHeightExample } from "./DynamicHeightExample";
+export { DynamicGridExample } from "./DynamicGridExample";

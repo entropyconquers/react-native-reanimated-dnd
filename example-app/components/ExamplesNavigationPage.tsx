@@ -56,6 +56,13 @@ const categories: Category[] = [
         icon: `⊞${TEXT}`,
       },
       {
+        id: "dynamicGrid",
+        title: "Dynamic Grid",
+        description: "Grid with variable item heights (masonry)",
+        component: "DynamicGridExample",
+        icon: `⚏${TEXT}`,
+      },
+      {
         id: "dynamicHeight",
         title: "Dynamic Heights",
         description: "Sortable list with variable item heights",
