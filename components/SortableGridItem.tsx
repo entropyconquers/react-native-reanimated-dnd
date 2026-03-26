@@ -114,6 +114,7 @@ export function SortableGridItem<T>({
   onDrop,
   onDragging,
   isBeingRemoved,
+  itemIds,
 }: SortableGridItemProps<T>) {
   const gridSortableOptions: UseGridSortableOptions<T> = {
     id,
@@ -133,6 +134,7 @@ export function SortableGridItem<T>({
     onDrop,
     onDragging,
     isBeingRemoved,
+    itemIds,
   };
 
   const { animatedStyle, panGestureHandler, handlePanGestureHandler, registerHandle } =

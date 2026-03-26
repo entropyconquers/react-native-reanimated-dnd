@@ -55,9 +55,13 @@ export function useGridSortableList<TData extends SortableData>(
     });
   }
 
+  
+  const itemIds = data.map((item) => itemKeyExtractor(item, 0));
+  const itemHeights = dimensions.itemHeights;
+
   // Set up shared values
   const positions = useSharedValue(
-    listToGridObject(data, dimensions, orientation)
+    listToGridObject(data, dimensions, orientation, itemHeights)
   );
   const scrollY = useSharedValue(0);
   const scrollX = useSharedValue(0);
@@ -67,7 +71,7 @@ export function useGridSortableList<TData extends SortableData>(
 
   // Update positions when data or dimensions change
   useEffect(() => {
-    positions.value = listToGridObject(data, dimensions, orientation);
+    positions.value = listToGridObject(data, dimensions, orientation, itemHeights);
   }, [
     data.length,
     data.map((d) => itemKeyExtractor(d, 0)).join(","),
@@ -77,6 +81,7 @@ export function useGridSortableList<TData extends SortableData>(
     dimensions.itemHeight,
     dimensions.rowGap,
     dimensions.columnGap,
+    dimensions.itemHeights,
     orientation,
   ]);
 
@@ -113,7 +118,7 @@ export function useGridSortableList<TData extends SortableData>(
 
   // Calculate content dimensions
   const { width: contentWidth, height: contentHeight } =
-    calculateGridContentDimensions(data.length, dimensions, orientation);
+    calculateGridContentDimensions(data.length, dimensions, orientation, itemIds, itemHeights);
 
   // Helper to get props for each grid item
   const getItemProps = useCallback(
@@ -129,6 +134,7 @@ export function useGridSortableList<TData extends SortableData>(
         dimensions,
         orientation,
         strategy,
+        itemIds,
       };
     },
     [
@@ -141,6 +147,7 @@ export function useGridSortableList<TData extends SortableData>(
       scrollY,
       scrollX,
       autoScrollDirection,
+      itemIds,
     ]
   );
 

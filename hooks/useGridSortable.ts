@@ -57,6 +57,7 @@ export function useGridSortable<T>(
     onDrop,
     onDragging,
     isBeingRemoved = false,
+    itemIds,
   } = options;
 
   const [isMoving, setIsMoving] = useState(false);
@@ -171,7 +172,9 @@ export function useGridSortable<T>(
         id,
         dimensions,
         orientation,
-        strategy
+        strategy,
+        itemIds,
+        dimensions.itemHeights
       );
       setGridAutoScroll(
         current.x,
@@ -240,7 +243,7 @@ export function useGridSortable<T>(
         scrollDirection !== previousValue
       ) {
         const { width: contentWidth, height: contentHeight } =
-          calculateGridContentDimensions(itemsCount, dimensions, orientation);
+          calculateGridContentDimensions(itemsCount, dimensions, orientation, itemIds, dimensions.itemHeights);
 
         const maxScrollY = Math.max(0, contentHeight - calculatedContainerHeight);
         const maxScrollX = Math.max(0, contentWidth - calculatedContainerWidth);
@@ -375,13 +378,18 @@ export function useGridSortable<T>(
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";
 
+    const itemHeight =
+      itemIds && dimensions.itemHeights
+        ? dimensions.itemHeights[id] || dimensions.itemHeight
+        : dimensions.itemHeight;
+
     if (isBeingRemoved) {
       return {
         position: "absolute",
         top: topValue.value,
         left: leftValue.value,
         width: dimensions.itemWidth,
-        height: dimensions.itemHeight,
+        height: itemHeight,
         zIndex: 0,
         opacity: withTiming(0, { duration: 250 }),
         transform: [{ scale: withTiming(0.5, { duration: 250 }) }],
@@ -393,14 +401,14 @@ export function useGridSortable<T>(
       top: topValue.value,
       left: leftValue.value,
       width: dimensions.itemWidth,
-      height: dimensions.itemHeight,
+      height: itemHeight,
       zIndex: movingSV.value ? 1000 : 0,
       shadowColor: "black",
       shadowOpacity: withSpring(movingSV.value ? 0.2 : 0),
       shadowRadius: 10,
       transform: [{ scale: withSpring(movingSV.value ? 1.05 : 1) }],
     };
-  }, [movingSV, isBeingRemoved, dimensions]);
+  }, [movingSV, isBeingRemoved, dimensions, itemIds, id]);
 
   return {
     animatedStyle,

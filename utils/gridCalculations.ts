@@ -10,12 +10,19 @@ import {
 import { SortableData } from "../types/sortable";
 
 /**
+ * Type for mapping item IDs to their custom heights
+ */
+export type ItemHeights = { [id: string]: number };
+
+/**
  * Calculate grid position from linear index
  */
 export function calculateGridPosition(
   index: number,
   dimensions: GridDimensions,
-  orientation: GridOrientation
+  orientation: GridOrientation,
+  itemIds?: string[],
+  itemHeights?: ItemHeights
 ): GridPosition {
   "worklet";
 
@@ -42,7 +49,25 @@ export function calculateGridPosition(
   }
 
   const x = column * (itemWidth + columnGap);
-  const y = row * (itemHeight + rowGap);
+
+  // Calculate y position with support for variable heights
+  let y: number;
+  if (itemIds && itemHeights && orientation === GridOrientation.Vertical) {
+    y = 0;
+    for (let i = 0; i < index; i++) {
+      const itemRow = Math.floor(i / columns);
+      if (itemRow === row) {
+        // Same row - no contribution to y position
+        break;
+      }
+      const itemId = itemIds[i];
+      const height = itemHeights[itemId] || itemHeight;
+      y += height + rowGap;
+    }
+  } else {
+    // Fixed height calculation
+    y = row * (itemHeight + rowGap);
+  }
 
   return {
     index,
@@ -74,17 +99,31 @@ export function calculateIndexFromRowColumn(
 }
 
 /**
+ * Get the effective height for an item (custom height or default)
+ */
+export function getItemHeight(
+  itemId: string,
+  itemHeight: number,
+  itemHeights?: ItemHeights
+): number {
+  "worklet";
+  return itemHeights?.[itemId] || itemHeight;
+}
+
+/**
  * Convert data array to grid positions object
  */
 export function listToGridObject<T extends SortableData>(
   list: T[],
   dimensions: GridDimensions,
-  orientation: GridOrientation
+  orientation: GridOrientation,
+  itemHeights?: ItemHeights
 ): GridPositions {
   const positions: GridPositions = {};
+  const itemIds = list.map((item) => item.id);
 
   for (let i = 0; i < list.length; i++) {
-    const position = calculateGridPosition(i, dimensions, orientation);
+    const position = calculateGridPosition(i, dimensions, orientation, itemIds, itemHeights);
     positions[list[i].id] = position;
   }
 
@@ -151,7 +190,9 @@ export function reorderGridInsert(
   activeId: string,
   targetIndex: number,
   dimensions: GridDimensions,
-  orientation: GridOrientation
+  orientation: GridOrientation,
+  itemIds?: string[],
+  itemHeights?: ItemHeights
 ): GridPositions {
   "worklet";
 
@@ -174,21 +215,27 @@ export function reorderGridInsert(
       newPositions[id] = calculateGridPosition(
         targetIndex,
         dimensions,
-        orientation
+        orientation,
+        itemIds,
+        itemHeights
       );
     } else if (movingUp && currentIndex >= targetIndex && currentIndex < fromIndex) {
       // Shift items down (increase index by 1)
       newPositions[id] = calculateGridPosition(
         currentIndex + 1,
         dimensions,
-        orientation
+        orientation,
+        itemIds,
+        itemHeights
       );
     } else if (!movingUp && currentIndex <= targetIndex && currentIndex > fromIndex) {
       // Shift items up (decrease index by 1)
       newPositions[id] = calculateGridPosition(
         currentIndex - 1,
         dimensions,
-        orientation
+        orientation,
+        itemIds,
+        itemHeights
       );
     } else {
       // Keep the same position
@@ -236,7 +283,9 @@ export function setGridPosition(
   id: string,
   dimensions: GridDimensions,
   orientation: GridOrientation,
-  strategy: GridStrategy
+  strategy: GridStrategy,
+  itemIds?: string[],
+  itemHeights?: ItemHeights
 ): void {
   "worklet";
 
@@ -275,7 +324,9 @@ export function setGridPosition(
       id,
       targetCell.index,
       dimensions,
-      orientation
+      orientation,
+      itemIds,
+      itemHeights
     );
   } else if (strategy === GridStrategy.Swap && targetId) {
     positions.value = reorderGridSwap(
@@ -294,7 +345,9 @@ export function setGridPosition(
 export function calculateGridContentDimensions(
   itemsCount: number,
   dimensions: GridDimensions,
-  orientation: GridOrientation
+  orientation: GridOrientation,
+  itemIds?: string[],
+  itemHeights?: ItemHeights
 ): { width: number; height: number } {
   "worklet";
 
@@ -308,10 +361,26 @@ export function calculateGridContentDimensions(
   } = dimensions;
 
   if (orientation === GridOrientation.Vertical) {
-    // Calculate number of rows needed
-    const totalRows = Math.ceil(itemsCount / columns);
     const width = columns * itemWidth + (columns - 1) * columnGap;
-    const height = totalRows * itemHeight + (totalRows - 1) * rowGap;
+
+    // Calculate height with support for variable heights
+    let height: number;
+    if (itemIds && itemHeights) {
+      height = 0;
+      for (let i = 0; i < itemsCount; i++) {
+        const itemId = itemIds[i];
+        const itemHeightValue = itemHeights[itemId] || itemHeight;
+        height += itemHeightValue;
+        if (i < itemsCount - 1) {
+          height += rowGap;
+        }
+      }
+    } else {
+      // Fixed height calculation
+      const totalRows = Math.ceil(itemsCount / columns);
+      height = totalRows * itemHeight + (totalRows - 1) * rowGap;
+    }
+
     return { width, height };
   } else {
     // Calculate number of columns needed

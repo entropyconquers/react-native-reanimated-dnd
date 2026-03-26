@@ -4,6 +4,7 @@ import { SharedValue } from "react-native-reanimated";
 import { GestureType } from "react-native-gesture-handler";
 import { SortableData } from "./sortable";
 import { DropProviderRef } from "./context";
+import { ItemHeights } from "../utils/gridCalculations";
 
 export enum GridScrollDirection {
   None = "none",
@@ -46,6 +47,8 @@ export interface GridDimensions {
   itemHeight: number;
   rowGap?: number;
   columnGap?: number;
+  /** Optional mapping of item IDs to custom heights */
+  itemHeights?: ItemHeights;
 }
 
 /**
@@ -113,6 +116,9 @@ export interface UseGridSortableOptions<T> {
 
   /** Whether this item is being removed (triggers removal animation) */
   isBeingRemoved?: boolean;
+
+  /** Array of item IDs in the current order (for variable height support) */
+  itemIds?: string[];
 }
 
 /**
@@ -255,6 +261,9 @@ export interface SortableGridItemProps<T> {
   /** Height of the scrollable container */
   containerHeight?: number;
 
+  /** Array of item IDs in the current order (for variable height support) */
+  itemIds?: string[];
+
   /** Delay in ms before drag activates */
   activationDelay?: number;
 
@@ -367,4 +376,7 @@ export interface SortableGridRenderItemProps<TData extends SortableData> {
 
   /** Reordering strategy */
   strategy: GridStrategy;
+
+  /** Array of item IDs in the current order (for variable height support) */
+  itemIds?: string[];
 }
