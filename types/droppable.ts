@@ -128,6 +128,27 @@ export interface UseDroppableOptions<TData = unknown> {
   activeStyle?: StyleProp<ViewStyle>;
 
   /**
+   * Style to apply when a draggable item has started to move.
+   * This provides visual feedback to users about valid drop targets.
+   *
+   * @example
+   * ```typescript
+   * const draggingStyle = {
+   *   backgroundColor: 'rgba(0, 255, 0, 0.2)',
+   *   borderColor: '#00ff00',
+   *   borderWidth: 2,
+   *   transform: [{ scale: 1.05 }]
+   * };
+   *
+   * const { viewProps } = useDroppable({
+   *   onDrop: handleDrop,
+   *   draggingStyle
+   * });
+   * ```
+   */
+  draggingStyle?: StyleProp<ViewStyle>;
+
+  /**
    * Unique identifier for this droppable. If not provided, one will be generated automatically.
    * Used for tracking which droppable items are dropped on.
    *
@@ -185,6 +206,12 @@ export interface UseDroppableReturn {
    * Useful for conditional rendering or additional visual feedback.
    */
   isActive: boolean;
+
+  /**
+   * Whether a draggable item is currently moving anywhere on the view.
+   * Useful for conditional rendering or additional visual feedback.
+   */
+  isDragging: boolean;
 
   /**
    * The active style that was passed in options. Useful for external styling logic.
