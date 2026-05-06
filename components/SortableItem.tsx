@@ -95,6 +95,7 @@ function VerticalSortableItemInner<T>({
   onDragStart,
   onDrop,
   onDragging,
+  preDragDelay,
 }: VerticalSortableItemInnerProps<T>) {
   const { animatedStyle, panGestureHandler, handlePanGestureHandler, registerHandle } = useSortable<T>({
     id,
@@ -111,6 +112,7 @@ function VerticalSortableItemInner<T>({
     onDragStart,
     onDrop,
     onDragging,
+    preDragDelay,
   });
 
   // Handle layout measurement for dynamic heights
@@ -160,6 +162,7 @@ function HorizontalSortableItemInner<T>({
   onDragStart,
   onDrop,
   onDraggingHorizontal,
+  preDragDelay,
 }: HorizontalSortableItemInnerProps<T>) {
   const { animatedStyle, panGestureHandler, handlePanGestureHandler, registerHandle } =
     useHorizontalSortable<T>({
@@ -176,6 +179,7 @@ function HorizontalSortableItemInner<T>({
       onDragStart,
       onDrop,
       onDragging: onDraggingHorizontal,
+      preDragDelay,
     });
 
   return renderSortableContent(

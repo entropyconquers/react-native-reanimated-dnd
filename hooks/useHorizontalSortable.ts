@@ -152,6 +152,7 @@ export function useHorizontalSortable<T>(
     onDragStart,
     onDrop,
     onDragging,
+    preDragDelay = 200,
   } = options;
 
   const [isMoving, setIsMoving] = useState(false);
@@ -347,7 +348,7 @@ export function useHorizontalSortable<T>(
 
   const createPanGesture = () =>
     Gesture.Pan()
-      .activateAfterLongPress(200)
+      .activateAfterLongPress(preDragDelay)
       .shouldCancelWhenOutside(false)
       .onStart((event) => {
         "worklet";

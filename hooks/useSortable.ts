@@ -137,6 +137,13 @@ export interface UseSortableOptions<T> {
     overItemId: string | null,
     yPosition: number
   ) => void;
+  /**
+   * Long-press duration in milliseconds before the drag gesture activates.
+   * Pass `0` for immediate activation when using a dedicated drag handle.
+   *
+   * @default 200
+   */
+  preDragDelay?: number;
 }
 
 export interface UseSortableReturn {
@@ -182,6 +189,7 @@ export function useSortable<T>(
     onDragStart,
     onDrop,
     onDragging,
+    preDragDelay = 200,
   } = options;
 
   // Effective item height for fixed mode calculations
@@ -420,7 +428,7 @@ export function useSortable<T>(
   // === Pan gesture ===
   const createPanGesture = () =>
     Gesture.Pan()
-      .activateAfterLongPress(200)
+      .activateAfterLongPress(preDragDelay)
       .shouldCancelWhenOutside(false)
       .onStart((event) => {
         "worklet";
