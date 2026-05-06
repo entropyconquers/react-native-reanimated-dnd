@@ -219,6 +219,22 @@ export interface UseSortableOptions<T> {
     overItemId: string | null,
     yPosition: number
   ) => void;
+
+  /**
+   * Long-press duration in milliseconds before the drag gesture activates.
+   * Pass `0` for immediate activation (typical when using a dedicated drag
+   * handle, where the touch target already disambiguates intent from
+   * scroll/tap).
+   *
+   * @default 200
+   *
+   * @example
+   * ```typescript
+   * // Dedicated handle: drag begins as soon as the user touches it.
+   * useSortable({ id, positions, ..., preDragDelay: 0 });
+   * ```
+   */
+  preDragDelay?: number;
 }
 
 /**
@@ -571,6 +587,14 @@ export interface SortableItemProps<T> {
     overItemId: string | null,
     xPosition: number
   ) => void;
+
+  /**
+   * Long-press duration in milliseconds before the drag gesture activates.
+   * Pass `0` for immediate activation when using a dedicated drag handle.
+   *
+   * @default 200
+   */
+  preDragDelay?: number;
 }
 
 /**
@@ -804,6 +828,14 @@ export interface UseHorizontalSortableOptions<T> {
     overItemId: string | null,
     xPosition: number
   ) => void;
+
+  /**
+   * Long-press duration in milliseconds before the drag gesture activates.
+   * Pass `0` for immediate activation when using a dedicated drag handle.
+   *
+   * @default 200
+   */
+  preDragDelay?: number;
 }
 
 /**
