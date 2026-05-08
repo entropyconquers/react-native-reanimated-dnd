@@ -208,16 +208,32 @@ export function useSortableList<TData extends { id: string }>(
     [data, itemKeyExtractor, estimatedItemHeight, onHeightsMeasured]
   );
 
-  // Scrolling synchronization
+  // Mirror of the user-driven scroll position. Used to discriminate
+  // user-driven scrollY updates from auto-scroll worklet updates so the
+  // reaction below doesn't cancel native momentum on every scroll frame.
+  const userScrollY = useSharedValue(0);
+
+  // Scrolling synchronization. The reaction propagates auto-scroll commands
+  // (drag-near-edge) to the actual scroll view via scrollTo. It must skip
+  // user-driven updates: scrollTo with animated:false maps to
+  // setContentOffset:animated:NO on iOS (and the equivalent on Android),
+  // which cancels active deceleration. Calling it on every frame of momentum
+  // scroll kills inertia and the list stops dead the moment the user lifts
+  // their finger. We detect user-driven updates by checking userScrollY,
+  // which handleScroll keeps in sync with the actual contentOffset.
   useAnimatedReaction(
     () => scrollY.value,
     (scrolling) => {
+      if (scrolling === userScrollY.value) return;
       scrollTo(scrollViewRef, 0, scrolling, false);
     }
   );
 
-  // Handle scroll events
+  // Handle scroll events. userScrollY is written BEFORE scrollY so that when
+  // the reaction above fires (triggered by the scrollY change), userScrollY
+  // is already at the new value and the equality check short-circuits.
   const handleScroll = useAnimatedScrollHandler((event) => {
+    userScrollY.value = event.contentOffset.y;
     scrollY.value = event.contentOffset.y;
   });
 
