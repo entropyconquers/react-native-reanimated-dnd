@@ -122,6 +122,18 @@ export function useSortableList<TData extends { id: string }>(
   const scrollViewRef = useAnimatedRef();
   const dropProviderRef = useRef<DropProviderRef | null>(null);
 
+  // Sync positions when data order changes without remount. The Sortable
+  // wrapper now hashes on item membership (not order), so reorders don't
+  // trigger the key-change remount that would reset scroll position. We
+  // re-derive `positions` here so the visual order matches the new data
+  // prop. Add / remove cases still hit the hash-change remount path and
+  // re-initialize positions through useSharedValue's initial value, so this
+  // effect is a no-op in those cases (same id set produces equal mapping).
+  useEffect(() => {
+    positions.value = listToObject(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   // Dynamic height shared values — initialized with estimated heights
   // so items are positioned correctly from the first frame.
   const initialHeights = useMemo(() => {

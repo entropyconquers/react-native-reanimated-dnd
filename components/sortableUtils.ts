@@ -295,12 +295,26 @@ export function getItemCumulativeY(
 }
 
 /**
- * Returns a hash code based on the data
+ * Returns a hash code based on which items are in the list.
+ *
+ * Sortable wraps SortableComponent with `key={dataHash(data)}` to force a
+ * remount whenever the hash changes. We hash on item membership (count + the
+ * sorted set of ids), not on item order, so reorders DON'T trigger a
+ * remount. Reorders are handled by syncing the `positions` shared value in
+ * useSortableList — the visual reorder still happens, but without unmounting
+ * the FlatList and resetting its scroll position to 0.
+ *
+ * Add / remove still changes the hash (new id concatenation) and still
+ * triggers the remount, which is correct: those need positions to be
+ * reinitialized from the new data with the new item count.
+ *
  * @param  {any[]} data The data to hash.
  * @return {string}    A 32bit integer
  */
 export const dataHash = (data: any[]): string => {
-  const str = data.reduce((acc, item) => acc + item.id, "");
+  const ids = data.map((item) => item.id);
+  ids.sort();
+  const str = ids.join("");
   let hash = 0;
   for (let i = 0, len = str.length; i < len; i++) {
     let chr = str.charCodeAt(i);
