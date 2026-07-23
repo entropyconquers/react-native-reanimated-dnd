@@ -451,8 +451,28 @@ export function useSortable<T>(
         "worklet";
         const fingerDyScreen = event.absoluteY - initialFingerAbsoluteY.value;
         const scrollDeltaSinceStart = lowerBound.value - initialLowerBound.value;
-        positionY.value =
+        const proposedPositionY =
           initialItemContentY.value + fingerDyScreen + scrollDeltaSinceStart;
+        let maxPositionY: number;
+
+        if (isDynamicHeight && itemHeights) {
+          const movingItemHeight =
+            itemHeights.value[id] ?? estimatedItemHeight;
+          let contentHeight = 0;
+          for (const itemId in positions.value) {
+            contentHeight +=
+              itemHeights.value[itemId] ?? estimatedItemHeight;
+          }
+          maxPositionY = contentHeight - movingItemHeight;
+        } else {
+          maxPositionY = (itemsCount - 1) * effectiveItemHeight;
+        }
+
+        positionY.value = clamp(
+          proposedPositionY,
+          0,
+          Math.max(0, maxPositionY)
+        );
       })
       .onFinalize(() => {
         "worklet";
