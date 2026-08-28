@@ -36,6 +36,11 @@ export {
   calculateGridContentDimensions,
   setGridAutoScroll,
   findItemIdAtIndex,
+  getGridItemHeight,
+  computeGridBandHeights,
+  computeGridBands,
+  getGridBandTop,
+  getGridBandFromY,
 } from "./utils/gridCalculations";
 
 // Hooks

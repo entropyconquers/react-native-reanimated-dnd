@@ -996,7 +996,6 @@ const styles = StyleSheet.create({
     fontFamily: "Syne_700Bold",
     letterSpacing: -0.3,
     color: "#08090E",
-    fontFamily: "Syne_700Bold",
     marginBottom: 10,
     textAlign: "center",
   },

@@ -427,9 +427,25 @@ function GridExample() {
 | `columns` | `number` | Columns (vertical orientation) |
 | `rows` | `number` | Rows (horizontal orientation) |
 | `itemWidth` | `number` | Item width |
-| `itemHeight` | `number` | Item height |
+| `itemHeight` | `number` | Fallback height for items not in `itemHeights` |
 | `rowGap` | `number` | Gap between rows |
 | `columnGap` | `number` | Gap between columns |
+| `itemHeights` | `{ [itemId: string]: number }` | Per-item heights. Rows size to their tallest item |
+
+Variable item heights example:
+
+```tsx
+<SortableGrid
+  data={items} // one item has height 160, others 80
+  renderItem={renderItem}
+  dimensions={{
+    columns: 3,
+    itemWidth: 100,
+    itemHeight: 80,
+    itemHeights: { 'item-3': 160 },
+  }}
+/>
+```
 
 ### SortableGridItem Props
 
@@ -879,9 +895,10 @@ interface GridDimensions {
   columns?: number;
   rows?: number;
   itemWidth: number;
-  itemHeight: number;
+  itemHeight: number; // fallback for items not in itemHeights
   rowGap?: number;
   columnGap?: number;
+  itemHeights?: { [itemId: string]: number };
 }
 
 interface GridPosition {

@@ -43,9 +43,28 @@ export interface GridDimensions {
   columns?: number;
   rows?: number;
   itemWidth: number;
+  /** Fallback slot height for items without an entry in `itemHeights` */
   itemHeight: number;
   rowGap?: number;
   columnGap?: number;
+  /**
+   * Per-item heights keyed by item id. Each row band sizes to its tallest
+   * item so variable-height items never overlap.
+   */
+  itemHeights?: { [itemId: string]: number };
+  /**
+   * Per-item row spans keyed by item id (vertical orientation only). A span N
+   * item occupies N consecutive rows in its column and stretches to the full
+   * height of those rows; remaining items pack around it.
+   */
+  itemRowSpans?: { [itemId: string]: number };
+  /**
+   * Per-item column spans keyed by item id (vertical orientation only). A
+   * span N item occupies N adjacent columns in one row and stretches to the
+   * full width of those columns; remaining items pack around it. Ignored for
+   * items that also declare a row span.
+   */
+  itemColumnSpans?: { [itemId: string]: number };
 }
 
 /**
@@ -182,7 +201,7 @@ export interface UseGridSortableListReturn<TData extends SortableData> {
   scrollViewRef: any;
 
   /** Ref for the DropProvider context */
-  dropProviderRef: React.RefObject<DropProviderRef>;
+  dropProviderRef: React.RefObject<DropProviderRef | null>;
 
   /** Animated scroll handler */
   handleScroll: any;

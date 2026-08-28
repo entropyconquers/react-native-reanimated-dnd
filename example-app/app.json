@@ -3,7 +3,7 @@
     "name": "Reanimated DnD",
     "slug": "rn-dnd-test",
     "version": "1.0.0",
-    "orientation": "landscape",
+    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "ios": {

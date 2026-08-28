@@ -26,6 +26,7 @@
     "minify": "node scripts/build.js",
     "prepublishOnly": "npm run build:clean",
     "type-check": "tsc --noEmit",
+    "test": "node scripts/run-tests.cjs",
     "type-check:example": "npm run type-check --workspace example-app",
     "doctor:example": "npm run doctor --workspace example-app",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\" --ignore-path .prettierignore",

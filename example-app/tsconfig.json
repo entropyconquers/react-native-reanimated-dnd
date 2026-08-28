@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
+    "customConditions": ["react-native"],
     "paths": {
       "@/*": ["./*"],
       "@/components/*": ["./components/*"],

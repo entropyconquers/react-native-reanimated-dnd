@@ -8,6 +8,7 @@ yarn-error.log*
 lib/
 dist/
 build/
+.test-build/
 
 # TypeScript
 *.tsbuildinfo

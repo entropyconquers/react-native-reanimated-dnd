@@ -444,6 +444,23 @@ function AppGrid() {
 }
 ```
 
+**Variable item heights:** pass `itemHeights` (keyed by item id) in `dimensions`. Each row sizes to its tallest item, so mixed-height grids never overlap:
+
+```tsx
+<SortableGrid
+  data={apps}
+  renderItem={renderItem}
+  dimensions={{
+    columns: 4,
+    itemWidth: 80,
+    itemHeight: 80,
+    rowGap: 12,
+    columnGap: 12,
+    itemHeights: { "3": 160 }, // keyed by item id
+  }}
+/>
+```
+
 > **More examples:** [Quick Start Guide](https://reanimated-dnd-docs.vercel.app/docs/getting-started/quick-start) · [Sortable Lists](https://reanimated-dnd-docs.vercel.app/docs/examples/sortable-lists) · [Sortable Grids](https://reanimated-dnd-docs.vercel.app/docs/api/components/sortable-grid) · [All Examples](https://reanimated-dnd-docs.vercel.app/docs/examples/basic-drag-drop)
 
 ## 📚 Documentation

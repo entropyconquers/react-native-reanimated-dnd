@@ -182,7 +182,7 @@ function VerticalSortableContent<TData extends { id: string }>({
         <SortableListContext.Provider value={sortableListContextValue}>
           {useFlatList ? (
             <AnimatedFlatList
-              {...flatListProps}
+              {...(flatListProps as any)}
               ref={scrollViewRef}
               data={data}
               keyExtractor={itemKeyExtractor as any}
@@ -290,7 +290,7 @@ function HorizontalSortableContent<TData extends { id: string }>({
         <SortableListContext.Provider value={sortableListContextValue}>
           {useFlatList ? (
             <AnimatedFlatList
-              {...flatListProps}
+              {...(flatListProps as any)}
               ref={scrollViewRef}
               data={data}
               keyExtractor={itemKeyExtractor as any}

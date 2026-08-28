@@ -14,7 +14,6 @@ import {
   GridScrollDirection,
   GridPositions,
   GridDimensions,
-  GridOrientation,
   GridStrategy,
   UseGridSortableOptions,
   UseGridSortableReturn,
@@ -23,6 +22,11 @@ import {
   setGridPosition,
   setGridAutoScroll,
   calculateGridContentDimensions,
+  computeGridBands,
+  getGridCellFromCoordinates,
+  getGridItemSpanHeight,
+  getGridItemSpanWidth,
+  findItemIdAtCell,
 } from "../utils/gridCalculations";
 
 /**
@@ -114,30 +118,36 @@ export function useGridSortable<T>(
         return;
       }
 
-      // Calculate target cell for hit detection
-      const { itemWidth, itemHeight, columnGap = 0, rowGap = 0, columns = 3 } = dimensions;
-      const clampedColumn = Math.min(
-        Math.max(0, Math.round(current.x / (itemWidth + columnGap))),
-        (orientation === GridOrientation.Vertical ? columns : Infinity) - 1
+      // Calculate target cell for hit detection (band-aware for variable
+      // heights; current.x/current.y are content-space coordinates produced
+      // by the pan gesture, so no scroll adjustment is applied here)
+      const bandHeights = computeGridBands(
+        positions.value,
+        dimensions,
+        orientation,
+        itemsCount
       );
-      const clampedRow = Math.floor(current.y / (itemHeight + rowGap));
-      let targetIndex: number;
-      if (orientation === GridOrientation.Vertical) {
-        targetIndex = clampedRow * columns + clampedColumn;
-      } else {
-        const rows = dimensions.rows ?? 3;
-        targetIndex = clampedColumn * rows + clampedRow;
-      }
-      targetIndex = Math.max(0, Math.min(targetIndex, itemsCount - 1));
+      const targetCell = getGridCellFromCoordinates(
+        current.x,
+        current.y,
+        dimensions,
+        orientation,
+        itemsCount,
+        bandHeights
+      );
 
-      // Determine overItemId
+      // Determine overItemId — resolve the cell to the item whose footprint
+      // covers it so spanned cells report the spanning item.
+      const owner = findItemIdAtCell(
+        positions.value,
+        targetCell.row,
+        targetCell.column,
+        dimensions,
+        orientation
+      );
       let newOverItemId: string | null = null;
-      const positionsValue = positions.value;
-      for (const itemId in positionsValue) {
-        if (positionsValue[itemId].index === targetIndex && itemId !== id) {
-          newOverItemId = itemId;
-          break;
-        }
+      if (owner !== null && owner !== id) {
+        newOverItemId = owner;
       }
 
       if (currentOverItemId.value !== newOverItemId) {
@@ -164,8 +174,6 @@ export function useGridSortable<T>(
       setGridPosition(
         current.x,
         current.y,
-        scrollX.value,
-        scrollY.value,
         itemsCount,
         positions,
         id,
@@ -239,8 +247,14 @@ export function useGridSortable<T>(
         previousValue !== null &&
         scrollDirection !== previousValue
       ) {
+        const bandHeights = computeGridBands(
+          positions.value,
+          dimensions,
+          orientation,
+          itemsCount
+        );
         const { width: contentWidth, height: contentHeight } =
-          calculateGridContentDimensions(itemsCount, dimensions, orientation);
+          calculateGridContentDimensions(itemsCount, dimensions, orientation, bandHeights);
 
         const maxScrollY = Math.max(0, contentHeight - calculatedContainerHeight);
         const maxScrollX = Math.max(0, contentWidth - calculatedContainerWidth);
@@ -375,13 +389,29 @@ export function useGridSortable<T>(
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";
 
+    // Spanning items stretch to the full height of the bands they cover.
+    const bands = computeGridBands(
+      positions.value,
+      dimensions,
+      orientation,
+      itemsCount
+    );
+    const row = positions.value[id]?.row ?? 0;
+    const height = getGridItemSpanHeight(
+      id,
+      row,
+      bands,
+      dimensions.rowGap ?? 0,
+      dimensions
+    );
+
     if (isBeingRemoved) {
       return {
         position: "absolute",
         top: topValue.value,
         left: leftValue.value,
-        width: dimensions.itemWidth,
-        height: dimensions.itemHeight,
+        width: getGridItemSpanWidth(id, dimensions),
+        height,
         zIndex: 0,
         opacity: withTiming(0, { duration: 250 }),
         transform: [{ scale: withTiming(0.5, { duration: 250 }) }],
@@ -392,8 +422,8 @@ export function useGridSortable<T>(
       position: "absolute",
       top: topValue.value,
       left: leftValue.value,
-      width: dimensions.itemWidth,
-      height: dimensions.itemHeight,
+      width: getGridItemSpanWidth(id, dimensions),
+      height,
       zIndex: movingSV.value ? 1000 : 0,
       shadowColor: "black",
       shadowOpacity: withSpring(movingSV.value ? 0.2 : 0),

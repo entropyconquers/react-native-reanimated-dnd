@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "lib": ["ES2018"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false,
+    "declaration": false,
+    "sourceMap": false,
+    "outDir": "./.test-build",
+    "noEmitHelpers": false,
+    "types": ["node"]
+  },
+  "include": [
+    "utils/gridCalculations.ts",
+    "types/grid.ts",
+    "types/sortable.ts",
+    "tests/**/*.ts"
+  ],
+  "exclude": ["node_modules", "lib"]
+}
