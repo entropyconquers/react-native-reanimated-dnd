@@ -235,9 +235,11 @@ export function useSortable<T>(
       return (positions.value[id] ?? 0) * effectiveItemHeight;
     },
     (newTop, oldTop) => {
-      if (oldTop !== null && newTop !== oldTop && !movingSV.value) {
-        top.value = withSpring(newTop);
+      if (newTop === oldTop || movingSV.value) {
+        return;
       }
+      // Seed from the UI thread's current position without animating on mount.
+      top.value = oldTop === null ? newTop : withSpring(newTop);
     },
     [isDynamicHeight, itemHeights, positions, id, effectiveItemHeight, estimatedItemHeight, movingSV]
   );

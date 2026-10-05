@@ -1,0 +1,37 @@
+# Run with the PositionSync fixture already open; works with Expo Go or a native build.
+appId: ${APP_ID}
+---
+- tapOn: "fixed"
+- tapOn: "Check"
+- extendedWaitUntil:
+    visible: "fixed: PASS A: y=0 expected=0; PASS B: y=60 expected=60"
+    timeout: 5000
+- tapOn: "Add C"
+- waitForAnimationToEnd
+- tapOn: "Check"
+- extendedWaitUntil:
+    visible: "fixed: PASS A: y=0 expected=0; PASS B: y=60 expected=60; PASS C: y=120 expected=120"
+    timeout: 5000
+- tapOn: "Reverse"
+- waitForAnimationToEnd
+- tapOn: "Check"
+- extendedWaitUntil:
+    visible: "fixed: PASS A: y=120 expected=120; PASS B: y=60 expected=60; PASS C: y=0 expected=0"
+    timeout: 5000
+- tapOn: "dynamic"
+- tapOn: "Check"
+- extendedWaitUntil:
+    visible: "dynamic: PASS A: y=0 expected=0; PASS B: y=80 expected=80"
+    timeout: 5000
+- tapOn: "Add C"
+- waitForAnimationToEnd
+- tapOn: "Check"
+- extendedWaitUntil:
+    visible: "dynamic: PASS A: y=0 expected=0; PASS B: y=80 expected=80; PASS C: y=180 expected=180"
+    timeout: 5000
+- tapOn: "Reverse"
+- waitForAnimationToEnd
+- tapOn: "Check"
+- extendedWaitUntil:
+    visible: "dynamic: PASS A: y=170 expected=170; PASS B: y=70 expected=70; PASS C: y=0 expected=0"
+    timeout: 5000
