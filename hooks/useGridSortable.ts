@@ -183,24 +183,7 @@ export function useGridSortable<T>(
         dimensions.itemHeight,
         autoScrollDirection
       );
-    },
-    [
-      movingSV,
-      dimensions,
-      itemsCount,
-      positions,
-      id,
-      orientation,
-      strategy,
-      onDragging,
-      scrollX,
-      scrollY,
-      autoScrollDirection,
-      currentOverItemId,
-      topValue,
-      leftValue,
-      onDraggingLastCallTimestamp,
-    ]
+    }
   );
 
   // React to position changes from other items (animate to new slot)
@@ -226,8 +209,7 @@ export function useGridSortable<T>(
           }
         }
       }
-    },
-    [movingSV]
+    }
   );
 
   // React to auto-scroll direction changes
@@ -303,8 +285,7 @@ export function useGridSortable<T>(
           scrollX.value = target.x;
         }
       }
-    },
-    [movingSV]
+    }
   );
 
   const createPanGesture = () =>

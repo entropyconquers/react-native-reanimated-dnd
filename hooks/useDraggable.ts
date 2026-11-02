@@ -736,8 +736,7 @@ export const useDraggable = <TData = unknown>(
         // When returning to origin position, we know we're no longer dropped
         scheduleOnRN(unregisterDroppedItem, internalDraggableId);
       }
-    },
-    [setState, unregisterDroppedItem, internalDraggableId]
+    }
   );
 
   // Clean up on unmount
