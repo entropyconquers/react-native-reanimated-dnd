@@ -1,4 +1,4 @@
-import { StyleProp, ViewStyle } from "react-native";
+import { FlatListProps, StyleProp, ViewStyle } from "react-native";
 import { GestureType } from "react-native-gesture-handler";
 import { SharedValue } from "react-native-reanimated";
 import { DropProviderRef } from "../types/context";
@@ -622,6 +622,23 @@ export interface SortableProps<TData extends SortableData> {
 
   /** Function to extract unique key from each item */
   itemKeyExtractor?: (item: TData, index: number) => string;
+
+  /**
+   * Props forwarded to the internal virtualized list. Sortable-owned props
+   * remain controlled by Sortable.
+   */
+  flatListProps?: Omit<
+    FlatListProps<TData>,
+    | "contentContainerStyle"
+    | "data"
+    | "horizontal"
+    | "keyExtractor"
+    | "onMomentumScrollEnd"
+    | "onScroll"
+    | "onScrollEndDrag"
+    | "renderItem"
+    | "style"
+  >;
 
   /**
    * Whether to use FlatList for rendering instead of ScrollView.
