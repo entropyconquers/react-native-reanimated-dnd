@@ -246,23 +246,7 @@ export function useHorizontalSortable<T>(
         itemWidth,
         autoScrollDirection
       );
-    },
-    [
-      movingSV,
-      itemWidth,
-      gap,
-      paddingHorizontal,
-      itemsCount,
-      positions,
-      id,
-      onDragging,
-      leftBound,
-      rightBound,
-      autoScrollDirection,
-      currentOverItemId,
-      left,
-      onDraggingLastCallTimestamp,
-    ]
+    }
   );
 
   useAnimatedReaction(
@@ -286,8 +270,7 @@ export function useHorizontalSortable<T>(
           }
         }
       }
-    },
-    [movingSV, itemWidth, gap, paddingHorizontal]
+    }
   );
 
   useAnimatedReaction(
@@ -341,8 +324,7 @@ export function useHorizontalSortable<T>(
           leftBound.value = targetLeftBoundValue;
         }
       }
-    },
-    [movingSV]
+    }
   );
 
   const createPanGesture = () =>
