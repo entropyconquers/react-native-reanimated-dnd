@@ -51,6 +51,7 @@ function SortableComponent<TData extends { id: string }>({
   style,
   contentContainerStyle,
   itemKeyExtractor = (item) => item.id,
+  flatListProps,
   useFlatList = true,
 }: SortableProps<TData>) {
   // Determine if dynamic height mode applies
@@ -88,6 +89,7 @@ function SortableComponent<TData extends { id: string }>({
         style={style}
         contentContainerStyle={contentContainerStyle}
         itemKeyExtractor={itemKeyExtractor}
+        flatListProps={flatListProps}
         useFlatList={useFlatList}
       />
     );
@@ -105,6 +107,7 @@ function SortableComponent<TData extends { id: string }>({
       style={style}
       contentContainerStyle={contentContainerStyle}
       itemKeyExtractor={itemKeyExtractor}
+      flatListProps={flatListProps}
       useFlatList={useFlatList}
     />
   );
@@ -121,6 +124,7 @@ function VerticalSortableContent<TData extends { id: string }>({
   style,
   contentContainerStyle,
   itemKeyExtractor,
+  flatListProps,
   useFlatList,
 }: SortableProps<TData>) {
   const {
@@ -158,6 +162,7 @@ function VerticalSortableContent<TData extends { id: string }>({
       <DropProvider ref={dropProviderRef}>
         {useFlatList ? (
           <AnimatedFlatList
+            {...flatListProps}
             ref={scrollViewRef}
             data={data}
             keyExtractor={itemKeyExtractor as any}
@@ -215,6 +220,7 @@ function HorizontalSortableContent<TData extends { id: string }>({
   style,
   contentContainerStyle,
   itemKeyExtractor,
+  flatListProps,
   useFlatList,
 }: SortableProps<TData>) {
   const {
@@ -252,6 +258,7 @@ function HorizontalSortableContent<TData extends { id: string }>({
       <DropProvider ref={dropProviderRef}>
         {useFlatList ? (
           <AnimatedFlatList
+            {...flatListProps}
             ref={scrollViewRef}
             data={data}
             keyExtractor={itemKeyExtractor as any}
