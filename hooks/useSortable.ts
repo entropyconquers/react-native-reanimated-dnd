@@ -271,13 +271,35 @@ export function useSortable<T>(
         return;
       }
 
+      let contentHeight = itemsCount * effectiveItemHeight;
+      let draggedItemHeight = effectiveItemHeight;
+      if (isDynamicHeight && itemHeights) {
+        contentHeight = 0;
+        for (const itemId in positions.value) {
+          contentHeight += itemHeights.value[itemId] ?? estimatedItemHeight;
+        }
+        draggedItemHeight = itemHeights.value[id] ?? estimatedItemHeight;
+      }
+
+      // Keep the dragged item's center within the list content bounds while
+      // allowing half of the item to extend beyond the first and last rows.
+      const dragBoundaryInset = draggedItemHeight / 2;
+      const boundedY = clamp(
+        currentY,
+        -dragBoundaryInset,
+        Math.max(
+          -dragBoundaryInset,
+          contentHeight - draggedItemHeight + dragBoundaryInset
+        )
+      );
+
       // Calculate target discrete position
       let clampedPosition: number;
 
       if (isDynamicHeight && itemHeights) {
         // Dynamic mode: find position using item heights (computed inline)
         clampedPosition = findPositionForY(
-          currentY,
+          boundedY,
           positions.value,
           itemHeights.value,
           estimatedItemHeight,
@@ -286,7 +308,7 @@ export function useSortable<T>(
       } else {
         // Fixed mode: simple division
         clampedPosition = Math.min(
-          Math.max(0, Math.ceil(currentY / effectiveItemHeight)),
+          Math.max(0, Math.ceil(boundedY / effectiveItemHeight)),
           itemsCount - 1
         );
       }
@@ -308,13 +330,13 @@ export function useSortable<T>(
       if (onDragging) {
         const now = Date.now();
         if (now - onDraggingLastCallTimestamp.value > THROTTLE_INTERVAL) {
-          scheduleOnRN(onDragging, id, newOverItemId, Math.round(currentY));
+          scheduleOnRN(onDragging, id, newOverItemId, Math.round(boundedY));
           onDraggingLastCallTimestamp.value = now;
         }
       }
 
       // Update visual position
-      top.value = currentY;
+      top.value = boundedY;
 
       // Update logical positions
       if (isDynamicHeight) {
@@ -328,11 +350,11 @@ export function useSortable<T>(
         }
       } else {
         // Fixed: use standard position calculation
-        setPosition(currentY, itemsCount, positions, id, effectiveItemHeight);
+        setPosition(boundedY, itemsCount, positions, id, effectiveItemHeight);
       }
 
       setAutoScroll(
-        currentY,
+        boundedY,
         lowerBound.value,
         upperBound.value,
         effectiveItemHeight,
